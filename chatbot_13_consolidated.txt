@@ -1,0 +1,652 @@
+--- File: can-infotech ---
+
+--- Page 1 ---
+क्यान इन्फोटेक 
+क्यान इन्फोटेक नेपालकै प्रतिष्ठित र ठूलो सूचना तथा सञ्चार प्रविधि (ICT) प्रदर्शनी हो, जुन प्रत्येक वर्ष 
+कम्प्युटर एसोसिएसन नेपाल महासंघ (CAN Federation) द्वारा आयोजना गरिन्छ। यो कार्यक्रम नवीनतम 
+प्रविधि प्रदर्शन गर्ने, उद्योगबीचको सहकार्य प्रवर्द्धन गर्ने, र नेपालमा डिजिटल परिवर्तनलाई अगाडि बढाउने एक 
+महत्वपूर्ण मञ्चको रूपमा कार्य गर्दछ। तल क्यान इन्फोटेकको महत्व, विशेषताहरू, र आगामी कार्यक्रमहरूको 
+विस्तृत विवरण दिइएको छ। 
+क्यान इन्फोटेकको परिचय 
+क्यान इन्फोटेक एक प्रमुख कार्यक्रम हो जसले राष्ट्रिय र अन्तर्राष्ट्रिय ICT कम्पनीहरू, स्टार्टअपहरू, र प्रविधि 
+उत्साहीहरूलाई एउटै छानामुनि ल्याउँछ। यो प्रदर्शनीमा अत्याधुनिक प्रविधिहरू, नवीन उत्पादनहरू, र सेवाहरू 
+समावेश हुन्छन्, जसले नेटवर्किङ, ज्ञान आदानप्रदान, र व्यवसाय विस्तारको अवसर प्रदान गर्दछ। यस 
+कार्यक्रममा प्रदर्शनी, सम्मेलनहरू, स्टार्टअप पवेलियनहरू, सफ्टवेयर प्रदर्शनीहरू, र आईटी क्यारियर परामर्श 
+लगायत विभिन्न गतिविधिहरू समावेश गरिन्छ। 
+क्यान इन्फोटेक २०२५ 
+क्यान इन्फोटेकको ३०औं संस्करण २०२५ फेब्रुअरी ६ देखि १० सम्म काठमाडौंको भृकुटीमण्डप प्रदर्शनी हल मा 
+आयोजना गरिनेछ। यस संस्करणमा कृत्रिम बुद्धिमत्ता, क्वान्टम कम्प्युटिङ, र साइबर सुरक्षा जस्ता प्रविधि 
+प्रवृत्तिहरूलाई प्राथमिकता दिइनेछ। यस कार्यक्रमले नीति-निर्माण र रणनीतिक योजना निर्माणका लागि पनि 
+मञ्च प्रदान गर्नेछ। 
+क्यान इन्फोटेक २०२५ का प्रमुख विशेषताहरू 
+●​ स्टल बुकिङ र प्रायोजन: यस कार्यक्रमले प्लाटिनम, डायमण्ड, गोल्ड, र सिल्भर स्तरका प्रायोजनहरू 
+प्रदान गर्छ। स्टलहरू ब्रान्डिङ, उत्पादन उद्घाटन, र बिक्रीका लागि छुट्याइएका छन्, जसले 
+कम्पनीहरूलाई आफ्नो बजार उपस्थिति विस्तार गर्ने अवसर प्रदान गर्छ। स्टल बुकिङका लागि कुल 
+भुक्तानीको ५०% अग्रिम तिर्नुपर्नेछ। 
+●​ स्टार्टअपहरूका लागि निःशुल्क स्टल: नेपाली स्टार्टअपहरूलाई प्रवर्द्धन गर्न, क्यान इन्फोटेक २०२५ ले 
+निःशुल्क स्टल उपलब्ध गराउनेछ, जसले तिनीहरूलाई आफ्ना नवीन विचारहरू प्रदर्शन गर्ने र सम्भावित 
+लगानीकर्ताहरूलाई आकर्षित गर्ने अवसर प्रदान गर्नेछ। 
+●​ प्रवेश शुल्क र पहुँच: सर्वसाधारणका लागि टिकट शुल्क रु. १०० रहनेछ भने विद्यार्थीहरूका लागि रु. ५० 
+निर्धारण गरिएको छ। ज्येष्ठ नागरिक, अपांगता भएका व्यक्तिहरू, १० वर्ष मुनिका बालबालिका, तथा 
+सरकारी वा सामुदायिक विद्यालयका समूहहरू का लागि निःशुल्क प्रवेश उपलब्ध हुनेछ। 
+●​ भर्चुअल सहभागिता: व्यक्तिगत रूपमा उपस्थित हुन नसक्नेहरूका लागि भर्चुअल रूपमा सहभागी हुन 
+सकिनेछ, जसले विश्वभरका व्यक्तिहरूलाई कार्यक्रममा जोडिने अवसर दिनेछ। 
+क्यान इन्फोटेकको महत्व 
+क्यान इन्फोटेकले नेपालमा डिजिटल रूपान्तरणलाई प्रवर्द्धन गर्न महत्वपूर्ण भूमिका खेल्दछ। यस कार्यक्रमले 
+नवीनतम प्रविधिहरू प्रदर्शन गर्नुका साथै उद्योगहरूबीच सहकार्यलाई बढावा दिन्छ। साथै, स्टार्टअपहरूलाई 
+
+--- Page 2 ---
+आफ्ना उत्पादनहरू र सेवाहरू सार्वजनिक गर्न सहयोग गर्दछ। ICT क्षेत्रको विकासमा योगदान पुर्‍याउँदै, यसले 
+डिजिटल प्रशासन र सुशासनमा पनि सकारात्मक प्रभाव पार्दछ। 
+अघिल्लो संस्करण र विशेष घटनाहरू 
+क्यान इन्फोटेक २०२४, जुन फेब्रुअरी ८ देखि १२ सम्म आयोजना गरिएको थियो, १५० भन्दा बढी स्टलहरूसहित 
+सम्पन्न भएको थियो। यस संस्करणका प्रमुख आकर्षणहरूमा कान्छी रोबोट (Generative AI-Powered 
+Robot) को अनावरण, साइबर सुरक्षा सहायता डेस्क, आईटी क्यारियर परामर्श, तथा ICT सम्बन्धी छात्रवृत्तिहरू 
+समावेश थिए। 
+भविष्यका सम्भावनाहरू 
+क्यान इन्फोटेक निरन्तर विस्तार हुँदै जाँदैछ, जसले नेपालको सबै सात प्रदेशहरू मा यस कार्यक्रमलाई पुर्‍याउने 
+लक्ष्य राखेको छ। स्थानीय प्रतिभा र नवीनताहरूलाई प्रवर्द्धन गर्ने यस कार्यक्रमले डिजिटल अर्थतन्त्र निर्माण गर्ने 
+नेपालको लक्ष्यसँग मेल खान्छ। ICT क्षेत्र विस्तारसँगै, क्यान इन्फोटेकले नेपालको प्रविधि विकासमा अझ 
+प्रभावकारी भूमिका खेल्ने अपेक्षा गरिएको छ। 
+निष्कर्ष 
+क्यान इन्फोटेक नेपालकै ICT उद्योगका लागि एउटा महत्वपूर्ण कार्यक्रम हो, जसले नवीनता, सहकार्य, र प्रविधि 
+वृद्धिको लागि व्यापक मञ्च प्रदान गर्छ। यसको आगामी २०२५ संस्करण ले नवीनतम प्रविधिहरू प्रदर्शन गर्ने र 
+नेपालमा डिजिटल रूपान्तरणलाई अगाडि बढाउने आशा गरिएको छ। थप जानकारीका लागि इच्छुक व्यक्तिहरूले 
+CAN Federation को आधिकारिक वेबसाइट वा सम्बन्धित कार्यक्रम पृष्ठहरूमा जान सक्दछन्। 
+ 
+नेपालको वर्तमान मन्त्रिपरिषद् 
+फेब्रुअरी २०२५ सम्म, प्रधानमन्त्री केपी शर्मा ओली नेतृत्वमा रहेको नेपाल सरकार २०२४ जुलाई मा गठन भएको 
+हो। २२ सदस्यीय मन्त्रिपरिषद्मा विष्णु पौडेल (अर्थमन्त्री) र अर्जु राणा देउबा (परराष्ट्रमन्त्री) जस्ता प्रमुख नेताहरू 
+सामेल छन्। यो प्रशासनले नेपालको आर्थिक चुनौतीहरू समाधान गर्ने, लगानी आकर्षित गर्ने, र रोजगारी सिर्जना 
+गर्ने लक्ष्य राखेको छ। नेपालले २००८ मा राजतन्त्रको अन्त्य भएदेखि १४ वटा सरकार परिवर्तन गरिसकेको हुँदा 
+स्थिर सरकार निर्माण यो प्रशासनको प्रमुख प्राथमिकता रहेको छ। 
+प्रधानमन्त्री ओलीका उपलब्धिहरू 
+प्रधानमन्त्री ओली अन्तर्राष्ट्रिय सम्बन्ध सुधार र पूर्वाधार विकास मा केन्द्रित छन्। चीनसँगको Belt and Road 
+Initiative सम्झौता (डिसेम्बर २०२४) लगायत, नेपालमा ठूला पूर्वाधार परियोजनाहरू अघि बढाउन उनले विशेष 
+भूमिका खेलेका छन्। साथै, आफ्नो अघिल्लो कार्यकालहरूमा ऊर्जा उत्पादन सुधार र डिजिटल नेपाल निर्माण को 
+पहल गरेका थिए। 
+नेपालको वर्तमान राष्ट्रपति 
+
+--- Page 3 ---
+फेब्रुअरी २०२५ सम्म, रामचन्द्र पौडेल नेपालका राष्ट्रपति हुन्। उनले मार्च १३, २०२३ मा पदभार ग्रहण गरेका थिए। 
+नेपाल २००८ मा गणतन्त्र बनेपछि उनी राष्ट्रपति बन्ने तेस्रो व्यक्ति हुन्। राष्ट्रपतिको भूमिकामा आउनु अघि, 
+पौडेल नेपाली कांग्रेसका वरिष्ठ नेता तथा प्रतिनिधि सभाका सभामुख समेत थिए। 
+ 
+कान्छी रोबोट र यसको निर्माण टोली 
+कान्छी, एक मानवरूपी रोबोट, Robotics Academy of Nepal (RAN) द्वारा निर्माण गरिएको हो। यो 
+कम्पनी नेपालमा रोबोटिक्स र कृत्रिम बुद्धिमत्ता (AI) को प्रवर्द्धनमा अग्रसर रहेको छ। यस परियोजनाको नेतृत्व 
+अभिरल भण्डारी सर ले गरेका थिए। हार्डवेयर टोलीमा अभिरल भण्डारी सर, किरण केसी सर, र अनिश थापा मगर 
+सर सामेल थिए, जसले रोबोटको भौतिक संरचना र मेकानिकल प्रणाली विकास गरे। तेजश राज कटुवाल सर ले AI 
+एकीकरण को जिम्मेवारी सम्हालेका थिए, जसले कान्छीलाई मानवहरूसँग बुद्धिमत्तापूर्ण संवाद गर्न सक्षम 
+बनायो। कम्पनीका CEO बिक्रान्त कार्की सर को नेतृत्वमा, RAN नेपालमा रोबोटिक्स क्षेत्रमा नयाँ उचाइ हासिल 
+गर्न अग्रसर छ। 
+ 
+
+
+--- File: nlp ---
+
+--- Page 1 ---
+Natural Language Processing (NLP)
+Natural Language Processing (NLP) is a branch of artificial intelligence (AI) that focuses on the interaction between 
+computers and humans through natural language. The goal of NLP is to enable machines to read, understand, interpret, and 
+generate human language in a valuable and meaningful way.
+NLP combines techniques from computational linguistics, machine learning, and deep learning to process and analyze 
+large amounts of natural language data. It powers applications like chatbots, virtual assistants, translation systems, 
+sentiment analysis, and more.
+Key Components of NLP
+NLP can be broadly divided into two major subfields:
+1.
+Natural Language Understanding (NLU) – Understanding the meaning behind the text.
+2.
+Natural Language Generation (NLG) – Producing human-like text.
+Natural Language Understanding (NLU)
+Natural Language Understanding (NLU) involves enabling machines to comprehend the structure and meaning of human 
+language. It deals with extracting information from text and understanding its intent and context.
+
+--- Page 2 ---
+Goals of NLU
+●
+Recognize the intent behind the input.
+●
+Extract key entities and relationships.
+●
+Handle language variability (e.g., synonyms, ambiguity).
+●
+Understand sentiment and tone.
+Core Tasks in NLU
+1.
+Tokenization: Breaking text into smaller units (words, phrases, or subwords).
+○
+Example:
+Input: "I love programming."
+Tokens: ["I", "love", "programming", "."]
+2.
+Morphological Analysis: Identifying the structure of words (e.g., root words, prefixes, suffixes).
+○
+Example:
+"Running" → Root: "run", Suffix: "-ing"
+3.
+Part-of-Speech (POS) Tagging: Assigning grammatical categories to words.
+○
+Example:
+"I love programming."
+POS Tags: "I (pronoun), love (verb), programming (noun)"
+
+--- Page 3 ---
+4. Named Entity Recognition (NER): Identifying and classifying entities like names, locations, dates, etc.
+●
+Example:
+"Elon Musk founded SpaceX in 2002."
+Entities: "Elon Musk (Person), SpaceX (Organization), 2002 (Date)"
+5. Syntactic Analysis (Parsing): Analyzing the grammatical structure of sentences.
+●
+Dependency Parsing: Identifying how words are connected.
+●
+Constituency Parsing: Dividing sentences into subphrases (NP, VP, etc.).
+6. Semantic Analysis: Understanding the meaning of the text.
+●
+Word Sense Disambiguation (WSD): Identifying the correct meaning of a word based on context.
+Example: "The bank of the river" vs. "A savings bank."
+●
+Semantic Role Labeling (SRL): Determining who did what to whom, when, and how.
+7. Coreference Resolution: Identifying when two expressions refer to the same entity.
+●
+Example:
+"Mary loves her dog. She takes it on walks."
+("She" refers to "Mary", "it" refers to "dog")
+
+--- Page 4 ---
+8. Intent Recognition: Understanding the user’s purpose behind a query.
+●
+Example: "Book a flight to Paris." → Intent: Flight booking.
+9. Sentiment Analysis: Determining the emotional tone behind a piece of text (positive, negative, neutral).
+●
+Example:
+"I love this product!" → Sentiment: Positive.
+Challenges in NLU
+●
+Ambiguity: Words or phrases can have multiple interpretations.
+○
+Example: "I saw a bat." (Animal or sports equipment?)
+●
+Sarcasm and Irony: Implicit meanings are difficult to detect.
+●
+Context Understanding: Requires grasping long-term dependencies across sentences.
+●
+Language Variability: Different dialects, slang, and grammar variations.
+
+--- Page 5 ---
+Natural Language Generation (NLG)
+Natural Language Generation (NLG) is the process of creating coherent, contextually appropriate, and grammatically 
+accurate text from structured or unstructured data.
+Goals of NLG
+●
+Convert data into natural language.
+●
+Produce fluent and contextually appropriate responses.
+●
+Personalize output based on user input.
+Core Tasks in NLG
+1.
+Content Planning: Deciding what information to present.
+○
+Example: In a weather report, decide to include temperature, humidity, and location.
+2.
+Text Structuring: Organizing the content into a logical flow.
+○
+Example: "Today's weather: It's sunny with a high of 25°C."
+3.
+Lexical Choice: Selecting the right words or phrases.
+○
+Example: Using "chilly" instead of "cold" for a casual tone.
+4.
+Surface Realization: Forming grammatically correct sentences.
+○
+Example: Data: {temperature: 25°C, condition: sunny}
+Output: "It is sunny with a temperature of 25°C."
+
+--- Page 6 ---
+Referring Expression Generation: Properly identifying entities.
+●
+Example: Use "she" instead of repeating "Mary" multiple times.
+Contextual Coherence: Ensuring the generated text fits the broader conversation.
+●
+Example: If the user asks, "What's the weather?" and then "Will I need an umbrella?" – the system must infer the 
+second question refers to the weather forecast.
+Types of NLG Systems
+1.
+Template-Based NLG: Pre-defined templates with placeholders for dynamic data.
+○
+Example: "Hello, [name]! Your balance is [amount]."
+2.
+Rule-Based NLG: Uses linguistic rules to generate text.
+○
+Example: "If temperature > 30, say 'It's hot today.'"
+3.
+Statistical and Neural NLG: Machine learning models generate text based on patterns from large datasets.
+○
+Example: GPT models generate diverse and creative responses.
+
+--- Page 7 ---
+Applications of NLG
+●
+Chatbots & Virtual Assistants: Conversational AI systems like Siri, Alexa.
+●
+Data Summarization: Summarizing long documents or reports.
+●
+Automated Reporting: Generating financial or weather reports.
+●
+Language Translation: Converting text between languages.
+Challenges in NLG
+●
+Maintaining Coherence: Long outputs may lose logical flow.
+●
+Bias in Language Models: Training data biases may reflect in outputs.
+●
+Controlling Output Style: Difficulty adjusting formality or tone.
+●
+Hallucination: Generating plausible but factually incorrect information.
+
+--- Page 8 ---
+Steps of Natural Language Processing (NLP)
+Lexical Analysis (Tokenization & Morphological Analysis)
+Lexical analysis is the first step in NLP where raw text is broken down into smaller units (tokens) like words, subwords, 
+or phrases. This step also involves analyzing the structure of these words (morphological analysis).
+Goals of Lexical Analysis:
+●
+Divide text into meaningful units (tokens).
+●
+Identify linguistic properties like word stems, prefixes, and suffixes.
+Key Processes:
+1.
+Tokenization: Splitting the input into words or subwords.
+Example:
+Input: "I love programming."
+Tokens: ["I", "love", "programming", "."]
+2.
+Lemmatization and Stemming: Reducing words to their base or root form.
+Example:
+○
+Stemming: "running" → "run"
+○
+Lemmatization: "better" → "good"
+
+--- Page 9 ---
+3.   Morphological Analysis: Recognizing the internal structure of words (e.g., prefixes, suffixes).
+      Example: "unhappiness" = "un-" (negation) + "happy" (root) + "-ness" (noun-forming suffix).
+Syntactic Analysis (Parsing)
+Syntactic analysis, also known as parsing, involves analyzing the grammatical structure of a sentence. It checks if a 
+sentence adheres to the rules of a formal grammar (syntax).
+Goals of Syntactic Analysis:
+●
+Understand sentence structure.
+●
+Identify relationships between words (subject, verb, object).
+●
+Detect grammatical errors.
+
+--- Page 10 ---
+Key Processes:
+1.
+Parsing: Analyzing how words relate based on grammar rules.
+○
+Dependency Parsing: Identifying dependencies between words.
+Example:
+Sentence: "John eats an apple."
+Dependencies: "eats" (root verb) → "John" (subject), "apple" (object).
+○
+Constituency Parsing: Breaking down sentences into sub phrases.
+Example:
+"The cat sleeps." → [NP (The cat)] [VP (sleeps)]
+2.
+Part-of-Speech (POS) Tagging: Labeling each word with its grammatical category.
+Example:
+"She runs fast." → She (pronoun), runs (verb), fast (adverb).
+
+--- Page 11 ---
+Semantic Analysis (Meaning Extraction)
+Semantic analysis is the process of understanding the meaning of a sentence by interpreting its components.
+Goals of Semantic Analysis:
+●
+Identify the meaning of words and sentences.
+●
+Resolve ambiguity (e.g., multiple meanings of a word).
+●
+Extract relationships and intent.
+Key Processes:
+1.
+Word Sense Disambiguation (WSD): Determining the correct meaning of a word based on context.
+Example:
+"I went to the bank." (financial institution vs. riverbank).
+2.
+Semantic Role Labeling (SRL): Identifying the roles of different parts of a sentence (who did what to whom).
+Example:
+Sentence: "Alice gave Bob a gift."
+Roles: Agent (Alice), Recipient (Bob), Object (gift).
+3.
+Named Entity Recognition (NER): Identifying and categorizing specific entities.
+Example:
+"Google was founded in 1998." → Google (Organization), 1998 (Date).
+4.
+Semantic Parsing: Mapping natural language to formal representations like SQL queries or logical forms.
+
+--- Page 12 ---
+Discourse Integration (Contextual Understanding)
+Discourse integration focuses on understanding meaning beyond individual sentences by considering the context within a 
+conversation or document.
+Goals of Discourse Integration:
+●
+Maintain coherence across multiple sentences.
+●
+Resolve pronoun references (coreference resolution).
+●
+Understand the implied meaning across discourse.
+Key Processes:
+1.
+Coreference Resolution: Identifying when two expressions refer to the same entity.
+Example:
+"John loves his dog. He takes it for walks."
+○
+"He" refers to "John".
+○
+"It" refers to "dog".
+2.
+Anaphora Resolution: Resolving references to previously mentioned concepts.
+Example:
+"Mary has a book. She loves it."
+○
+"She" = Mary, "It" = book.
+
+--- Page 13 ---
+Pragmatic Analysis (Real-World Understanding)
+Pragmatic analysis interprets language in context by considering real-world knowledge and speaker intentions.
+Goals of Pragmatic Analysis:
+●
+Understand implied meanings (beyond literal words).
+●
+Recognize speech acts (requests, commands, etc.).
+●
+Capture sentiment, sarcasm, and politeness.
+Key Processes:
+1.
+Intent Recognition: Identifying the user’s goal or intent behind an utterance.
+Example:
+"Can you book me a flight to Paris?"
+Intent: Book flight.
+2.
+Sentiment Analysis: Determining the emotional tone of text.
+Example:
+"I love this phone!" → Positive sentiment.
+
+--- Page 14 ---
+NLP Aids or Tools
+These are specialized resources and systems that help in processing and analyzing human language at various stages of 
+Natural Language Processing (NLP). Each system focuses on a different layer of language understanding—from 
+recognizing words to interpreting complex meanings in context.
+Lexicon or Dictionary
+A lexicon in NLP is a structured collection of words and their linguistic properties. It contains information such as word 
+definitions, part of speech (POS), synonyms, antonyms, and even semantic relationships. These dictionaries help 
+machines interpret and understand words in the correct context.
+For example, if an NLP model encounters the word "bank", the lexicon helps the system decide whether it refers to a 
+financial institution or a riverbank based on surrounding words. Lexicons also store morphological details like base 
+forms (e.g., "running" → "run").
+Example Tools:
+●
+WordNet: A large, lexical database where words are grouped into sets of synonyms called synsets, which capture 
+relationships like hypernyms (broader terms) and hyponyms (specific terms).
+●
+UMLS (Unified Medical Language System): Specialized for medical and clinical terms.
+
+--- Page 15 ---
+Morphological Analysis System
+Morphological analysis involves breaking down words into their smallest meaningful units, called morphemes (e.g., 
+roots, prefixes, and suffixes). This system helps machines understand word formation, inflections, and derivations—how 
+words change form to express different meanings.
+For instance, the word "unhappiness" can be broken down as:
+●
+un- (prefix: negation)
+●
+happy (root word)
+●
+-ness (suffix: indicates a noun).
+Morphological analysis is essential for tasks like lemmatization (reducing words to their dictionary form) and stemming 
+(removing affixes to get the word's root). It improves performance in search engines and information retrieval by 
+normalizing text.
+Example Tools:
+●
+SpaCy: Provides efficient lemmatization and morphological tagging.
+●
+NLTK (Natural Language Toolkit): Performs both stemming and lemmatization for English and other languages.
+●
+Stanza: A multi-lingual NLP toolkit for robust morphological analysis.
+
+--- Page 16 ---
+Syntactic Analysis System
+Also called parsing, syntactic analysis deals with sentence structure by examining how words are grammatically related. 
+It helps machines identify the syntax rules that govern a language and detect relationships like subject-verb-object.
+For example, in the sentence "The cat sleeps," a syntactic analysis system identifies:
+●
+NP (Noun Phrase): "The cat" (subject).
+●
+VP (Verb Phrase): "sleeps" (predicate).
+There are two primary forms of syntactic analysis:
+1.
+Dependency Parsing: Identifies direct relationships between words (e.g., which word depends on another).
+2.
+Constituency Parsing: Breaks a sentence into nested phrases (e.g., noun phrases, verb phrases).
+Example Tools:
+●
+Stanford Parser: Performs both constituency and dependency parsing.
+●
+SyntaxNet: Google's deep-learning-based syntactic analysis tool.
+●
+SpaCy: Provides fast and robust dependency parsing.
+
+--- Page 17 ---
+Semantic Analysis System
+Semantic analysis focuses on understanding the meaning of words, phrases, and sentences. It goes beyond syntax to 
+interpret the intended message and resolve ambiguity. This system is crucial for tasks like question answering, machine 
+translation, and sentiment analysis.
+Core tasks in semantic analysis include:
+1.
+Word Sense Disambiguation (WSD): Determines the correct meaning of a word based on context.
+○
+Example: In "I went to the bank," does "bank" refer to a financial institution or riverbank?
+2.
+Semantic Role Labeling (SRL): Identifies who did what to whom in a sentence.
+○
+Example: In "Alice gave Bob a gift," Alice is the giver, Bob is the recipient, and the gift is the object.
+Semantic systems often use pre-trained language models to capture the nuances of meaning in large datasets.
+Example Tools:
+●
+BERT (Bidirectional Encoder Representations from Transformers): Handles deep contextual understanding.
+●
+Word2Vec: Maps words to high-dimensional vectors based on their meanings.
+●
+Hugging Face Transformers: Offers pre-trained models for advanced semantic analysis.
+
+--- Page 18 ---
+Pragmatic Analysis System
+Pragmatic analysis interprets language in real-world contexts, focusing on the speaker’s intent and implied meaning. 
+While semantic analysis focuses on literal meaning, pragmatics considers contextual clues, social norms, and speaker 
+objectives to understand language more deeply.
+For example:
+●
+Literal meaning: "Can you open the window?" (Asking about ability).
+●
+Pragmatic meaning: It’s a request for someone to open the window.
+Pragmatic analysis also handles:
+●
+Coreference Resolution: Identifying when two expressions refer to the same entity (e.g., "He" refers to "John").
+●
+Speech Act Recognition: Classifying the function of an utterance (e.g., question, request, command).
+●
+Implicature Understanding: Identifying implied meaning (e.g., "It’s cold in here" implies a request to close the 
+window).
+Example Tools:
+●
+Rasa: A conversational AI tool that handles pragmatic context in dialogue.
+●
+OpenAI’s GPT: Understands and responds to complex, context-driven queries.
+●
+CoreNLP: Offers advanced coreference and pragmatic understanding capabilities.
+
+--- Page 19 ---
+NLP Analysis Techniques
+In Natural Language Processing (NLP), analysis techniques help machines interpret and process human language. Two foundational 
+methods are Keyword Analysis (or Pattern Matching) and Syntactic-Driven Parsing. Each technique plays a unique role in 
+understanding and extracting meaning from text.
+Keyword Analysis (Pattern Matching)
+Keyword analysis or pattern matching is a basic NLP technique where the system searches for specific words, 
+phrases, or patterns in a text to extract information or make decisions. This method does not rely on grammatical 
+structure but instead identifies predefined patterns through rules or regular expressions.
+How it works:
+●
+Identifies relevant keywords or phrases (e.g., "weather," "temperature").
+●
+Uses regular expressions (regex) to match patterns (e.g., date formats like "DD/MM/YYYY").
+●
+Can be rule-based or template-driven for extracting information.
+
+--- Page 20 ---
+Example:
+Consider the sentence:
+"What is the weather in New York?"
+A keyword-based system might:
+●
+Recognize "weather" as the topic.
+●
+Extract "New York" as the location.
+This method works well for chatbots, search engines, and information retrieval but struggles with ambiguity and 
+complex syntax (e.g., "Could you tell me how warm it is in New York?").
+ Applications:
+●
+Chatbots: Rule-based assistants that match questions to predefined answers.
+●
+Named Entity Recognition (NER): Identifying entities (e.g., dates, names, places).
+●
+Sentiment Analysis: Matching keywords like "happy" or "angry" to detect emotions.
+ Tools:
+●
+Regex (Regular Expressions): For advanced pattern matching.
+●
+SpaCy: Offers rule-based matching using Matcher and PhraseMatcher.
+●
+NLTK: Provides pattern-matching capabilities through regular expressions.
+
+--- Page 21 ---
+Syntactic-Driven Parsing Technique
+Syntactic-driven parsing focuses on analyzing the grammatical structure of a sentence using formal grammar rules (like 
+context-free grammar). It identifies how words and phrases relate to each other, providing a structural breakdown of a 
+sentence.
+How it works:
+●
+Uses parsers to generate a parse tree representing sentence structure.
+●
+Applies grammar rules (e.g., Subject-Verb-Object) to identify relationships.
+●
+Can perform either top-down or bottom-up parsing:
+○
+Top-Down Parsing: Starts from a root sentence and breaks it into smaller components (e.g., S → NP + VP).
+○
+Bottom-Up Parsing: Starts from words and combines them into larger structures until it forms a complete 
+sentence.
+
+--- Page 22 ---
+Example:
+For the sentence:
+"The cat sleeps."
+A syntactic parser would produce the following parse tree:
+Types of Syntactic Parsing:
+1.
+Dependency Parsing: Focuses on the relationships between head words and their dependents (e.g., "sleeps" is the 
+main verb, "cat" is the subject).
+2.
+Constituency Parsing: Breaks the sentence into nested phrases (NP, VP, etc.), representing the sentence’s hierarchical 
+structure.
+
+--- Page 23 ---
+Applications:
+●
+Grammar Checking: Ensuring sentence structure is correct.
+●
+Machine Translation: Understanding grammatical structure to translate accurately.
+●
+Information Extraction: Identifying subject-action-object relationships.
+Tools:
+●
+Stanford Parser: Performs both constituency and dependency parsing.
+●
+SpaCy: Offers fast and efficient dependency parsing.
+●
+CoreNLP: Provides robust syntactic analysis, including constituency parsing.
+
+--- Page 24 ---
+Applications of NLP
+Chatbots and Virtual Assistants
+Chatbots and virtual assistants use NLP to interact with users in natural language—via text or speech. They process 
+user queries, interpret meaning, and generate appropriate responses. Advanced systems use intent recognition and 
+context tracking to maintain smooth conversations.
+Examples:
+●
+Voice Assistants: Siri, Alexa, Google Assistant.
+●
+Customer Support Bots: Automated agents handling customer queries on websites.
+How NLP Works Here:
+●
+Intent Recognition: Identifies what the user wants (e.g., booking a flight).
+●
+Entity Extraction: Identifies relevant details (e.g., destination, date).
+●
+Dialogue Management: Maintains context over multi-turn conversations.
+
+--- Page 25 ---
+Machine Translation
+Machine translation systems automatically translate text from one language to another. Modern systems use deep learning 
+and NLP techniques to provide accurate, context-aware translations.
+ Examples:
+●
+Google Translate: Supports translation across over 100 languages.
+●
+Microsoft Translator: Real-time translation for business and personal use.
+ How NLP Works Here:
+●
+Syntactic Analysis: Understands the grammatical structure of the source language.
+●
+Semantic Analysis: Captures meaning for accurate translations.
+●
+Neural Machine Translation (NMT): Uses deep learning for context-aware translation.
+
+--- Page 26 ---
+Sentiment Analysis
+Sentiment analysis involves identifying emotions and opinions in text. It helps companies and researchers analyze public 
+sentiment toward products, services, or topics by classifying text as positive, negative, or neutral.
+Examples:
+●
+Social Media Monitoring: Analyzing tweets to gauge public opinion.
+●
+Customer Feedback Analysis: Understanding satisfaction levels from reviews.
+How NLP Works Here:
+●
+Lexical Analysis: Identifies emotion-related words (e.g., "happy," "bad").
+●
+Context Understanding: Differentiates between literal and sarcastic sentiments.
+●
+Polarity Detection: Classifies text as positive, negative, or neutral.
+
+--- Page 27 ---
+Information Extraction
+Information extraction (IE) involves automatically identifying structured information (like names, dates, or 
+relationships) from unstructured text. It is used to extract useful insights from large data sources.
+Examples:
+●
+Healthcare: Extracting patient data from medical records.
+●
+Legal Tech: Identifying key clauses in legal documents.
+How NLP Works Here:
+●
+Named Entity Recognition (NER): Identifies entities (e.g., people, locations).
+●
+Relation Extraction: Detects relationships between entities (e.g., "John works at Google").
+●
+Pattern Matching: Identifies important information using regular expressions and machine learning models.

@@ -1,0 +1,12 @@
+
+
+--- File: Q&A-19 ---
+
+Q1: What is robotics
+A1: Robotics is the interdisciplinary field that combines engineering, computer science, and artificial intelligence to design, construct, program, and operate robots - machines capable of carrying out tasks autonomously or semi-autonomously.
+
+Q2: What are the three laws of robotics
+A2: Isaac Asimov's Three Laws of Robotics are: 1) A robot may not injure a human being or, through inaction, allow a human being to come to harm; 2) A robot must obey orders given by human beings except where such orders would conflict with the First Law; 3) A robot must protect its own existence as long as such protection does not conflict with the First or Second Law.
+
+Q3:  What is SLAM in robotics
+A3: SLAM (Simultaneous Localization and Mapping) is a computational technique that enables robots to construct or update a map of an unknown environment while simultaneously tracking their location within it. It's crucial for autonomous navigation in robots like self-driving cars and mobile robots.

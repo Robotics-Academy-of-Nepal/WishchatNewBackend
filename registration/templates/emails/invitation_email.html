@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitation to Join {{ organization_name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+        .container {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #4285F4;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .button:hover {
+            background-color: #3367D6;
+        }
+        .footer {
+            font-size: 12px;
+            color: #777;
+            text-align: center;
+            margin-top: 30px;
+        }
+        .expiry {
+            color: #ff6b6b;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <!-- Optional: Add your logo here -->
+        <!-- <img src="https://your-domain.com/logo.png" alt="Company Logo" class="logo"> -->
+        <h1>Join {{ organization_name }}</h1>
+    </div>
+    
+    <div class="container">
+        <p>Hello,</p>
+        
+        <p>You've been invited by <strong>{{ invited_by }}</strong> to join <strong>{{ organization_name }}</strong> on our platform.</p>
+        
+        <p>Click the button below to accept this invitation and join the team:</p>
+        
+        <p style="text-align: center;">
+            <a href="{{ invitation_link }}" class="button">Accept Invitation</a>
+        </p>
+        
+        <p class="expiry">This invitation expires on {{ expires_at|date:"F j, Y, g:i a" }}.</p>
+        
+        <p>If you don't have an account yet, you'll be able to create one when you accept this invitation.</p>
+        
+        <p>If you have any questions, please contact {{ invited_by }}.</p>
+    </div>
+    
+    <div class="footer">
+        <p>If you received this email by mistake, please ignore it or contact support.</p>
+        <p>This is an automated message, please do not reply to this email.</p>
+    </div>
+</body>
+</html>

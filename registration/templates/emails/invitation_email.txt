@@ -1,0 +1,19 @@
+Invitation to Join {{ organization_name }}
+==========================================
+
+Hello,
+
+You've been invited by {{ invited_by }} to join {{ organization_name }} on our platform.
+
+To accept this invitation and join the team, please visit the following link:
+{{ invitation_link }}
+
+This invitation expires on {{ expires_at|date:"F j, Y, g:i a" }}.
+
+If you don't have an account yet, you'll be able to create one when you accept this invitation.
+
+If you have any questions, please contact {{ invited_by }}.
+
+--------------------------------------------------
+If you received this email by mistake, please ignore it or contact support.
+This is an automated message, please do not reply to this email.

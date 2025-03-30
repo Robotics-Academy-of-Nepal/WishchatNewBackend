@@ -1,0 +1,7 @@
+
+
+--- File: Q&A ---
+
+Q1: validation
+A1: The cyclomatic complexity metric measures the number of independent logic paths in a program. It helps the designer understand the complexity of the program by providing information on the different paths that the program can take during execution. This metric is useful for identifying areas of the code that may be more prone to errors or harder to maintain. By analyzing the cyclomatic complexity, the designer can make informed decisions to simplify the code and reduce the number of independent logic paths, leading to a more efficient and manageable program.
+

@@ -1,0 +1,46 @@
+--- File: testest ---
+
+Probably the most effective way to achieve paragraph unity is to express the central idea of the paragraph in a topic sentence.
+
+
+
+Topic sentences are similar to mini thesis statements. Like a thesis statement, a topic sentence has a specific main point. Whereas the thesis is the main point of the essay, the topic sentence is the main point of the paragraph. Like the thesis statement, a topic sentence has a unifying function. But a thesis statement or topic sentence alone doesn’t guarantee unity. An essay is unified if all the paragraphs relate to the thesis, whereas a paragraph is unified if all the sentences relate to the topic sentence. Note: Not all paragraphs need topic sentences. In particular, opening and closing paragraphs, which serve different functions from body paragraphs, generally don’t have topic sentences.
+
+Q1: fact1
+A1: A cloud weighs around a million tonnes. A cloud typically has a volume of around 1km3 and a density of around 1.003kg per m3 – that's a density that’s around 0.4 per cent lower than the air surrounding it (this is how they are able to float).
+
+Q2: fact 2
+A2: Giraffes are 30 times more likely to get hit by lightning than people. True, there are only five well-documented fatal lightning strikes on giraffes between 1996 and 2010. But due to the population of the species being just 140,000 during this time, it makes for about 0.003 lightning deaths per thousand giraffes each year. This is 30 times the equivalent fatality rate for humans.
+
+Q3: fact 3
+A3: Identical twins don’t have the same fingerprints. You can’t blame your crimes on your twin, after all. This is because environmental factors during development in the womb (umbilical cord length, position in the womb, and the rate of finger growth) impact your fingerprint.
+
+
+
+A function to execute for each element in the array. It should return a truthy value to keep the element in the resulting array, and a falsy value otherwise. The function is called with the following arguments:
+
+test test i am tsting text delete
+
+testtest
+
+Q1: tere
+A1: testtest
+
+Q1: test2te
+A1: steste2
+
+Q2: testste
+A2: stststs
+
+Q1: testtest
+A1: testtest
+
+Q2: teststestst
+A2: teatseewfew222
+
+testtest
+
+--- File: Q&A-23 ---
+
+Q1: f
+A1: adfad

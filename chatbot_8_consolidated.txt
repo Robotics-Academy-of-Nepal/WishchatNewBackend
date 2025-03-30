@@ -1,0 +1,64 @@
+Q1: validation\nA1: Verification is the process of evaluating a system or component to determine whether it satisfies specified requirements. In this context, it refers to checking whether the product being developed aligns with the customer requirements. Since the statement mentions that this process is not dynamic but static, it implies that it is a one-time check to ensure that the product is being developed correctly. Therefore, the correct answer is Verification.\n
+
+--- File: Q&A-8 ---
+
+Q1: What is robotics?
+A1: Robotics is an interdisciplinary field that combines mechanical engineering, electrical engineering, computer science, and artificial intelligence to design, build, and operate robots that can perform tasks autonomously or with human assistance.
+
+Q2: What are the main components of a robot?
+A2: The main components of a robot include:
+
+Sensors (e.g., cameras, LiDAR, accelerometers) for perception
+Actuators (e.g., motors, servos) for movement
+Controller (microcontroller or computer) for processing
+Power source (batteries or external supply)
+End-effectors (grippers, tools) for performing tasks
+Q3: What are the different types of robots?
+A3: Robots can be categorized into:
+
+Industrial robots (used in manufacturing, welding, assembly)
+Autonomous robots (self-driving cars, drones)
+Humanoid robots (designed to resemble humans, e.g., ASIMO)
+Medical robots (surgical robots, prosthetics)
+Service robots (vacuum cleaners, delivery bots)
+Q4: What is the role of artificial intelligence in robotics?
+A4: AI in robotics enables robots to perceive, learn, and make decisions based on data. It includes:
+
+Machine learning for pattern recognition
+Computer vision for object detection
+Natural language processing for communication
+Path planning for navigation
+Q5: What is the difference between autonomous and semi-autonomous robots?
+A5: Autonomous robots operate without human intervention, using sensors and AI for decision-making (e.g., self-driving cars). Semi-autonomous robots require some level of human control or supervision (e.g., drones with manual override).
+
+Q6: What are robotic sensors and their functions?
+A6: Robotic sensors help robots perceive their environment. Examples include:
+
+Ultrasonic sensors – Detect obstacles using sound waves
+Infrared sensors – Measure heat and distance
+Vision sensors (cameras) – Capture images for processing
+Gyroscopes & accelerometers – Detect motion and orientation
+Q7: What is the kinematics of a robot?
+A7: Robot kinematics deals with the movement of robotic arms and mechanisms. It includes:
+
+Forward kinematics – Determining the end position from joint angles
+Inverse kinematics – Calculating joint angles to reach a desired position
+Differential kinematics – Studying small changes in motion
+Q8: What are some real-world applications of robotics?
+A8: Robotics is used in:
+
+Manufacturing – Assembly lines, welding robots
+Healthcare – Robotic surgery, rehabilitation devices
+Agriculture – Automated harvesting, drones for monitoring
+Military & defense – Bomb disposal robots, surveillance drones
+Space exploration – Mars rovers, robotic arms on spacecraft
+Q9: What are the challenges in robotics development?
+A9: Some key challenges include:
+
+Complex decision-making in unpredictable environments
+High cost of development and maintenance
+Energy efficiency and battery limitations
+Human-robot interaction and safety concerns
+Ethical and legal considerations in AI-powered robots
+Q10: What is swarm robotics?
+A10: Swarm robotics is a field that studies how multiple robots can work together as a group, inspired by natural swarms like ants or bees. It is used in tasks such as environmental monitoring, search and rescue, and cooperative transport.
