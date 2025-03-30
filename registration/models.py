@@ -109,6 +109,7 @@ class Chatbot(models.Model):
     messenger_url = models.TextField(max_length=200,null=True, unique=False,blank=True)
     messenger_token = models.CharField(max_length=1000,null=True,blank=True,unique=False)
     messenger_page_id = models.CharField(max_length=50,null=True,blank=True,unique=False)
+    domain_name = models.TextField(max_length=1000,null=True, unique=False,blank=True)
 
     def save(self, *args, **kwargs):
         if not self.api_key:

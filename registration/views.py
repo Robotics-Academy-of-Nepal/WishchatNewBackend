@@ -1133,3 +1133,28 @@ class UpdateMessageLimitView(APIView):
         except Chatbot.DoesNotExist:
             return Response({"error": "Chatbot not found"}, status=status.HTTP_404_NOT_FOUND)
         
+
+class AddDomainNameView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, chatbot_id):
+        try:
+            chatbot = Chatbot.objects.get(id=chatbot_id)
+            domain = request.data.get("domain_name")
+            if domain:
+                chatbot.domain_name = domain
+                chatbot.save()
+
+                return Response({
+                    "status": "Success",
+                    "message": "Domain Name successfully added."
+                }, status=200)
+            else:
+                return Response({
+                    "Status": "Error",
+                    "message": "Domian name not found"
+                }, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Chatbot.DoesNotExist:
+            return Response({"error": "Chatbot not found"}, status=status.HTTP_404_NOT_FOUND)
+
