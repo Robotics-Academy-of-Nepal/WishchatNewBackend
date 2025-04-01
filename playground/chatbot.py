@@ -2,12 +2,13 @@ import os
 from dotenv import load_dotenv
 import tiktoken
 from storage.models import ChatbotDocumentGroup
-from registration.models import ChatbotTokenUsage
+from registration.models import ChatbotTokenUsage, Chatbot, ChatbotConversation
 from langchain_openai import AzureOpenAIEmbeddings, AzureChatOpenAI
 from langchain_chroma import Chroma
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
+import json
 
 load_dotenv()
 
@@ -29,15 +30,16 @@ llm = AzureChatOpenAI(
     api_version="2024-05-01-preview",
     deployment_name=os.getenv("DEPLOYMENT_NAME"),
     max_tokens=512,
-    temperature=0.7,  # Default, will be overridden by request
+    temperature=0.7,  # Default, overridden by request
     top_p=0.95,
     frequency_penalty=0,
     presence_penalty=0
 )
 
-last_response = None
+# Short-term context (in-memory, resets on restart)
+session_history = []
 
-# Token Counting Functions (Unchanged)
+# Token Counting Functions
 def count_tokens(text: str, model: str = "gpt-4") -> int:
     """Count tokens for a given text using the specified model's tokenizer."""
     encoder = tiktoken.encoding_for_model(model)
@@ -50,8 +52,8 @@ def count_message_tokens(messages: list, model: str = "gpt-4") -> int:
     for message in messages:
         total_tokens += len(encoder.encode(message["content"]))
         total_tokens += len(encoder.encode(message["role"]))
-        total_tokens += 3  # message overhead
-    total_tokens += 3  # conversation overhead
+        total_tokens += 3  # Message overhead
+    total_tokens += 3  # Conversation overhead
     return total_tokens
 
 # Helper Functions
@@ -73,12 +75,14 @@ def get_file_list(chatbot):
     except ChatbotDocumentGroup.DoesNotExist:
         return "no files"
 
-def query_assistant(user_input, chatbot, prompt='', temperature=0.7):
-    """
-    Query assistant using RAG with ChromaDB and Azure OpenAI.
-    """
-    global last_response
+def format_history(history):
+    """Format conversation history for the prompt."""
+    return "\n".join([f"{msg['role']}: {msg['content']}" for msg in history[-5:]]) if history else "No prior conversation."
 
+def query_assistant(user_input, chatbot, prompt='', temperature=0.7, user_id=None, platform=None):
+    """
+    Query assistant using RAG with ChromaDB, incorporating short-term and long-term context.
+    """
     # Check quota
     if hasattr(chatbot, 'quota') and not chatbot.quota.can_send_message():
         if chatbot.quota.is_trial:
@@ -99,13 +103,35 @@ def query_assistant(user_input, chatbot, prompt='', temperature=0.7):
     )
     retriever = vector_store.as_retriever(
         search_type="similarity",
-        search_kwargs={"k": 7}  
+        search_kwargs={"k": 7}
     )
+
+    # Load long-term history if user_id and platform are provided
+    long_term_history = []
+    if user_id and platform:
+        try:
+            conversation = ChatbotConversation.objects.get(chatbot=chatbot, user_id=user_id, platform=platform)
+            long_term_history = json.loads(conversation.history)  # SQLite TextField
+            # Trim long-term history to 5 exchanges for token efficiency
+            if len(long_term_history) > 5:
+                long_term_history = long_term_history[-5:]
+                conversation.history = json.dumps(long_term_history)
+                conversation.save()
+        except ChatbotConversation.DoesNotExist:
+            conversation = ChatbotConversation.objects.create(
+                chatbot=chatbot,
+                user_id=user_id,
+                platform=platform,
+                history='[]'
+            )
+
+    # Combine short-term and long-term history
+    combined_history = long_term_history + session_history
 
     # Custom system prompt
     file_list = get_file_list(chatbot)
     if not prompt or prompt == "":
-       system_prompt_content = f"""
+        system_prompt_content = f"""
         ### Role
         - You are an AI chatbot designed to assist users based on their uploaded documents: {file_list}. You can also handle greetings and small talk politely.
 
@@ -117,6 +143,9 @@ def query_assistant(user_input, chatbot, prompt='', temperature=0.7):
 
         ### Constraints
         - Base answers on document content unless it’s a greeting or small talk. Use the context to infer the document topic for off-topic responses.
+
+        ### Conversation History
+        {format_history(combined_history)}
         """
     else:
         system_prompt_content = prompt  # Use provided prompt if available
@@ -136,14 +165,9 @@ def query_assistant(user_input, chatbot, prompt='', temperature=0.7):
     )
 
     # Messages for token counting
-    messages = [
-        {"role": "system", "content": system_prompt_content},
-    ]
-    if last_response and isinstance(last_response, str):
-        messages.append({"role": "assistant", "content": last_response})
+    messages = [{"role": "system", "content": system_prompt_content}]
+    messages.extend(combined_history[-5:])  # Limit to last 5 exchanges
     messages.append({"role": "user", "content": user_input})
-
-    # Count input tokens (excluding context for now)
     input_tokens = count_message_tokens(messages)
     print("Temperature:", temperature)
 
@@ -152,20 +176,31 @@ def query_assistant(user_input, chatbot, prompt='', temperature=0.7):
         chain = (
             {"context": retriever, "question": RunnablePassthrough(), "system_prompt": lambda x: system_prompt_content}
             | prompt_template
-            | llm.bind(temperature=temperature)  # Override default temperature
+            | llm.bind(temperature=temperature)
             | StrOutputParser()
         )
 
         # Execute RAG
         assistant_response = chain.invoke(user_input)
 
-        # Count context tokens separately
+        # Update histories
+        session_history.append({"role": "user", "content": user_input})
+        session_history.append({"role": "assistant", "content": assistant_response})
+        if user_id and platform:
+            updated_history = long_term_history
+            updated_history.append({"role": "user", "content": user_input})
+            updated_history.append({"role": "assistant", "content": assistant_response})
+            # Trim to 5 exchanges
+            if len(updated_history) > 5:
+                updated_history = updated_history[-5:]
+            conversation.history = json.dumps(updated_history)
+            conversation.save()
+
+        # Count context and output tokens
         retrieved_docs = retriever.invoke(user_input)
         context = "\n".join([doc.page_content for doc in retrieved_docs])
         context_tokens = count_tokens(context)
         total_input_tokens = input_tokens + context_tokens
-
-        # Count output tokens
         output_tokens = count_tokens(assistant_response)
 
         # Print token usage
@@ -186,16 +221,10 @@ def query_assistant(user_input, chatbot, prompt='', temperature=0.7):
 
         # Update quota
         if hasattr(chatbot, 'quota'):
-            chatbot.quota.messages_used += 2
+            chatbot.quota.messages_used += 1  # Increment by 1 per message, not 2
             chatbot.quota.save()
 
-        last_response = assistant_response
-
         print(assistant_response)
-
-        # Clean up response
-        #assistant_response = assistant_response.replace("**", "").replace("[", "").replace("]", "").replace("doc1", "").replace("(", "").replace(")", "")
-
         return assistant_response
 
     except Exception as e:

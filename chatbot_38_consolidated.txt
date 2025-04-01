@@ -1,19 +1,137 @@
+The analysis or classification paragraph develops a topic by distinguishing its component parts and discussing each of these parts separately.
 
 
---- File: test1 ---
 
-The analysis or classification paragraph develops a topic by distinguishing its component parts and discussing each of these parts separately.
-
 Policies of privatisation should be considered as responses to several distinct pressures. First, privatisation is a response by the state to internal forces such as increasing fiscal problems (O’Connor, 1973). It provides a means of lessening the state’s fiscal responsibilities by encouraging the development of private alternatives which, theoretically at least, do not draw upon the state’s financial reserves. Second, the promotion of private sector activity is a response to pressures originating ‘outside’ the state apparatus. These include demands from people who see a large state bureaucracy as inefficient and wasteful, demands from business interests who claim that they can overcome these inefficiencies, and pressures from client groups who seek to reduce their dependency on the welfare state by having more control over the services on which they depend. Clearly, this variety of calls for privatisation means that it is not a process with a uniform outcome; there exists a correspondingly wide variety of forms of privatisation.
 
---- File: testeess ---
+Often, the body paragraph demonstrates and develops your topic sentence through an ordered, logical progression of ideas. There are a number of useful techniques for expanding on topic sentences and developing your ideas in a paragraph. Illustration in a paragraph supports a general statement by means of examples, details, or relevant quotations (with your comments).
 
-Often, the body paragraph demonstrates and develops your topic sentence through an ordered, logical progression of ideas. There are a number of useful techniques for expanding on topic sentences and developing your ideas in a paragraph. Illustration in a paragraph supports a general statement by means of examples, details, or relevant quotations (with your comments).
-
+
+
 In Harry’s world fate works not only through powers and objects such as prophecies, the Sorting Hat, wands, and the Goblet of Fire, but also through people. Repeatedly, other characters decide Harry’s future for him, depriving him of freedom and choice. For example, before his eleventh birthday, the Dursleys control Harry’s life, keeping from him knowledge of his past and understanding of his identity (Sorcerer’s 49). In Harry Potter and the Chamber of Secrets, Dobby repeatedly assumes control over events by intercepting Ron’s and Hermione’s letters during the summer; by sealing the barrier to Platform 93⁄4, causing Harry to miss the Hogwarts Express; and by sending a Bludger after Harry in a Quidditch match, breaking his wrist. Yet again, in Harry Potter and the Prisoner of Azkaban, many adults intercede while attempting to protect Harry from perceived danger, as Snape observes: “Everyone from the Minister of Magic downward has been trying to keep famous Harry Potter safe from Sirius Black” (284). All these characters, as enactors of fate, unknowingly drive Harry toward his destiny by attempting to control or to direct his life, while themselves controlled and directed by fate.
 
 --- File: testest ---
 
-Probably the most effective way to achieve paragraph unity is to express the central idea of the paragraph in a topic sentence.
-
+Probably the most effective way to achieve paragraph unity is to express the central idea of the paragraph in a topic sentence.
+
+
+
 Topic sentences are similar to mini thesis statements. Like a thesis statement, a topic sentence has a specific main point. Whereas the thesis is the main point of the essay, the topic sentence is the main point of the paragraph. Like the thesis statement, a topic sentence has a unifying function. But a thesis statement or topic sentence alone doesn’t guarantee unity. An essay is unified if all the paragraphs relate to the thesis, whereas a paragraph is unified if all the sentences relate to the topic sentence. Note: Not all paragraphs need topic sentences. In particular, opening and closing paragraphs, which serve different functions from body paragraphs, generally don’t have topic sentences.
+
+--- File: Bikesh Maharjan ---
+
+--- Page 1 ---
+Bikesh Maharjan 
+Frontend Developer 
++977 9865555733|bks.mhr8@gmail.com| linkedin.com/in/bikesh-maharjan-970a921a5/| github.com/jATMOS 
+Experience 
+  Backend Intern 
+ 
+ 
+ 
+ 
+ 
+ 
+                                 Jan, 2024 – Apr,2024                      
+  Fatafatsewa 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+      Sitapaila, Kathmandu 
+• 
+Created endpoints for user role assignment, order status toggle, dashboard. 
+• Creation of numerous application. 
+• Enhance of search results of already existing search feature. 
+• 
+Email templating and integration for user actions ordering, cancelling and feedback. 
+ STEAM fellow 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+ Feb, 2024 – Aug, 2024 
+ Karkhana Samuha  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+           Sanepa, Lalitpur 
+• Taught in Government schools for ‘Book Free Friday’ about STEAM related topics students 
+with emphasis on experimental exploration issued by Kathmandu Metropolitan City. 
+Education 
+   Prime College 
+ 
+ 
+ 
+ 
+ 
+ 
+     
+                Khushibun, Kathmandu 
+   Bachelor in Science in Computer Science and Information Technology    
+ 
+           June-2021-Present 
+    Xavier Academy  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  Lazimpat, Kathmandu 
+   +2 Science 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+     2019 - 2021 
+Projects 
+   KaamKonnect | Node.js, Express, Tailwind, MongoDB, Ejs | Github Link              Aug, 2024 - Sep, 2024 
+• Developed a full-stack platform like Fiverr for manual labor (e.g., plumbing, carpentry) and 
+freelance jobs (e.g., DJing, teaching). 
+• Users can register as either customers or providers. 
+• Customers post tasks, search for providers, and pay through the platform. 
+• Providers browse and apply for tasks that match their skills. 
+   Rubiks Cube solver | Python, Django, React.js, Three.js, OpenCV| Github Link  Sep-2024 – Dec-2024 
+• Implementing a layer-by-layer Rubik's Cube solving algorithm for solving rubik’s cube. 
+• Created UI and interactive 3D cube that shows each solving step like video. Moves can be 
+reversed and forwarded.  
+• Used OpenCV for detection of colors and dynamically showing the mapped colors in real 
+time. 
+Technical Skills 
+   Languages: JavaScript, Python, SQL (Postgres), MongoDB, HTML/CSS 
+   Frameworks/Libraries: Node.js, Express.js, Django, React.js, Three.js, Tailwind CSS  
+   Developer Tools: Git, Postman 
+Volunteering/Involvement 
+   General Member   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Prime IT Club 
+• Volunteered for major events (job fair, ICT meetup- v7.0) and numerous minor events. 

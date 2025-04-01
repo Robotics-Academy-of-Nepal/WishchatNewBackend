@@ -163,7 +163,8 @@ class ChatbotSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
             'quota',
-            'system_prompt'
+            'system_prompt',
+            'domain_name'
         ]
         read_only_fields = ['api_key', 'created_at', 'updated_at']
 

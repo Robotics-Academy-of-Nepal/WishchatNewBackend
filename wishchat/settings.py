@@ -191,7 +191,8 @@ CORS_ALLOW_HEADERS = (
     "user-agent",
     "x-csrftoken",
     "x-requested-with",
-    "x-api-key",  # Add this line
+    "x-api-key", 
+    'x-domain-name', 
 )
 
 # Also add these settings

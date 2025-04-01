@@ -14,7 +14,8 @@ from .serializers import (GoogleAuthSerializer,
                           ChatbotColorSerializer,
                           GracePeriodUpdateSerializer,
                           SendingStatusUpdateSerializer,
-                          MessageLimitUpdateSerializer)
+                          MessageLimitUpdateSerializer,
+                          ChatbotQuotaSerializer)
 from .models import (CustomUser,
                     OrganizationInvitation,
                     Organization,
@@ -34,6 +35,9 @@ from storage.delete_index import delete_index_files
 from django.db import transaction
 from django.db.models import Sum
 from datetime import datetime
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 
@@ -524,82 +528,64 @@ class CreateOrganizationView(APIView):
     
 
 class ChatbotViewSet(viewsets.ModelViewSet):
-    """ViewSet for managing chatbots within an organization."""
     serializer_class = ChatbotSerializer
     permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete', 'options']  # Explicitly allow DELETE
     
     def get_queryset(self):
-        """Return chatbots for the user's organization."""
         user = self.request.user
         if not user.organization:
             return Chatbot.objects.none()
-        
-        # Return all chatbots associated with the user's organization
         return Chatbot.objects.filter(organization=user.organization)
     
     def perform_create(self, serializer):
-        """Assign the chatbot to the user's organization when creating."""
         if not self.request.user.organization:
             raise ValidationError("User must belong to an organization to create a chatbot.")
-        
         serializer.save(organization=self.request.user.organization)
     
     def list(self, request, *args, **kwargs):
-        """Override list method to include chatbot count and handle empty response."""
         queryset = self.get_queryset()
-        
-        # Get the total count of chatbots
         chatbot_count = queryset.count()
-        
-        # Serialize the data
         serializer = self.get_serializer(queryset, many=True)
-        
         return Response({
             "count": chatbot_count,
             "chatbots": serializer.data
         })
     
     def destroy(self, request, *args, **kwargs):
+        logger.debug(f"Received DELETE request for chatbot ID: {self.kwargs.get('pk')}")
         chatbot = self.get_object()
         chatbot_name = chatbot.name
         
-        # Check if chatbot has a document group in the storage app
         try:
             doc_group = ChatbotDocumentGroup.objects.get(chatbot=chatbot)
             consolidated_index_name = doc_group.index_name
-            
-            # Delete Azure Search index if it exists
             try:
                 delete_index_files(consolidated_index_name)
-                print(f"Successfully deleted Azure index: {consolidated_index_name}")
+                logger.info(f"Successfully deleted Azure index: {consolidated_index_name}")
             except Exception as e:
-                print(f"Error deleting Azure index: {str(e)}")
-                # Continue with deletion even if Azure index deletion fails
+                logger.error(f"Error deleting Azure index: {str(e)}")
             
-            # Delete all documents associated with this chatbot
             for document in doc_group.active_documents.all():
                 document.delete()
             
-            # Clear and delete the document group
             doc_group.active_documents.clear()
             doc_group.delete()
-            
         except ChatbotDocumentGroup.DoesNotExist:
-            # No document group, so no index to delete
-            print(f"No document group found for chatbot {chatbot_name}")
+            logger.info(f"No document group found for chatbot {chatbot_name}")
         except Exception as e:
-            print(f"Error handling document group deletion: {str(e)}")
+            logger.error(f"Error handling document group deletion: {str(e)}")
         
-        # Proceed with standard deletion
         response = super().destroy(request, *args, **kwargs)
-        
-        # Customize the response message
         if response.status_code == status.HTTP_204_NO_CONTENT:
             return Response({
                 "message": f"Chatbot '{chatbot_name}' and all associated resources deleted successfully"
             }, status=status.HTTP_200_OK)
-        
         return response
+
+    def http_method_not_allowed(self, request, *args, **kwargs):
+        logger.error(f"Method not allowed: {request.method} on {request.path}")
+        return super().http_method_not_allowed(request, *args, **kwargs)
     
 class DeleteOrganizationView(APIView):
     """View for organization owners to delete their entire organization."""
@@ -1158,3 +1144,62 @@ class AddDomainNameView(APIView):
         except Chatbot.DoesNotExist:
             return Response({"error": "Chatbot not found"}, status=status.HTTP_404_NOT_FOUND)
 
+
+class ChatbotPublicInfoView(APIView):
+    permission_classes = [AllowAny]  # No user authentication required
+    
+    def get(self, request):
+        # Get domain from request headers
+        domain_name = request.headers.get('X-Domain-Name')  
+        print(domain_name)
+        
+        if not domain_name:
+            return Response({
+                "status": "error",
+                "message": "Domain name is required in X-Domain-Name header"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            # Find chatbot by domain name
+            chatbot = Chatbot.objects.get(domain_name=domain_name)
+            
+            # Serialize FAQ data
+            faqs = ChatbotFAQSerializer(chatbot.faqs.all(), many=True).data
+            
+            # Serialize color data (assuming one-to-one relationship)
+            colors = ChatbotColorSerializer(chatbot.colors).data if hasattr(chatbot, 'colors') else None
+            
+            # Serialize quota data
+            can_send_message = chatbot.quota.can_send_message() if hasattr(chatbot, 'quota') else False
+            
+            api_key = chatbot.api_key
+            # Prepare response data
+            response_data = {
+                "status": "success",
+                "chatbot": {
+                    "faqs": faqs,
+                    "colors": colors,
+                    "can_send_message": can_send_message,
+                    "api_key": api_key
+                }
+            }
+            
+            return Response(response_data, status=status.HTTP_200_OK)
+            
+        except Chatbot.DoesNotExist:
+            return Response({
+                "status": "error",
+                "message": "No chatbot found for this domain"
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                "status": "error",
+                "message": f"An error occurred: {str(e)}"
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+from django.shortcuts import render
+
+def privacy_policy(request):
+    return render(request, 'D:\\open-ai\\openai_backend\\wishchat\\registration\\templates\\privacy_policy.html')

@@ -1,9 +1,10 @@
+# chatbot_app/urls.py
 from django.urls import path
-from .views import whatsapp_credentials , whatsAppWebhook, facebook_messenger_webhook, messenger_credentials
+from .views import whatsapp_credentials, messenger_credentials, unified_webhook, instagram_credentials
 
 urlpatterns = [
     path('credentials/', whatsapp_credentials, name='whatsapp_credentials'),
     path('messenger-credentials/', messenger_credentials, name='messenger_credentials'),
-    path('1dfb88d7-85fb-4e62-ba34-2446150ad8e5/',whatsAppWebhook, name="whatsAppWebhook"),
-    path('facebook/',facebook_messenger_webhook, name="facebook_messenger_webhook")
+    path('instagram-credentials/', instagram_credentials, name='instagram_credentials'),
+    path('webhook/<str:chatbot_id>/<str:platform>/', unified_webhook, name='unified_webhook'),
 ]

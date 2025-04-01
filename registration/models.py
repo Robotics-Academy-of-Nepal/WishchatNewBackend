@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 import uuid
 from django.utils import timezone
 from datetime import timedelta
+import uuid
+import json
 
 class Organization(models.Model):
     name = models.CharField(max_length=255, unique=True, null=True)
@@ -109,7 +111,11 @@ class Chatbot(models.Model):
     messenger_url = models.TextField(max_length=200,null=True, unique=False,blank=True)
     messenger_token = models.CharField(max_length=1000,null=True,blank=True,unique=False)
     messenger_page_id = models.CharField(max_length=50,null=True,blank=True,unique=False)
-    domain_name = models.TextField(max_length=1000,null=True, unique=False,blank=True)
+    instagram_url = models.TextField(max_length=200,null=True, unique=False,blank=True)
+    instagram_token = models.CharField(max_length=1000,null=True,blank=True,unique=False)
+    instagram_page_id = models.CharField(max_length=50,null=True,blank=True,unique=False)
+    domain_name = models.TextField(max_length=1000,null=True, unique=True,blank=True)
+    verify_token = models.CharField(max_length=36, default=uuid.uuid4, unique=True)
 
     def save(self, *args, **kwargs):
         if not self.api_key:
@@ -356,3 +362,31 @@ class ChatbotTokenUsage(models.Model):
             output_tokens=output_tokens,
             total_tokens=total_tokens
         )
+    
+class ChatbotConversation(models.Model):
+    chatbot = models.ForeignKey('Chatbot', on_delete=models.CASCADE)
+    user_id = models.CharField(max_length=100)  # Platform-specific ID
+    platform = models.CharField(max_length=20, choices=[('whatsapp', 'WhatsApp'), ('messenger', 'Messenger'), ('instagram', 'Instagram')])
+    history = models.TextField(default='[]')  # Store JSON as text
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('chatbot', 'user_id', 'platform')
+
+    def get_history(self):
+        """Deserialize history from text to list."""
+        try:
+            return json.loads(self.history)
+        except json.JSONDecodeError:
+            return []
+
+    def set_history(self, history_list):
+        """Serialize history list to text."""
+        self.history = json.dumps(history_list)
+
+    def trim_history(self, max_exchanges=10):
+        """Trim history to last max_exchanges."""
+        history = self.get_history()
+        if len(history) > max_exchanges:
+            self.set_history(history[-max_exchanges:])
+            self.save()
