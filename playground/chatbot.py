@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import tiktoken
 from storage.models import ChatbotDocumentGroup
-from registration.models import ChatbotTokenUsage, Chatbot, ChatbotConversation
+from registration.models import ChatbotTokenUsage, Chatbot, ChatbotConversation, ChatbotAPILog
 from langchain_openai import AzureOpenAIEmbeddings, AzureChatOpenAI
 from langchain_chroma import Chroma
 from langchain_core.prompts import ChatPromptTemplate
@@ -83,6 +83,19 @@ def query_assistant(user_input, chatbot, prompt='', temperature=0.7, user_id=Non
     """
     Query assistant using RAG with ChromaDB, incorporating short-term and long-term context.
     """
+
+    query_embedding = embeddings.embed_query(user_input)
+    # print("query_embeddings:", query_embedding)
+
+    log_entry = ChatbotAPILog.objects.create(
+        chatbot = chatbot,
+        platform = platform,
+        user_id = user_id,
+        query = user_input
+    )
+    log_entry.set_embedding(query_embedding)
+    log_entry.save
+
     # Check quota
     if hasattr(chatbot, 'quota') and not chatbot.quota.can_send_message():
         if chatbot.quota.is_trial:

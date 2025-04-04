@@ -7,7 +7,8 @@ from .models import (
     ChatbotPaymentTransaction,
     OrganizationInvitation,
     ChatbotFAQ,
-    ChatbotColor
+    ChatbotColor,
+    CouponCode
 )
 from django.utils import timezone
 from datetime import timedelta
@@ -180,18 +181,20 @@ class ChatbotSerializer(serializers.ModelSerializer):
 
 class ChatbotPaymentTransactionSerializer(serializers.ModelSerializer):
     chatbot = ChatbotSerializer(read_only=True)
+    coupon_code = serializers.CharField(write_only=True, required=False, allow_blank=True)
 
     class Meta:
         model = ChatbotPaymentTransaction
-        fields = ['id', 'chatbot', 'transaction_id', 'payment_date', 'amount']
-        read_only_fields = ['transaction_id', 'payment_date']
+        fields = ['id', 'chatbot', 'transaction_id', 'payment_date', 'amount', 'coupon_code', 'discounted_amount']
+        read_only_fields = ['transaction_id', 'payment_date', 'discounted_amount']
 
     def create(self, validated_data):
         chatbot = validated_data['chatbot']
         amount = validated_data['amount']
+        coupon_code = validated_data.pop('coupon_code', None)
 
-        # Use the custom method to handle payment and quota update
-        transaction = ChatbotPaymentTransaction.create_transaction(chatbot, amount)
+        # Use the custom method to handle payment and quota update with coupon
+        transaction = ChatbotPaymentTransaction.create_transaction(chatbot, amount, coupon_code)
         return transaction
 
 class OrganizationInvitationSerializer(serializers.ModelSerializer):
@@ -336,3 +339,76 @@ class MessageLimitUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatbotQuota
         fields = ['message_limit']
+
+
+class CouponCodeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CouponCode
+        fields = [
+            'id',
+            'code',
+            'discount_percent',
+            'max_usage',
+            'times_used',
+            'created_at',
+            'updated_at',
+            'is_active',
+        ]
+        read_only_fields = ['times_used', 'created_at', 'updated_at']
+
+    def validate_discount_percent(self, value):
+        """Ensure discount percentage is between 0 and 100."""
+        if not 0 <= value <= 100:
+            raise serializers.ValidationError("Discount percent must be between 0 and 100.")
+        return value
+
+    def validate(self, data):
+        """Ensure max_usage is positive."""
+        if data['max_usage'] <= 0:
+            raise serializers.ValidationError("Max usage must be a positive integer.")
+        return data
+
+class CouponCodeRedemptionSerializer(serializers.Serializer):
+    code = serializers.CharField(max_length=50)
+    chatbot_id = serializers.IntegerField()
+    amount = serializers.IntegerField()
+
+    def validate(self, data):
+        chatbot_id = data['chatbot_id']
+        amount = data['amount']
+        code = data['code']
+
+        try:
+            chatbot = Chatbot.objects.get(id=chatbot_id)
+        except Chatbot.DoesNotExist:
+            raise serializers.ValidationError("Chatbot with this ID does not exist.")
+
+        VALID_AMOUNTS = [5000, 7000, 10000]
+        if amount not in VALID_AMOUNTS:
+            raise serializers.ValidationError("Amount must be 5000, 7000, or 10000 NPR.")
+
+        try:
+            coupon = CouponCode.objects.get(code=code)
+            if not coupon.is_valid(chatbot):
+                raise serializers.ValidationError("Coupon code is invalid, expired, or already used by this chatbot.")
+        except CouponCode.DoesNotExist:
+            raise serializers.ValidationError("Coupon code does not exist.")
+
+        data['chatbot'] = chatbot
+        return data
+
+    def redeem(self):
+        code = self.validated_data['code']
+        amount = self.validated_data['amount']
+        chatbot = self.validated_data['chatbot']
+        coupon = CouponCode.objects.get(code=code)
+
+        discount = (coupon.discount_percent / 100) * amount
+        discounted_amount = amount - discount
+
+        return {
+            'original_amount': amount,
+            'discounted_amount': float(discounted_amount),
+            'discount_applied': coupon.discount_percent,
+            'coupon_code': code  # Return for frontend to track
+        }

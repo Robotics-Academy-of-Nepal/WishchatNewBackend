@@ -36,6 +36,9 @@ SITE_ID = 3
 INSTALLED_APPS = [
     'registration.apps.RegistrationConfig',
     'storage',
+    'playground',
+    'deployment',
+    'payment',
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
@@ -210,3 +213,6 @@ EMAIL_HOST_USER = 'tejashkatuwal99@gmail.com'
 EMAIL_HOST_PASSWORD = 'aepiayqwdylqdkag'  # Use app password for Gmail
 
 FRONTEND_URL = 'https://537vg0mp-5173.inc1.devtunnels.ms'
+
+TIME_ZONE = 'Asia/Kathmandu'
+USE_TZ = True

@@ -15,7 +15,9 @@ from .serializers import (GoogleAuthSerializer,
                           GracePeriodUpdateSerializer,
                           SendingStatusUpdateSerializer,
                           MessageLimitUpdateSerializer,
-                          ChatbotQuotaSerializer)
+                          ChatbotQuotaSerializer,
+                          CouponCodeRedemptionSerializer,
+                          CouponCodeSerializer)
 from .models import (CustomUser,
                     OrganizationInvitation,
                     Organization,
@@ -1203,3 +1205,24 @@ from django.shortcuts import render
 
 def privacy_policy(request):
     return render(request, 'D:\\open-ai\\openai_backend\\wishchat\\registration\\templates\\privacy_policy.html')
+
+
+class CouponCodeCreateView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def post(self, request):
+        serializer = CouponCodeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class CouponCodeRedeemView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = CouponCodeRedemptionSerializer(data=request.data)
+        if serializer.is_valid():
+            result = serializer.redeem()
+            return Response(result, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

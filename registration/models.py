@@ -4,7 +4,7 @@ import uuid
 from django.utils import timezone
 from datetime import timedelta
 import uuid
-import json
+import json, pickle
 
 class Organization(models.Model):
     name = models.CharField(max_length=255, unique=True, null=True)
@@ -237,49 +237,101 @@ class ChatbotQuota(models.Model):
         return f"{self.chatbot.name} - {self.messages_used}/{self.message_limit}"
     
 
-class ChatbotPaymentTransaction(models.Model):
-    PACKAGE_CHOICES = [
-        (5000, '5000 NPR - 5000 Messages'),
-        (7000, '7000 NPR - 7000 Messages'),
-        (10000, '10000 NPR - 10000 Messages'),
-    ]
+class CouponCode(models.Model):
+    code = models.CharField(max_length=50, unique=True)
+    discount_percent = models.DecimalField(max_digits=5, decimal_places=2, help_text="Discount percentage (0-100)")
+    max_usage = models.PositiveIntegerField(help_text="Maximum number of times this coupon can be used")
+    times_used = models.PositiveIntegerField(default=0, help_text="Number of times this coupon has been used")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+    used_by_chatbots = models.ManyToManyField('Chatbot', related_name='used_coupons', blank=True)
 
+    def is_valid(self, chatbot):
+        """Check if the coupon is valid: active, usage limit not exceeded, and not used by this chatbot."""
+        return (
+            self.is_active and 
+            self.times_used < self.max_usage and 
+            chatbot not in self.used_by_chatbots.all()
+        )
+
+    def apply(self, chatbot):
+        """Increment usage count and link the chatbot when coupon is applied."""
+        if self.is_valid(chatbot):
+            self.times_used += 1
+            self.used_by_chatbots.add(chatbot)
+            self.save()
+            return True
+        return False
+
+    def __str__(self):
+        return f"{self.code} - {self.discount_percent}% off ({self.times_used}/{self.max_usage})"
+
+    class Meta:
+        verbose_name = "Coupon Code"
+        verbose_name_plural = "Coupon Codes"
+    
+
+class ChatbotPaymentTransaction(models.Model):
     chatbot = models.ForeignKey(Chatbot, on_delete=models.CASCADE, related_name="transactions")
-    transaction_id = models.CharField(max_length=255, unique=True)
+    transaction_id = models.CharField(max_length=255, unique=True, help_text="Payment portal transaction_code")
     payment_date = models.DateTimeField(auto_now_add=True)
-    amount = models.IntegerField(choices=PACKAGE_CHOICES)
+    amount = models.IntegerField(help_text="Original package amount (5000, 7000, 10000)")
+    discounted_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Amount paid after discount")
+    coupon_code = models.ForeignKey(CouponCode, on_delete=models.SET_NULL, null=True, blank=True, related_name="transactions")
 
     def __str__(self):
         return f"{self.chatbot.name} - {self.transaction_id} - {self.amount} NPR"
 
     @staticmethod
-    def create_transaction(chatbot, amount):
-        """
-        Creates a payment transaction and updates chatbot quota.
-        Each package provides equivalent messages and extends validity by 30 days.
-        """
-        if amount not in [5000, 7000, 10000]:
-            raise ValueError("Invalid package amount.")
+    def create_and_confirm_transaction(chatbot, payment_amount, payment_transaction_code, coupon_code=None):
+        """Creates and confirms a transaction based on payment data."""
+        if ChatbotPaymentTransaction.objects.filter(transaction_id=payment_transaction_code).exists():
+            raise ValueError("Duplicate payment transaction code.")
 
-        # Create the payment transaction
+        VALID_AMOUNTS = [5000, 7000, 10000]
+        applied_coupon = None
+        original_amount = None
+
+        if coupon_code:  # Discount applied
+            try:
+                coupon = CouponCode.objects.get(code=coupon_code)
+                if not coupon.is_valid(chatbot):
+                    raise ValueError("Coupon code is invalid, expired, or already used by this chatbot.")
+                # Map discounted amount back to original package
+                for amt in VALID_AMOUNTS:
+                    expected_discounted = amt * (1 - coupon.discount_percent / 100)
+                    if abs(float(payment_amount) - expected_discounted) < 1:  # Small float variance
+                        original_amount = amt
+                        applied_coupon = coupon
+                        break
+                if not original_amount:
+                    raise ValueError("Payment amount does not match any discounted package.")
+            except CouponCode.DoesNotExist:
+                raise ValueError("Coupon code does not exist.")
+        else:  # No discount
+            if payment_amount not in VALID_AMOUNTS:
+                raise ValueError("Payment amount must be 5000, 7000, or 10000 NPR.")
+            original_amount = payment_amount
+
         transaction = ChatbotPaymentTransaction.objects.create(
             chatbot=chatbot,
-            transaction_id=str(uuid.uuid4()),
-            amount=amount
+            transaction_id=payment_transaction_code,
+            amount=original_amount,
+            discounted_amount=payment_amount if coupon_code else None,
+            coupon_code=applied_coupon
         )
 
-        # Update chatbot quota
+        if applied_coupon:
+            applied_coupon.apply(chatbot)
+
         quota = chatbot.quota
         quota.is_paid = True
-        quota.message_limit += amount  # Each NPR amount corresponds to message count
-
-        # Extend subscription by 30 days (or start a new subscription if none exists)
-        if quota.subscription_end_date and quota.subscription_end_date > timezone.now():
-            quota.subscription_end_date += timedelta(days=30)
-        else:
-            quota.subscription_end_date = timezone.now() + timedelta(days=30)
-
+        quota.message_limit = original_amount  # Reset to original package amount
+        quota.messages_used = 0
+        quota.subscription_end_date = timezone.now() + timedelta(days=30)
         quota.save()
+
         return transaction
     
 class OrganizationInvitation(models.Model):
@@ -390,3 +442,23 @@ class ChatbotConversation(models.Model):
         if len(history) > max_exchanges:
             self.set_history(history[-max_exchanges:])
             self.save()
+
+class ChatbotAPILog(models.Model):
+    chatbot = models.ForeignKey('Chatbot', on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(default=timezone.now)
+    platform = models.CharField(max_length=50, null=True, blank=True)
+    user_id = models.CharField(max_length=100, null=True, blank=True)
+    query = models.TextField(null=True, blank=True)
+    query_embedding = models.BinaryField(null=True, blank=True)
+
+    def set_embedding(self, embedding):
+        self.query_embedding = pickle.dumps(embedding)
+
+    def get_embedding(self):
+        return pickle.loads(self.query_embedding) if self.query_embedding else None
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['chatbot', 'timestamp']),
+        ]
+

@@ -1,0 +1,208 @@
+
+
+--- File: DipeshShresthaCV-a_IunIMW ---
+
+--- Page 1 ---
+Dipesh Shrestha 
+Address  
+: Nayabazar, Kathmandu 
+Email             : dipeshshrestha4220@gmail.com 
+Website         : dipeshshrestha10.com.np 
+LinkedIn 
+: Dipesh Shrestha      
+GitHub 
+: DipS1017    
+Professional Skills 
+Frontend                             : HTML, CSS, JS, SASS, Tailwind, React JS, Next JS, 
+Backend 
+ 
+: Node JS, PHP, Flask 
+Database 
+ 
+: SQL, NoSQL, MySQL 
+Version Control 
+ 
+: Git 
+Education 
+● Bachelor in Computer Application (BCA) 
+Prime College, Nayabazar, Kathmandu 
+6th semester running 
+Work Experience 
+● Freelance  
+ 
+Junior Frontend Developer 
+Jan 2024 - Feb 2024 
+ 
+Internship PHP Developer 
+Nov 2022 - Jan 2023 
+ 
+Project Contribution: 
+1. Biometric System (Internship PHP Developer) 
+Developed a biometric system using PHP and MySQL to register exam attendees. The 
+system includes a user-friendly web interface for data input and efficient management of 
+biometric records, ensuring accurate and secure attendance tracking for exams. 
+2. Professional Portfolio (Junior Frontend Developer) 
+Developed a personal portfolio website using TypeScript, showcasing my projects, skills, 
+and experience. The site features a clean, responsive design and interactive elements, 
+providing a comprehensive view of my professional journey and technical capabilities. 
+Link: https://www.parakramdarnal.com.np/ 
+ 
+ 
+
+--- Page 2 ---
+3. Front-End Challenge 
+Successfully developed a design-accurate website based on Figma prototypes within a 
+short timeframe as part of an internship challenge. Demonstrated strong attention to 
+detail, rapid development skills, and the ability to deliver high-quality results under tight 
+deadlines.                                                                                                                       
+Link: https://front-end-challenge-sepia.vercel.app/ 
+4. Doctor Appointment System  
+Eon tools is a free online tools provider built with HTML, CSS, JS and PHP. I was 
+involved in creating different designs for different pages such as categories, all tools 
+and different categories of tools such as sports tools, education tools and food tools. 
+Link: http://hospital-doc.my-style.in/ 
+5. E-Commerce 
+Developed a comprehensive e-commerce platform using the MERN stack. The platform 
+features secure user authentication, real-time updates, a dynamic product catalogue, 
+pagination, JWT, and an admin panel for efficient product management.            
+ Link: https://e-commerce-mern-puce.vercel.app/ 
+ 
+Certificates/Training: 
+1. MERN Stack | 3 Month Bootcamp  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ Completed a Full-stack training facilitated by MLRC (Mathema Learning Resource 
+Center) 
+Reference: 
+2. Sushil Balami (Full-stack Developer at Quickfox Consulting) 
+Link: https://sushilbalami.com.np/ 
+
+
+--- File: Bikesh Maharjan ---
+
+--- Page 1 ---
+Bikesh Maharjan 
+Frontend Developer 
++977 9865555733|bks.mhr8@gmail.com| linkedin.com/in/bikesh-maharjan-970a921a5/| github.com/jATMOS 
+Experience 
+  Backend Intern 
+ 
+ 
+ 
+ 
+ 
+ 
+                                 Jan, 2024 – Apr,2024                      
+  Fatafatsewa 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+   
+      Sitapaila, Kathmandu 
+• 
+Created endpoints for user role assignment, order status toggle, dashboard. 
+• Creation of numerous application. 
+• Enhance of search results of already existing search feature. 
+• 
+Email templating and integration for user actions ordering, cancelling and feedback. 
+ STEAM fellow 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+ Feb, 2024 – Aug, 2024 
+ Karkhana Samuha  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+           Sanepa, Lalitpur 
+• Taught in Government schools for ‘Book Free Friday’ about STEAM related topics students 
+with emphasis on experimental exploration issued by Kathmandu Metropolitan City. 
+Education 
+   Prime College 
+ 
+ 
+ 
+ 
+ 
+ 
+     
+                Khushibun, Kathmandu 
+   Bachelor in Science in Computer Science and Information Technology    
+ 
+           June-2021-Present 
+    Xavier Academy  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  Lazimpat, Kathmandu 
+   +2 Science 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+     2019 - 2021 
+Projects 
+   KaamKonnect | Node.js, Express, Tailwind, MongoDB, Ejs | Github Link              Aug, 2024 - Sep, 2024 
+• Developed a full-stack platform like Fiverr for manual labor (e.g., plumbing, carpentry) and 
+freelance jobs (e.g., DJing, teaching). 
+• Users can register as either customers or providers. 
+• Customers post tasks, search for providers, and pay through the platform. 
+• Providers browse and apply for tasks that match their skills. 
+   Rubiks Cube solver | Python, Django, React.js, Three.js, OpenCV| Github Link  Sep-2024 – Dec-2024 
+• Implementing a layer-by-layer Rubik's Cube solving algorithm for solving rubik’s cube. 
+• Created UI and interactive 3D cube that shows each solving step like video. Moves can be 
+reversed and forwarded.  
+• Used OpenCV for detection of colors and dynamically showing the mapped colors in real 
+time. 
+Technical Skills 
+   Languages: JavaScript, Python, SQL (Postgres), MongoDB, HTML/CSS 
+   Frameworks/Libraries: Node.js, Express.js, Django, React.js, Three.js, Tailwind CSS  
+   Developer Tools: Git, Postman 
+Volunteering/Involvement 
+   General Member   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Prime IT Club 
+• Volunteered for major events (job fair, ICT meetup- v7.0) and numerous minor events. 
+
+
+--- File: Q&A-40 ---
+
+Q1: adfads
+A1: adsfadsfasd

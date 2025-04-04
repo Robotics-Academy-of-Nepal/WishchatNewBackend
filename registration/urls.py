@@ -20,7 +20,9 @@ from .views import (
     UpdateMessageLimitView,
     AddDomainNameView,
     ChatbotPublicInfoView,
-    privacy_policy
+    privacy_policy,
+    CouponCodeCreateView,
+    CouponCodeRedeemView
 )
 from rest_framework.routers import DefaultRouter
 
@@ -49,6 +51,8 @@ urlpatterns = [
     path('<int:chatbot_id>/add/domain/', AddDomainNameView.as_view(), name="AddDomainName"),
     path('chatbot/public-info/', ChatbotPublicInfoView.as_view(), name='chatbot-public-info'),
     path('<int:org_id>/chatbots/list/', AdminChatbotlistView.as_view(), name='AdminChatbotlist'),
+    path('set/coupon-codes/', CouponCodeCreateView.as_view(), name='coupon-code-create'),
+    path('coupon/redeem/', CouponCodeRedeemView.as_view(), name='coupon-code-redeem'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('', include(router.urls)),
     path('chatbots/<int:chatbot_id>/', include([
