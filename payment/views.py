@@ -8,20 +8,21 @@ from rest_framework.permissions import IsAuthenticated
 
 
 class PaymentSuccessView(APIView):
-    authentication_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         encoded_data = request.data.get('data')
         chatbot_id = request.data.get('chatbot_id')
-        discount_applied = request.data.get('discount_applied', False)  # Boolean flag
-        coupon_code = request.data.get('coupon_code') if discount_applied else None
+        # discount_applied = request.data.get('discount_applied', False)  # Boolean flag
+        coupon_code = request.data.get('coupon_code')
+        print("coupon:", coupon_code)
 
         if not encoded_data:
             return Response({'status': 'error', 'message': 'No data parameter received'}, status=status.HTTP_400_BAD_REQUEST)
         if not chatbot_id:
             return Response({'status': 'error', 'message': 'Chatbot ID required'}, status=status.HTTP_400_BAD_REQUEST)
-        if discount_applied and not coupon_code:
-            return Response({'status': 'error', 'message': 'Coupon code required if discount applied'}, status=status.HTTP_400_BAD_REQUEST)
+        # if not coupon_code:
+        #     return Response({'status': 'error', 'message': 'Coupon code required if discount applied'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             chatbot = Chatbot.objects.get(id=chatbot_id)
@@ -44,11 +45,11 @@ class PaymentSuccessView(APIView):
             if not total_amount:
                 return Response({'status': 'error', 'message': 'Total amount not found'}, status=status.HTTP_400_BAD_REQUEST)
 
-            transaction = ChatbotPaymentTransaction.create_and_congrokaifirm_transaction(
+            transaction = ChatbotPaymentTransaction.create_and_confirm_transaction(
                 chatbot=chatbot,
                 payment_amount=total_amount,
                 payment_transaction_code=transaction_code,
-                coupon_code=coupon_code if discount_applied else None
+                coupon_code=coupon_code if coupon_code else None
             )
 
             return Response({

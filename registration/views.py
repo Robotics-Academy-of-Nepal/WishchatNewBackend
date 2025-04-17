@@ -532,7 +532,7 @@ class CreateOrganizationView(APIView):
 class ChatbotViewSet(viewsets.ModelViewSet):
     serializer_class = ChatbotSerializer
     permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete', 'options']  # Explicitly allow DELETE
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete', 'options']  
     
     def get_queryset(self):
         user = self.request.user

@@ -116,6 +116,7 @@ class Chatbot(models.Model):
     instagram_page_id = models.CharField(max_length=50,null=True,blank=True,unique=False)
     domain_name = models.TextField(max_length=1000,null=True, unique=True,blank=True)
     verify_token = models.CharField(max_length=36, default=uuid.uuid4, unique=True)
+    
 
     def save(self, *args, **kwargs):
         if not self.api_key:
@@ -196,6 +197,8 @@ class ChatbotQuota(models.Model):
     # Support team controls
     grace_period_days = models.IntegerField(default=3)  # Configurable grace period
     is_sending_enabled = models.BooleanField(default=True)  # Manual override
+
+    last_payment_date = models.DateTimeField(null=True, blank=True)
     
     # Last Reset (for tracking quota resets)
     last_reset = models.DateTimeField(auto_now_add=True)
@@ -301,7 +304,7 @@ class ChatbotPaymentTransaction(models.Model):
                 # Map discounted amount back to original package
                 for amt in VALID_AMOUNTS:
                     expected_discounted = amt * (1 - coupon.discount_percent / 100)
-                    if abs(float(payment_amount) - expected_discounted) < 1:  # Small float variance
+                    if abs(float(payment_amount) - float(expected_discounted)) < 1:  # Small float variance
                         original_amount = amt
                         applied_coupon = coupon
                         break
@@ -325,11 +328,13 @@ class ChatbotPaymentTransaction(models.Model):
         if applied_coupon:
             applied_coupon.apply(chatbot)
 
+
         quota = chatbot.quota
         quota.is_paid = True
         quota.message_limit = original_amount  # Reset to original package amount
         quota.messages_used = 0
         quota.subscription_end_date = timezone.now() + timedelta(days=30)
+        quota.last_payment_date = transaction.payment_date
         quota.save()
 
         return transaction

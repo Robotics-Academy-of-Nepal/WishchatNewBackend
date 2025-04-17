@@ -125,6 +125,7 @@ class ChatbotQuotaSerializer(serializers.ModelSerializer):
             'can_send_message',
             'grace_period_days',  
             'is_sending_enabled',  
+            'last_payment_date',
         ]
         read_only_fields = [
             'messages_used',
@@ -410,5 +411,5 @@ class CouponCodeRedemptionSerializer(serializers.Serializer):
             'original_amount': amount,
             'discounted_amount': float(discounted_amount),
             'discount_applied': coupon.discount_percent,
-            'coupon_code': code  # Return for frontend to track
+            'coupon_code': code  
         }
