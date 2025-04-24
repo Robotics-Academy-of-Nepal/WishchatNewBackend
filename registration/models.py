@@ -6,6 +6,25 @@ from datetime import timedelta
 import uuid
 import json, pickle
 
+
+class SubscriptionPlan(models.Model):
+    name = models.CharField(max_length=100, unique=True, help_text="Name of the subscription plan (e.g., Basic, Pro)")
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00, help_text="Monthly price in NPR (0 for free plans)")
+    message_limit = models.IntegerField(default=5000, help_text="Monthly message quota (0 for unlimited)")
+    trial_days = models.IntegerField(default=7, help_text="Trial period in days (0 for no trial)")
+    is_active = models.BooleanField(default=True, help_text="Whether this plan is available for selection")
+    is_lifetime = models.BooleanField(default=False, help_text="If true, chatbots on this plan have unlimited messages and no expiry")
+    auto_reset_quota = models.BooleanField(default=False, help_text="If true, quota resets monthly for free plans")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name} ({self.price} NPR, {self.message_limit} messages)"
+
+    class Meta:
+        verbose_name = "Subscription Plan"
+        verbose_name_plural = "Subscription Plans"
+
 class Organization(models.Model):
     name = models.CharField(max_length=255, unique=True, null=True)
 
@@ -182,10 +201,11 @@ class ChatbotColor(models.Model):
 
 class ChatbotQuota(models.Model):
     chatbot = models.OneToOneField(Chatbot, on_delete=models.CASCADE, related_name="quota")
+    subscription_plan = models.ForeignKey(SubscriptionPlan, on_delete=models.SET_NULL, null=True, related_name="quotas", help_text="Current subscription plan")
     
     # Message tracking
     messages_used = models.IntegerField(default=0)
-    message_limit = models.IntegerField(default=5000)  # Free trial default: 5000 messages
+    temporary_message_boost = models.IntegerField(default=0, help_text="Temporary message boost that resets at cycle end")
 
     # Trial and Subscription Status
     is_trial = models.BooleanField(default=True)
@@ -202,17 +222,37 @@ class ChatbotQuota(models.Model):
     
     # Last Reset (for tracking quota resets)
     last_reset = models.DateTimeField(auto_now_add=True)
+    is_lifetime_free = models.BooleanField(default=False, help_text="If true, chatbot has unlimited messages without a plan")
+
+
+    def get_message_limit(self):
+        if self.is_lifetime_free or (self.subscription_plan and self.subscription_plan.is_lifetime):
+            return 0  # Unlimited
+        base_limit = self.subscription_plan.message_limit if self.subscription_plan else 5000
+        return base_limit + self.temporary_message_boost
+    
 
     def is_trial_valid(self):
-        """Check if the chatbot's trial period (7 days) is active."""
-        return (timezone.now() - self.trial_start_date) <= timedelta(days=7)
+        if self.is_lifetime_free:
+            return False  # No trial for lifetime free
+        if not self.is_trial or not self.subscription_plan:
+            return False
+        trial_period = timedelta(days=self.subscription_plan.trial_days)
+        return (timezone.now() - self.trial_start_date) <= trial_period
+    
+
 
     def is_subscription_valid(self):
-        """Check if the chatbot's paid subscription is within the validity + configured grace."""
+        if self.is_lifetime_free:
+            return True  # Always valid for lifetime free
+        if self.subscription_plan and self.subscription_plan.is_lifetime:
+            return True
         if not self.is_paid or not self.subscription_end_date:
             return False
         grace_period = timedelta(days=self.grace_period_days)
         return timezone.now() <= (self.subscription_end_date + grace_period)
+    
+
 
     def can_send_message(self):
         """
@@ -223,21 +263,49 @@ class ChatbotQuota(models.Model):
         """
         if not self.is_sending_enabled:
             return False
-            
+        if self.is_lifetime_free or (self.subscription_plan and self.subscription_plan.is_lifetime):
+            return True
+        message_limit = self.get_message_limit()
         if self.is_trial:
-            return self.is_trial_valid() and self.messages_used < self.message_limit
-        return self.is_subscription_valid() and self.messages_used < self.message_limit
+            return self.is_trial_valid() and (message_limit == 0 or self.messages_used < message_limit)
+        return self.is_subscription_valid() and (message_limit == 0 or self.messages_used < message_limit)
 
+    
     def reset_quota(self):
-        """Resets the message usage and updates the reset timestamp."""
+        """Resets the message usage, temporary boost, and updates the reset timestamp."""
         self.messages_used = 0
+        self.temporary_message_boost = 0
         self.last_reset = timezone.now()
-        self.grace_period_days = 3
+        if not self.is_lifetime_free:  # Preserve grace period for lifetime free
+            self.grace_period_days = 3
         self.is_sending_enabled = True
         self.save()
 
+    def add_temporary_boost(self, additional_messages):
+        """Add a temporary message boost that resets at the end of the cycle."""
+        if self.is_lifetime_free:
+            raise ValueError("Cannot add temporary boost to a lifetime free chatbot.")
+        if additional_messages < 0:
+            raise ValueError("Temporary boost cannot be negative.")
+        self.temporary_message_boost += additional_messages
+        self.save()
+
+    def revoke_lifetime_plan(self):
+        """Revoke lifetime plan, requiring a new subscription."""
+        if self.is_lifetime_free or (self.subscription_plan and self.subscription_plan.is_lifetime):
+            self.is_lifetime_free = False
+            self.subscription_plan = None
+            self.is_paid = False
+            self.is_trial = False
+            self.subscription_end_date = None
+            self.last_payment_date = None
+            self.save()
+
     def __str__(self):
-        return f"{self.chatbot.name} - {self.messages_used}/{self.message_limit}"
+        plan_name = self.subscription_plan.name if self.subscription_plan else "No Plan"
+        limit = self.get_message_limit()
+        limit_str = "Unlimited" if limit == 0 else str(limit)
+        return f"{self.chatbot.name} - {self.messages_used}/{limit_str} ({plan_name})"
     
 
 class CouponCode(models.Model):
@@ -277,48 +345,50 @@ class CouponCode(models.Model):
 
 class ChatbotPaymentTransaction(models.Model):
     chatbot = models.ForeignKey(Chatbot, on_delete=models.CASCADE, related_name="transactions")
-    transaction_id = models.CharField(max_length=255, unique=True, help_text="Payment portal transaction_code")
+    subscription_plan = models.ForeignKey(SubscriptionPlan, on_delete=models.SET_NULL, null=True, related_name="transactions")
+    transaction_id = models.CharField(max_length=255, unique=True)
     payment_date = models.DateTimeField(auto_now_add=True)
-    amount = models.IntegerField(help_text="Original package amount (5000, 7000, 10000)")
-    discounted_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Amount paid after discount")
+    amount = models.DecimalField(max_digits=10, decimal_places=2, help_text="Original plan price")
+    discounted_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     coupon_code = models.ForeignKey(CouponCode, on_delete=models.SET_NULL, null=True, blank=True, related_name="transactions")
 
     def __str__(self):
         return f"{self.chatbot.name} - {self.transaction_id} - {self.amount} NPR"
 
     @staticmethod
-    def create_and_confirm_transaction(chatbot, payment_amount, payment_transaction_code, coupon_code=None):
-        """Creates and confirms a transaction based on payment data."""
+    def create_and_confirm_transaction(chatbot, payment_amount, payment_transaction_code, subscription_plan_id, coupon_code=None):
+        """Creates and confirms a transaction based on payment data and selected plan."""
         if ChatbotPaymentTransaction.objects.filter(transaction_id=payment_transaction_code).exists():
             raise ValueError("Duplicate payment transaction code.")
 
-        VALID_AMOUNTS = [5000, 7000, 10000]
-        applied_coupon = None
-        original_amount = None
+        try:
+            plan = SubscriptionPlan.objects.get(id=subscription_plan_id, is_active=True)
+            if plan.is_lifetime:
+                raise ValueError("Lifetime plans do not require payment.")
+        except SubscriptionPlan.DoesNotExist:
+            raise ValueError("Selected subscription plan does not exist or is inactive.")
 
-        if coupon_code:  # Discount applied
+        applied_coupon = None
+        original_amount = plan.price
+
+        if coupon_code:
             try:
                 coupon = CouponCode.objects.get(code=coupon_code)
                 if not coupon.is_valid(chatbot):
                     raise ValueError("Coupon code is invalid, expired, or already used by this chatbot.")
-                # Map discounted amount back to original package
-                for amt in VALID_AMOUNTS:
-                    expected_discounted = amt * (1 - coupon.discount_percent / 100)
-                    if abs(float(payment_amount) - float(expected_discounted)) < 1:  # Small float variance
-                        original_amount = amt
-                        applied_coupon = coupon
-                        break
-                if not original_amount:
-                    raise ValueError("Payment amount does not match any discounted package.")
+                expected_discounted = float(original_amount) * (1 - float(coupon.discount_percent) / 100)
+                if abs(float(payment_amount) - expected_discounted) > 1:
+                    raise ValueError("Payment amount does not match the discounted plan price.")
+                applied_coupon = coupon
             except CouponCode.DoesNotExist:
                 raise ValueError("Coupon code does not exist.")
-        else:  # No discount
-            if payment_amount not in VALID_AMOUNTS:
-                raise ValueError("Payment amount must be 5000, 7000, or 10000 NPR.")
-            original_amount = payment_amount
+        else:
+            if float(payment_amount) != float(original_amount):
+                raise ValueError(f"Payment amount must be {original_amount} NPR for the selected plan.")
 
         transaction = ChatbotPaymentTransaction.objects.create(
             chatbot=chatbot,
+            subscription_plan=plan,
             transaction_id=payment_transaction_code,
             amount=original_amount,
             discounted_amount=payment_amount if coupon_code else None,
@@ -328,11 +398,13 @@ class ChatbotPaymentTransaction(models.Model):
         if applied_coupon:
             applied_coupon.apply(chatbot)
 
-
         quota = chatbot.quota
+        quota.subscription_plan = plan
         quota.is_paid = True
-        quota.message_limit = original_amount  # Reset to original package amount
+        quota.is_trial = False
         quota.messages_used = 0
+        quota.temporary_message_boost = 0
+        quota.grace_period_days = 3
         quota.subscription_end_date = timezone.now() + timedelta(days=30)
         quota.last_payment_date = transaction.payment_date
         quota.save()

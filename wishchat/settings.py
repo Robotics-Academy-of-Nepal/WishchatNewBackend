@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'playground',
     'deployment',
     'payment',
+    'service',
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',

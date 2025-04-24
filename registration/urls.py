@@ -15,14 +15,14 @@ from .views import (
     TotalTokenUsageView,
     OrganizationTokenCountView,
     ChatbotTokenCountView,
-    GracePeriodModificationView,
-    UpdateSendingStatusView,
-    UpdateMessageLimitView,
     AddDomainNameView,
     ChatbotPublicInfoView,
     privacy_policy,
     CouponCodeCreateView,
-    CouponCodeRedeemView
+    CouponCodeRedeemView,
+    AdminEmailPasswordLoginView,
+    UpdateStaffProfileView,
+    CreateStaffView
 )
 from rest_framework.routers import DefaultRouter
 
@@ -37,6 +37,7 @@ faq_router.register(r'faqs', ChatbotFAQViewSet, basename='chatbot-faq')
 # Use a custom path instead of router for ChatbotColorViewSet
 urlpatterns = [
     path('privacy-policy/', privacy_policy, name='privacy_policy'),
+    path('login/', AdminEmailPasswordLoginView.as_view(), name='email-login'),
     path('google-login/', GoogleLoginView.as_view(), name='google-login'),
     path('organizations/create/', CreateOrganizationView.as_view(), name='create-organization'),
     path('organization/members/<int:member_id>/', DeleteOrganizationMemberView.as_view(), name='delete-member'),
@@ -45,14 +46,13 @@ urlpatterns = [
     path('token-usage/', TotalTokenUsageView.as_view(), name="TotalTokenUsage"),
     path('<int:org_id>/token-usage/', OrganizationTokenCountView.as_view(), name="OrganizationTokenCount"),
     path('chatbots/<int:chatbot_id>/token-usage/', ChatbotTokenCountView.as_view(), name="ChatbotTokenCount"),
-    path('chatbots/<int:chatbot_id>/update-grace-period/', GracePeriodModificationView.as_view(), name="GracePeriodModification"),
-    path('chatbots/<int:chatbot_id>/update-sending-status/', UpdateSendingStatusView.as_view(), name="UpdateSendingStatus"),
-    path('chatbots/<int:chatbot_id>/update-message-limit/', UpdateMessageLimitView.as_view(), name="UpdateMessageLimit"),
     path('<int:chatbot_id>/add/domain/', AddDomainNameView.as_view(), name="AddDomainName"),
     path('chatbot/public-info/', ChatbotPublicInfoView.as_view(), name='chatbot-public-info'),
     path('<int:org_id>/chatbots/list/', AdminChatbotlistView.as_view(), name='AdminChatbotlist'),
     path('set/coupon-codes/', CouponCodeCreateView.as_view(), name='coupon-code-create'),
     path('coupon/redeem/', CouponCodeRedeemView.as_view(), name='coupon-code-redeem'),
+    path('staff/create/', CreateStaffView.as_view(), name='create-staff'),
+    path('staff/profile/update/', UpdateStaffProfileView.as_view(),name='update-staff-profile'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('', include(router.urls)),
     path('chatbots/<int:chatbot_id>/', include([

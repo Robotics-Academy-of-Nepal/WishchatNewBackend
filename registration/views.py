@@ -37,6 +37,8 @@ from storage.delete_index import delete_index_files
 from django.db import transaction
 from django.db.models import Sum
 from datetime import datetime
+from django.db import models
+from django.contrib.auth import authenticate
 import logging
 
 logger = logging.getLogger(__name__)
@@ -1057,71 +1059,7 @@ class ChatbotTokenCountView(APIView):
                     "status": "Failed",
                     "error": "An unexpected error occurred"
                 }, status=400)
-            
-class GracePeriodModificationView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def post(self,request,chatbot_id):
-        try:
-            chatbot = Chatbot.objects.get(id=chatbot_id)
-            quota = chatbot.quota
-
-            serializer = GracePeriodUpdateSerializer(quota, data= request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response({
-                    "message": "Grace Period updated successfully",
-                    "grace period": serializer.data["grace_period_days"]
-                }, status=200)
-            
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-        except Chatbot.DoesNotExist:
-            return Response({"error": "Chatbot not found"}, status=status.HTTP_404_NOT_FOUND)
-
-class UpdateSendingStatusView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def post(self, request, chatbot_id):
-        try:
-            chatbot = Chatbot.objects.get(id=chatbot_id)
-            quota = chatbot.quota
-
-            serializer = SendingStatusUpdateSerializer(quota, data = request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response({
-                    "message": "Message sending status successfully changed.",
-                    "sending_status": serializer.data["is_sending_enabled"]
-                }, status=200)
-            
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        except Chatbot.DoesNotExist:
-            return Response({"error": "Chatbot not found"}, status=status.HTTP_404_NOT_FOUND)
-        
-class UpdateMessageLimitView(APIView):
-    permission_classes = [IsAdminUser]
-
-    def post(self, request, chatbot_id):
-        try:
-            chatbot = Chatbot.objects.get(id=chatbot_id)
-            quota = chatbot.quota
-
-            serializer = MessageLimitUpdateSerializer(quota, data = request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response({
-                    "message": "Message limit successfully changed.",
-                    "sending_status": serializer.data["message_limit"]
-                }, status=200)
-            
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        except Chatbot.DoesNotExist:
-            return Response({"error": "Chatbot not found"}, status=status.HTTP_404_NOT_FOUND)
-        
-
 class AddDomainNameView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -1226,3 +1164,206 @@ class CouponCodeRedeemView(APIView):
             result = serializer.redeem()
             return Response(result, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class AdminEmailPasswordLoginView(APIView):
+    permission_classes = [AllowAny]  # Allow unauthenticated access to the endpoint
+
+    def post(self, request):
+        login = request.data.get('login')  # Accept 'login' field for username or email
+        password = request.data.get('password')
+
+        # Validate input
+        if not login or not password:
+            return Response({
+                "error": "Login (username or email) and password are required"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Try to find user by username or email
+        try:
+            user = CustomUser.objects.get(models.Q(username=login) | models.Q(email=login))
+        except CustomUser.DoesNotExist:
+            return Response({
+                "error": "Invalid username/email or password"
+            }, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Verify password
+        if not user.check_password(password):
+            return Response({
+                "error": "Invalid username/email or password"
+            }, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Check if user is a superuser or staff (service team)
+        if not (user.is_superuser or user.is_staff):
+            return Response({
+                "error": "This endpoint is restricted to super admins and service team members only"
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        # Ensure user is active
+        if not user.is_active:
+            return Response({
+                "error": "User account is inactive"
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        # Generate or get auth token
+        token, _ = Token.objects.get_or_create(user=user)
+
+        # Serialize user data
+        user_serializer = CustomUserSerializer(user)
+
+        # Prepare response data
+        has_organization = user.organization is not None
+        response_data = {
+            "message": "Successfully logged in as admin",
+            "token": token.key,
+            "user": user_serializer.data,
+            "has_organization": has_organization,
+            "is_superuser": user.is_superuser,
+            "is_staff": user.is_staff
+        }
+
+        # Add organization information if user has one
+        if has_organization:
+            response_data["organization"] = {
+                "id": user.organization.id,
+                "name": user.organization.name,
+                "is_owner": user.is_owner
+            }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+    
+
+class CreateStaffView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        # Ensure the requesting user is a superuser
+        if not request.user.is_superuser:
+            return Response({
+                "error": "Only superadmins can create staff users"
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        # Extract data from request
+        email = request.data.get('email')
+        username = request.data.get('username')
+        password = request.data.get('password')
+        first_name = request.data.get('first_name')
+        last_name = request.data.get('last_name')
+        phone_number = request.data.get('phone_number', None)  # Optional field
+
+        # Validate required fields
+        if not all([email, username, password, first_name, last_name]):
+            return Response({
+                "error": "Email, username, password, first name, and last name are required"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Check if email or username already exists
+        if CustomUser.objects.filter(email=email).exists():
+            return Response({
+                "error": "A user with this email already exists"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        if CustomUser.objects.filter(username=username).exists():
+            return Response({
+                "error": "A user with this username already exists"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create the staff user
+        try:
+            user = CustomUser.objects.create_user(
+                email=email,
+                username=username,
+                password=password,
+                first_name=first_name,
+                last_name=last_name,
+                phone_number=phone_number,  # Optional, can be None
+                is_staff=True,  # Set as staff
+                is_superuser=False,  # Not a superadmin
+                is_active=True  # Active by default
+            )
+        except ValueError as e:
+            return Response({
+                "error": str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Generate auth token for the new user
+        token, _ = Token.objects.get_or_create(user=user)
+
+        # Serialize user data
+        user_serializer = CustomUserSerializer(user)
+
+        # Prepare response
+        response_data = {
+            "message": "Staff user created successfully",
+            "token": token.key,
+            "user": user_serializer.data
+        }
+
+        return Response(response_data, status=status.HTTP_201_CREATED)
+    
+class UpdateStaffProfileView(APIView):
+    permission_classes = [permissions.IsAuthenticated]  # Restrict to authenticated users
+
+    def patch(self, request):
+        # Ensure the user is a staff member
+        if not request.user.is_staff:
+            return Response({
+                "error": "Only staff members can update their profile"
+            }, status=status.HTTP_403_FORBIDDEN)
+
+        # Get the authenticated user
+        user = request.user
+
+        # Extract data from request
+        username = request.data.get('username')
+        password = request.data.get('password')
+        first_name = request.data.get('first_name')
+        last_name = request.data.get('last_name')
+        phone_number = request.data.get('phone_number')
+
+        # Validate input (at least one field must be provided)
+        if not any([username, password, first_name, last_name, phone_number]):
+            return Response({
+                "error": "At least one of username, password, first name, last name, or phone number must be provided"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Update username if provided
+        if username:
+            if username != user.username and CustomUser.objects.filter(username=username).exists():
+                return Response({
+                    "error": "A user with this username already exists"
+                }, status=status.HTTP_400_BAD_REQUEST)
+            user.username = username
+
+        # Update password if provided
+        if password:
+            user.set_password(password)
+
+        # Update first name if provided
+        if first_name:
+            user.first_name = first_name
+
+        # Update last name if provided
+        if last_name:
+            user.last_name = last_name
+
+        # Update phone number if provided
+        if phone_number is not None:  # Allow explicit clearing of phone_number
+            user.phone_number = phone_number
+
+        # Save changes
+        try:
+            user.save()
+        except ValueError as e:
+            return Response({
+                "error": str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Serialize updated user data
+        user_serializer = CustomUserSerializer(user)
+
+        # Prepare response
+        response_data = {
+            "message": "Profile updated successfully",
+            "user": user_serializer.data
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)

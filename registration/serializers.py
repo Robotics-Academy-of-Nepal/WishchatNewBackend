@@ -1,3 +1,4 @@
+import uuid
 from rest_framework import serializers
 from .models import (
     Organization,
@@ -8,7 +9,8 @@ from .models import (
     OrganizationInvitation,
     ChatbotFAQ,
     ChatbotColor,
-    CouponCode
+    CouponCode,
+    SubscriptionPlan
 )
 from django.utils import timezone
 from datetime import timedelta
@@ -99,6 +101,24 @@ class CustomUserSerializer(serializers.ModelSerializer):
         
         instance.save()
         return instance
+    
+
+class SubscriptionPlanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubscriptionPlan
+        fields = [
+            'id',
+            'name',
+            'price',
+            'message_limit',
+            'trial_days',
+            'is_active',
+            'is_lifetime',
+            'auto_reset_quota',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = ['created_at', 'updated_at']
 
 
 class ChatbotQuotaSerializer(serializers.ModelSerializer):
@@ -106,14 +126,18 @@ class ChatbotQuotaSerializer(serializers.ModelSerializer):
     is_subscription_valid = serializers.SerializerMethodField()
     can_send_message = serializers.SerializerMethodField()
     trial_end_date = serializers.SerializerMethodField()
+    subscription_plan = SubscriptionPlanSerializer(read_only=True)
+    message_limit = serializers.SerializerMethodField()
 
     class Meta:
         model = ChatbotQuota
         fields = [
             'id',
             'chatbot',
+            'subscription_plan',
             'messages_used',
             'message_limit',
+            'temporary_message_boost',
             'is_trial',
             'trial_start_date',
             'trial_end_date',
@@ -123,12 +147,13 @@ class ChatbotQuotaSerializer(serializers.ModelSerializer):
             'is_trial_valid',
             'is_subscription_valid',
             'can_send_message',
-            'grace_period_days',  
-            'is_sending_enabled',  
+            'grace_period_days',
+            'is_sending_enabled',
             'last_payment_date',
         ]
         read_only_fields = [
             'messages_used',
+            'temporary_message_boost',
             'is_trial',
             'trial_start_date',
             'is_paid',
@@ -146,8 +171,12 @@ class ChatbotQuotaSerializer(serializers.ModelSerializer):
         return obj.can_send_message()
     
     def get_trial_end_date(self, obj):
-        """Calculate trial end date (7 days from start)"""
-        return obj.trial_start_date + timezone.timedelta(days=7)
+        if not obj.subscription_plan:
+            return obj.trial_start_date + timedelta(days=7)
+        return obj.trial_start_date + timedelta(days=obj.subscription_plan.trial_days)
+
+    def get_message_limit(self, obj):
+        return obj.get_message_limit()
 
 
 class ChatbotSerializer(serializers.ModelSerializer):
@@ -182,20 +211,28 @@ class ChatbotSerializer(serializers.ModelSerializer):
 
 class ChatbotPaymentTransactionSerializer(serializers.ModelSerializer):
     chatbot = ChatbotSerializer(read_only=True)
+    subscription_plan = serializers.PrimaryKeyRelatedField(queryset=SubscriptionPlan.objects.filter(is_active=True))
     coupon_code = serializers.CharField(write_only=True, required=False, allow_blank=True)
 
     class Meta:
         model = ChatbotPaymentTransaction
-        fields = ['id', 'chatbot', 'transaction_id', 'payment_date', 'amount', 'coupon_code', 'discounted_amount']
-        read_only_fields = ['transaction_id', 'payment_date', 'discounted_amount']
+        fields = ['id', 'chatbot', 'subscription_plan', 'transaction_id', 'payment_date', 'amount', 'coupon_code', 'discounted_amount']
+        read_only_fields = ['transaction_id', 'payment_date', 'amount', 'discounted_amount']
 
     def create(self, validated_data):
         chatbot = validated_data['chatbot']
-        amount = validated_data['amount']
+        subscription_plan = validated_data['subscription_plan']
+        payment_amount = validated_data['amount']
         coupon_code = validated_data.pop('coupon_code', None)
+        transaction_id = str(uuid.uuid4())
 
-        # Use the custom method to handle payment and quota update with coupon
-        transaction = ChatbotPaymentTransaction.create_transaction(chatbot, amount, coupon_code)
+        transaction = ChatbotPaymentTransaction.create_and_confirm_transaction(
+            chatbot=chatbot,
+            payment_amount=payment_amount,
+            payment_transaction_code=transaction_id,
+            subscription_plan_id=subscription_plan.id,
+            coupon_code=coupon_code
+        )
         return transaction
 
 class OrganizationInvitationSerializer(serializers.ModelSerializer):
@@ -336,10 +373,63 @@ class SendingStatusUpdateSerializer(serializers.ModelSerializer):
         model = ChatbotQuota
         fields = ['is_sending_enabled']
 
-class MessageLimitUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ChatbotQuota
-        fields = ['message_limit']
+class MessageLimitUpdateSerializer(serializers.Serializer):
+    message_limit = serializers.IntegerField(min_value=0)
+
+    def update(self, instance, validated_data):
+        message_limit = validated_data['message_limit']
+        # Create or update a custom subscription plan for this chatbot
+        if instance.subscription_plan and not instance.subscription_plan.is_lifetime:
+            # Update existing plan if it's not shared by other chatbots
+            if instance.subscription_plan.quotas.count() == 1:
+                instance.subscription_plan.message_limit = message_limit
+                instance.subscription_plan.save()
+            else:
+                # Create a new custom plan if the current one is shared
+                custom_plan = SubscriptionPlan.objects.create(
+                    name=f"Custom Plan for {instance.chatbot.name}",
+                    price=instance.subscription_plan.price,
+                    message_limit=message_limit,
+                    trial_days=instance.subscription_plan.trial_days,
+                    is_active=True,
+                    is_lifetime=False,
+                    auto_reset_quota=instance.subscription_plan.auto_reset_quota
+                )
+                instance.subscription_plan = custom_plan
+        else:
+            # Create a new custom plan if no plan or lifetime plan
+            custom_plan = SubscriptionPlan.objects.create(
+                name=f"Custom Plan for {instance.chatbot.name}",
+                price=0,
+                message_limit=message_limit,
+                trial_days=7,
+                is_active=True,
+                is_lifetime=False,
+                auto_reset_quota=True
+            )
+            instance.subscription_plan = custom_plan
+        instance.temporary_message_boost = 0  # Reset temporary boost
+        instance.save()
+        
+        # Store the message_limit in validated_data for access through serializer.data
+        self._validated_data['message_limit'] = message_limit
+        
+        return instance
+    
+    def to_representation(self, instance):
+        """Return the message limit for the response."""
+        # If we have validated data (after update), use that value
+        if hasattr(self, '_validated_data') and 'message_limit' in self._validated_data:
+            return {'message_limit': self._validated_data['message_limit']}
+        
+        # Otherwise get it from the instance's subscription plan
+        if instance.subscription_plan:
+            return {'message_limit': instance.subscription_plan.message_limit}
+        else:
+            return {'message_limit': 0}
+
+class TemporaryMessageBoostSerializer(serializers.Serializer):
+    additional_messages = serializers.IntegerField(min_value=0)
 
 
 class CouponCodeSerializer(serializers.ModelSerializer):
@@ -372,11 +462,11 @@ class CouponCodeSerializer(serializers.ModelSerializer):
 class CouponCodeRedemptionSerializer(serializers.Serializer):
     code = serializers.CharField(max_length=50)
     chatbot_id = serializers.IntegerField()
-    amount = serializers.IntegerField()
+    subscription_plan_id = serializers.IntegerField()
 
     def validate(self, data):
         chatbot_id = data['chatbot_id']
-        amount = data['amount']
+        subscription_plan_id = data['subscription_plan_id']
         code = data['code']
 
         try:
@@ -384,9 +474,10 @@ class CouponCodeRedemptionSerializer(serializers.Serializer):
         except Chatbot.DoesNotExist:
             raise serializers.ValidationError("Chatbot with this ID does not exist.")
 
-        VALID_AMOUNTS = [5000, 7000, 10000]
-        if amount not in VALID_AMOUNTS:
-            raise serializers.ValidationError("Amount must be 5000, 7000, or 10000 NPR.")
+        try:
+            plan = SubscriptionPlan.objects.get(id=subscription_plan_id, is_active=True)
+        except SubscriptionPlan.DoesNotExist:
+            raise serializers.ValidationError("Subscription plan does not exist or is inactive.")
 
         try:
             coupon = CouponCode.objects.get(code=code)
@@ -396,20 +487,22 @@ class CouponCodeRedemptionSerializer(serializers.Serializer):
             raise serializers.ValidationError("Coupon code does not exist.")
 
         data['chatbot'] = chatbot
+        data['subscription_plan'] = plan
         return data
 
     def redeem(self):
         code = self.validated_data['code']
-        amount = self.validated_data['amount']
+        subscription_plan = self.validated_data['subscription_plan']
         chatbot = self.validated_data['chatbot']
         coupon = CouponCode.objects.get(code=code)
 
-        discount = (coupon.discount_percent / 100) * amount
-        discounted_amount = amount - discount
+        discount = (coupon.discount_percent / 100) * float(subscription_plan.price)
+        discounted_amount = float(subscription_plan.price) - discount
 
         return {
-            'original_amount': amount,
-            'discounted_amount': float(discounted_amount),
+            'original_amount': float(subscription_plan.price),
+            'discounted_amount': discounted_amount,
             'discount_applied': coupon.discount_percent,
-            'coupon_code': code  
+            'coupon_code': code,
+            'subscription_plan_id': subscription_plan.id
         }
