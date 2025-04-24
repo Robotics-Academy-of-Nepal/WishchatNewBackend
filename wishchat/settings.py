@@ -222,7 +222,7 @@ EMAIL_HOST = 'smtp.gmail.com'  # or your SMTP server
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'tejashkatuwal99@gmail.com'
-EMAIL_HOST_PASSWORD = 'aepiayqwdylqdkag'  # Use app password for Gmail
+EMAIL_HOST_PASSWORD = 'aepiayqwdylqdkag'  
 
 FRONTEND_URL = 'https://537vg0mp-5173.inc1.devtunnels.ms'
 

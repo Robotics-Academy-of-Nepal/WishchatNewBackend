@@ -1,8 +1,9 @@
 .env 
-.env 
-.env 
+
 
 
 __pycache__/
 *.py[cod]
 *$py.class
+*/migrations/*.py
+!*/migrations/__init__.py
