@@ -791,7 +791,7 @@ class ChatbotColorViewSet(viewsets.ViewSet):
 
 class AdminOrganizationView(APIView):
 
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         try:
             total_organizations = Organization.objects.count()
@@ -830,7 +830,7 @@ class AdminChatbotlistView(APIView):
             }, status=404)
         
 class TotalTokenUsageView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         
@@ -902,7 +902,7 @@ class TotalTokenUsageView(APIView):
 
 class OrganizationTokenCountView(APIView):
     
-    permission_classes= [IsAdminUser]
+    permission_classes= [IsAuthenticated]
 
     def get(self,request, org_id):
         try:
@@ -974,7 +974,7 @@ class OrganizationTokenCountView(APIView):
                 )
 
 class ChatbotTokenCountView(APIView):
-    permission_classes = [IsAdminUser]  # Adjust permissions as needed
+    permission_classes = [IsAuthenticated]  # Adjust permissions as needed
 
     def get(self, request, chatbot_id):
         # Try to fetch the chatbot by ID
