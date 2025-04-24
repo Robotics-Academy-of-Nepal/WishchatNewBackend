@@ -811,7 +811,7 @@ class AdminOrganizationView(APIView):
     
 
 class AdminChatbotlistView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, org_id):
         try:
