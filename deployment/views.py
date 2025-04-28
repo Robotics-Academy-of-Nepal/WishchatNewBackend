@@ -1,10 +1,170 @@
 from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated 
-# from playground.chatbot import query_assistant
+from rest_framework.response import Response
+from rest_framework import status
 from registration.models import Chatbot
 import json
 from .functions import sendwhatsapp_messages, messenger_messages, instagram_messages
+import urllib.parse
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+
+meta_client_id = os.getenv("META_CLIENT_ID")
+meta_client_secret = os.getenv("META_CLIENT_SECRET")
+redirect_uri = os.getenv("REDIRECT_URI")
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def whatsapp_oauth(request):
+    """
+    Initiate the OAuth flow for WhatsApp by returning the Meta authorization URL as a JSON response.
+    """
+    try:
+        # Get chatbot_id from query parameters
+        chatbot_id = request.GET.get('chatbot_id')
+        if not chatbot_id:
+            return Response(
+                {"error": "chatbot_id is required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Store chatbot_id in session for use in the callback
+        request.session['chatbot_id'] = chatbot_id
+
+        # Construct the Meta OAuth authorization URL
+        auth_url = 'https://www.facebook.com/v20.0/dialog/oauth'
+        params = {
+            'client_id': meta_client_id,
+            'redirect_uri': redirect_uri,
+            'scope': 'whatsapp_business_management,whatsapp_business_messaging',
+            'response_type': 'code',
+            'state': 'whatsapp'  # Optional: to verify the callback
+        }
+        auth_url = f"{auth_url}?{urllib.parse.urlencode(params)}"
+
+        # Return the authorization URL as a JSON response
+        return Response(
+            {"authorization_url": auth_url},
+            status=status.HTTP_200_OK
+        )
+
+    except Exception as e:
+        return Response(
+            {"error": str(e)},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+
+def whatsapp_oauth_callback(request):
+    """
+    Handle the callback from Meta/WhatsApp OAuth process and store the access token.
+    """
+    try:
+        # Get authorization code and state from the callback
+        code = request.GET.get('code')
+        state = request.GET.get('state')
+        
+        if not code:
+            return Response(
+                {"error": "Authorization failed. No code was received."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        # Verify state if applicable (security check)
+        if state != 'whatsapp':
+            return Response(
+                {"error": "Invalid state parameter"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        # Retrieve the chatbot_id from session
+        chatbot_id = request.session.get('chatbot_id')
+        if not chatbot_id:
+            return Response(
+                {"error": "No chatbot_id found in session"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        # Exchange code for access token
+        token_url = "https://graph.facebook.com/v20.0/oauth/access_token"
+        token_params = {
+            'client_id': meta_client_id,
+            'client_secret': meta_client_secret,
+            'redirect_uri': redirect_uri,
+            'code': code
+        }
+        
+        # Make the request to exchange code for token
+        import requests
+        token_response = requests.post(token_url, params=token_params)
+        token_data = token_response.json()
+        
+        if 'access_token' not in token_data:
+            return Response(
+                {"error": "Failed to obtain access token", "details": token_data},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        access_token = token_data['access_token']
+        
+        try:
+            # Example API call to get accounts the user has access to
+            accounts_url = "https://graph.facebook.com/v20.0/me/accounts"
+            headers = {'Authorization': f'Bearer {access_token}'}
+            accounts_response = requests.get(accounts_url, headers=headers)
+            accounts_data = accounts_response.json()
+            
+            whatsapp_business_url = "https://graph.facebook.com/v20.0/me/whatsapp_business_account"
+            whatsapp_response = requests.get(whatsapp_business_url, headers=headers)
+            whatsapp_data = whatsapp_response.json()
+            
+            # Extract WhatsApp Business Account ID
+            # Note: This is a simplified approach - actual implementation depends on Meta's API response structure
+            whatsapp_business_id = whatsapp_data.get('data', [{}])[0].get('id') if 'data' in whatsapp_data else None
+            
+            if not whatsapp_business_id:
+                return Response(
+                    {"error": "Failed to retrieve WhatsApp Business Account ID", "details": whatsapp_data},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+                
+            # Update the chatbot with WhatsApp credentials
+            chatbot = Chatbot.objects.get(id=chatbot_id)
+            chatbot.whatsapp_token = access_token
+            chatbot.whatsapp_id = whatsapp_business_id
+            chatbot.save()
+            
+            # Clear the session data
+            if 'chatbot_id' in request.session:
+                del request.session['chatbot_id']
+                
+            return Response(
+                {"success": True, "message": "WhatsApp integration successful"},
+                status=status.HTTP_200_OK
+            )
+            
+        except Chatbot.DoesNotExist:
+            return Response(
+                {"error": f"Chatbot with ID {chatbot_id} not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to update chatbot with WhatsApp credentials: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+            
+    except Exception as e:
+        return Response(
+            {"error": f"OAuth callback failed: {str(e)}"},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])

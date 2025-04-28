@@ -227,24 +227,26 @@ class ChatbotQuota(models.Model):
 
     def get_message_limit(self):
         if self.is_lifetime_free or (self.subscription_plan and self.subscription_plan.is_lifetime):
-            return 0  # Unlimited
+            return 0  
         base_limit = self.subscription_plan.message_limit if self.subscription_plan else 5000
         return base_limit + self.temporary_message_boost
     
 
     def is_trial_valid(self):
         if self.is_lifetime_free:
-            return False  # No trial for lifetime free
-        if not self.is_trial or not self.subscription_plan:
+            return False  
+        if not self.is_trial:
             return False
-        trial_period = timedelta(days=self.subscription_plan.trial_days)
-        return (timezone.now() - self.trial_start_date) <= trial_period
+        trial_days = self.subscription_plan.trial_days if self.subscription_plan else 7
+        trial_period = timedelta(days=trial_days)  
+        time_elapsed = timezone.now() - self.trial_start_date  
+        return time_elapsed <= trial_period
     
 
 
     def is_subscription_valid(self):
         if self.is_lifetime_free:
-            return True  # Always valid for lifetime free
+            return True  
         if self.subscription_plan and self.subscription_plan.is_lifetime:
             return True
         if not self.is_paid or not self.subscription_end_date:

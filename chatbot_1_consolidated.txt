@@ -1,0 +1,29 @@
+
+
+--- File: converted_image (5) ---
+
+Evaluation of Internship by Organizations
+Exam Roll No:
+Name of the Student:
+College:
+Duration of Internship:
+Evaluation Indicators
+Regularity of the student
+Highly Regular
+/5/ /4/ /3/ /2/ /1/ Highly irregular
+Performance of the Student
+Highly Satisfactory
+/5/ /4/ /3/ /2/ /1/ Highly unsatisfactory
+Contribution of solve problems
+Excellent
+/5/ /4/ /3/ /2/ /1/ Very Poor
+Behaviour / cooperation
+Excellent
+/5/ /4/ /3/ /2/ /1/ Very Poor
+Overall impression
+Excellent
+/5/ /4/ /3/ /2/ /1/ Very Poor
+Signature of the Evaluator
+Name of Organization
+Seal
+Date:
