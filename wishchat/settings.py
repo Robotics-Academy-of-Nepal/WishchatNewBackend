@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-pg6iebm&1qiw#5+uhspvoxgv$hin+h5qd%zx1kxnm#6%z)#u(t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','192.168.1.20','kfwsdw58-8000.inc1.devtunnels.ms','localhost','kfwsdw58-9000.inc1.devtunnels.ms']
+ALLOWED_HOSTS = ['127.0.0.1','192.168.1.20','kfwsdw58-8000.inc1.devtunnels.ms','localhost','kfwsdw58-9000.inc1.devtunnels.ms','wishchat.goodwish.com.np']
 
 
 SITE_ID = 3
