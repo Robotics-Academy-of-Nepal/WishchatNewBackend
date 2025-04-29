@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authentication import TokenAuthentication
-from registration.models import Chatbot, ChatbotAPILog  # Import ChatbotAPILog
+from registration.models import Chatbot, ChatbotAPILog, ChatbotQuota
 from registration.serializers import ChatbotQuotaSerializer
 from .chatbot import query_assistant
 from django.db.models import Count
@@ -261,12 +261,11 @@ def chatbot_quota_data(request, chatbot_id):
         if request.user.organization != chatbot.organization:
             return JsonResponse({'error': 'You do not have permission to access this chatbot.'}, status=403)
         
-        quota = ChatbotQuotaSerializer.objects.get(chatbot=chatbot)
+        quota = ChatbotQuota.objects.get(chatbot=chatbot)
 
         serializer = ChatbotQuotaSerializer(quota)
 
-        return JsonResponse({''
-        'quota': serializer.data}, status=200)
+        return JsonResponse({'quota': serializer.data}, status=200)
     
     except Chatbot.DoesNotExist:
         return JsonResponse({'error': 'Chatbot not found.'}, status=404)
