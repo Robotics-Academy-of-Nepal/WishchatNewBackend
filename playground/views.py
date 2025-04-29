@@ -199,6 +199,8 @@ def chatbot_traffic_stats(request, chatbot_id):
         print("this is the logs with queries: ", logs_with_queries)
         filtered_logs = [log for log in logs_with_queries if log.query.lower() and not any(kw in log.query.lower() for kw in conversational_keywords)]
 
+        print("This is the filtered logs: ", filtered_logs)
+        
         if not filtered_logs:
             top_searched_queries = []
             print("Top searched queries list-1: ",top_searched_queries )
