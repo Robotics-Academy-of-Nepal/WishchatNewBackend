@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from django.conf import settings
-from .serializers import (GoogleAuthSerializer, 
+from .serializers import (ChatbotListSerializer, GoogleAuthSerializer, 
                           GoogleUserSerializer, 
                           OrganizationInvitationSerializer, 
                           CustomUserSerializer,
@@ -550,7 +550,7 @@ class ChatbotViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         chatbot_count = queryset.count()
-        serializer = self.get_serializer(queryset, many=True)
+        serializer = ChatbotListSerializer(queryset, many=True)
         return Response({
             "count": chatbot_count,
             "chatbots": serializer.data
