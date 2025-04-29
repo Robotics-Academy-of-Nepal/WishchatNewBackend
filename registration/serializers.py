@@ -218,7 +218,7 @@ class ChatbotListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Chatbot
-        fields = ['id', 'name', 'api_key', 'azure_index_name', 'quota']
+        fields = ['id', 'name', 'api_key', 'azure_index_name', 'quota', 'system_prompt', 'domain_name']
 
 class ChatbotPaymentTransactionSerializer(serializers.ModelSerializer):
     chatbot = ChatbotSerializer(read_only=True)
