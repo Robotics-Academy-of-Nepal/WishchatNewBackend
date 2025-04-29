@@ -208,11 +208,17 @@ class ChatbotSerializer(serializers.ModelSerializer):
 
         return chatbot
 
-class ChatbotListSerializer(serializers.ModelSerializer):
-    messages_used = serializers.IntegerField(source='quota.messages_used')
+class ChatbotListQuotaSerializer(serializers.ModelSerializer):
     class Meta:
-        model=Chatbot
-        fields = ['id', 'name', 'api_key', 'azure_index_name', 'messages_used']
+        model = ChatbotQuota
+        fields = ['messages_used']
+
+class ChatbotListSerializer(serializers.ModelSerializer):
+    quota = ChatbotListQuotaSerializer(read_only=True)
+
+    class Meta:
+        model = Chatbot
+        fields = ['id', 'name', 'api_key', 'azure_index_name', 'quota']
 
 class ChatbotPaymentTransactionSerializer(serializers.ModelSerializer):
     chatbot = ChatbotSerializer(read_only=True)
