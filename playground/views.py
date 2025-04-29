@@ -200,6 +200,7 @@ def chatbot_traffic_stats(request, chatbot_id):
 
         if not filtered_logs:
             top_searched_queries = []
+            print("Top searched queries list-1: ",top_searched_queries )
         else:
             # Collect queries, embeddings, and timestamps
             valid_data = [
@@ -227,6 +228,7 @@ def chatbot_traffic_stats(request, chatbot_id):
                 # Select top clusters and first query by timestamp
                 top_clusters = sorted(range(len(cluster_counts)), key=lambda x: cluster_counts[x], reverse=True)[:5]
                 top_searched_queries = []
+                print("Top searched queries list-2: ",top_searched_queries )
                 for cluster in top_clusters:
                     cluster_queries = cluster_data[cluster]
                     if cluster_queries:
@@ -241,6 +243,9 @@ def chatbot_traffic_stats(request, chatbot_id):
                     normalized_query = query.strip().replace('\n', '').replace('\\', '')
                     query_counts[normalized_query] = query_counts.get(normalized_query, 0) + 1
                 top_searched_queries = [{'query': q, 'count': c} for q, c in sorted(query_counts.items(), key=lambda x: x[1], reverse=True)[:5]]
+
+
+        print("Top searched queries list-3: ",top_searched_queries )
 
         return JsonResponse({
             'top_peak_traffic_hours': top_peak_traffic_hours,
