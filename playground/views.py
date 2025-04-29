@@ -196,6 +196,7 @@ def chatbot_traffic_stats(request, chatbot_id):
         # Filter out conversational queries
         conversational_keywords = {'hello', 'hi', 'hey', 'namaste', 'नमस्ते', 'how are you', 'कस्तो छ', 'bye', 'goodbye'}
         logs_with_queries = logs.filter(query__isnull=False).exclude(query='')
+        print("this is the logs with queries: ", logs_with_queries)
         filtered_logs = [log for log in logs_with_queries if log.query.lower() and not any(kw in log.query.lower() for kw in conversational_keywords)]
 
         if not filtered_logs:
