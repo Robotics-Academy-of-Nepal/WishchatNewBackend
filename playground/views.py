@@ -196,10 +196,13 @@ def chatbot_traffic_stats(request, chatbot_id):
         # Filter out conversational queries
         conversational_keywords = {'hello', 'hi', 'hey', 'namaste', 'नमस्ते', 'how are you', 'कस्तो छ', 'bye', 'goodbye'}
         logs_with_queries = logs.filter(query__isnull=False).exclude(query='')
+        print(f"Logs with queries: {logs_with_queries.count()}")
         print("this is the logs with queries: ", logs_with_queries)
         filtered_logs = [log for log in logs_with_queries if log.query.lower() and not any(kw in log.query.lower() for kw in conversational_keywords)]
+        print(f"Filtered logs: {len(filtered_logs)}")
+        for log in filtered_logs:
+            print(f"Query: {log.query}, Embedding exists: {log.get_embedding() is not None}")
 
-        print("This is the filtered logs: ", filtered_logs)
         
         if not filtered_logs:
             top_searched_queries = []
@@ -211,6 +214,12 @@ def chatbot_traffic_stats(request, chatbot_id):
                 for log in filtered_logs
                 if log.get_embedding() is not None and not np.any(np.isnan(log.get_embedding()))
             ]
+
+            print(f"Valid data entries: {len(valid_data)}")
+            for query, embedding, timestamp in valid_data:
+                print(f"Valid query: {query}, Timestamp: {timestamp}")
+
+                
 
             if len(valid_data) >= 2:
                 # Cluster queries using embeddings
