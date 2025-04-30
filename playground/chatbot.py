@@ -94,7 +94,7 @@ def query_assistant(user_input, chatbot, prompt='', temperature=0.7, user_id=Non
         query = user_input
     )
     log_entry.set_embedding(query_embedding)
-    log_entry.save
+    log_entry.save()
 
     # Check quota
     if hasattr(chatbot, 'quota') and not chatbot.quota.can_send_message():
