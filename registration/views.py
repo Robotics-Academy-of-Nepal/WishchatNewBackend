@@ -1367,3 +1367,5 @@ class UpdateStaffProfileView(APIView):
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
+    
+

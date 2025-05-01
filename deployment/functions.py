@@ -229,7 +229,9 @@ def instagram_messages(sender_id, message_text, instagram_page_id):
             "message": {"text": bot_response}
         }
         response = requests.post(chatbot.instagram_url, headers=headers, json=payload)
-        return response.json()
+        response_data = response.json()
+        print(f"Instagram Message Send Response: {response_data}")  # Log the response
+        return response_data
     except Exception as e:
         print(f"Error sending Instagram message: {str(e)}")
         return {"error": str(e)}

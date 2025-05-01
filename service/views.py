@@ -2,13 +2,14 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework import status
-from registration.models import Chatbot, ChatbotQuota, SubscriptionPlan
+from registration.models import Chatbot, ChatbotQuota, SubscriptionPlan, Organization
 from registration.serializers import (
     GracePeriodUpdateSerializer,
     SendingStatusUpdateSerializer,
     MessageLimitUpdateSerializer,
     SubscriptionPlanSerializer,
-    TemporaryMessageBoostSerializer
+    TemporaryMessageBoostSerializer,
+    OrganizationDetailSerializer
 )
 from django.utils import timezone
 
@@ -159,3 +160,39 @@ class RevokeLifetimeStatusView(APIView):
             }, status=status.HTTP_200_OK)
         except Chatbot.DoesNotExist:
             return Response({"error": "Chatbot not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+class AdminOrganizationOverviewView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            if not request.user.is_superuser or request.user.is_staff:
+                return Response({
+                    "error": "Only superadmins can create staff users"
+                }, status=status.HTTP_403_FORBIDDEN)
+            month_param = request.query_params.get('month', None)
+
+            # Get all organizations
+            organizations = Organization.objects.all()
+            organization_count = organizations.count()
+
+            # Serialize data with month_param in context
+            serializer = OrganizationDetailSerializer(
+                organizations,
+                many=True,
+                context={'month_param': month_param}
+            )
+
+            # Prepare response
+            response_data = {
+                "organization_count": organization_count,
+                "organizations": serializer.data
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({
+                "status": "Failed",
+                "error": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

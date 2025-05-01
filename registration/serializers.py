@@ -10,11 +10,13 @@ from .models import (
     ChatbotFAQ,
     ChatbotColor,
     CouponCode,
-    SubscriptionPlan
+    SubscriptionPlan,
+    ChatbotTokenUsage
 )
 from django.utils import timezone
 from datetime import timedelta
 from django.conf import settings
+from django.db.models import Sum
 
 class GoogleAuthSerializer(serializers.Serializer):
     """Serializer to validate Google OAuth token."""
@@ -517,3 +519,58 @@ class CouponCodeRedemptionSerializer(serializers.Serializer):
             'coupon_code': code,
             'subscription_plan_id': subscription_plan.id
         }
+    
+
+class MemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = ['email']
+
+
+class ChatbotTokenSerializer(serializers.ModelSerializer):
+    chatbot_token_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Chatbot
+        fields = ['id', 'name', 'chatbot_token_count']
+
+    def get_chatbot_token_count(self, obj):
+        month_param = self.context.get('month_param')
+        if month_param:
+            try:
+                year, month = map(int, month_param.split('-'))
+                token_usage = ChatbotTokenUsage.objects.filter(
+                    chatbot=obj,
+                    timestamp__year=year,
+                    timestamp__month=month
+                ).aggregate(total=Sum('total_tokens'))
+                return token_usage['total'] or 0
+            except (ValueError, TypeError):
+                return 0
+        else:
+            token_usage = ChatbotTokenUsage.objects.filter(
+                chatbot=obj
+            ).aggregate(total=Sum('total_tokens'))
+            return token_usage['total'] or 0
+
+class OrganizationDetailSerializer(serializers.ModelSerializer):
+    organization_token_count = serializers.SerializerMethodField()
+    organization_members = MemberSerializer(many=True, source='members')
+    chatbots = ChatbotTokenSerializer(many=True)
+
+    class Meta:
+        model = Organization
+        fields = ['id', 'name', 'organization_token_count', 'organization_members', 'chatbots']
+
+    def get_organization_token_count(self, obj):
+        month_param = self.context.get('month_param')
+        if month_param:
+            try:
+                year, month = map(int, month_param.split('-'))
+                token_usage = obj.total_tokens_used_by_month(year, month)
+                return token_usage['total'] or 0
+            except (ValueError, TypeError):
+                return 0
+        else:
+            token_usage = obj.total_tokens_used()
+            return token_usage['total'] or 0
