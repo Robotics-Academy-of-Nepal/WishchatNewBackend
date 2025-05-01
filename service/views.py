@@ -166,9 +166,10 @@ class AdminOrganizationOverviewView(APIView):
 
     def get(self, request):
         try:
+            print(request.user)
             if not request.user.is_superuser or request.user.is_staff:
                 return Response({
-                    "error": "Only superadmins can create staff users"
+                    "error": "Only superadmins and staffs can access this data."
                 }, status=status.HTTP_403_FORBIDDEN)
             month_param = request.query_params.get('month', None)
 
