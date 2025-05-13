@@ -12,10 +12,6 @@ from .serializers import (ChatbotListSerializer, GoogleAuthSerializer,
                           ChatbotSerializer,
                           ChatbotFAQSerializer,
                           ChatbotColorSerializer,
-                          GracePeriodUpdateSerializer,
-                          SendingStatusUpdateSerializer,
-                          MessageLimitUpdateSerializer,
-                          ChatbotQuotaSerializer,
                           CouponCodeRedemptionSerializer,
                           CouponCodeSerializer)
 from .models import (CustomUser,
@@ -40,6 +36,7 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth import authenticate
 import logging
+from service.models import AdminActivityLog
 
 logger = logging.getLogger(__name__)
 
@@ -1086,10 +1083,10 @@ class AddDomainNameView(APIView):
 
 
 class ChatbotPublicInfoView(APIView):
-    permission_classes = [AllowAny]  # No user authentication required
+    permission_classes = [AllowAny] 
     
     def get(self, request):
-        # Get domain from request headers
+        
         domain_name = request.headers.get('X-Domain-Name')  
         print(domain_name)
         
@@ -1100,20 +1097,20 @@ class ChatbotPublicInfoView(APIView):
             }, status=status.HTTP_400_BAD_REQUEST)
         
         try:
-            # Find chatbot by domain name
+           
             chatbot = Chatbot.objects.get(domain_name=domain_name)
             
-            # Serialize FAQ data
+           
             faqs = ChatbotFAQSerializer(chatbot.faqs.all(), many=True).data
             
-            # Serialize color data (assuming one-to-one relationship)
+            
             colors = ChatbotColorSerializer(chatbot.colors).data if hasattr(chatbot, 'colors') else None
             
-            # Serialize quota data
+            
             can_send_message = chatbot.quota.can_send_message() if hasattr(chatbot, 'quota') else False
             
             api_key = chatbot.api_key
-            # Prepare response data
+            
             response_data = {
                 "status": "success",
                 "chatbot": {
@@ -1152,6 +1149,10 @@ class CouponCodeCreateView(APIView):
         serializer = CouponCodeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            AdminActivityLog.objects.create(
+                user=request.user,
+                action=f"created coupon code {serializer.instance.code}"
+            )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
@@ -1166,10 +1167,10 @@ class CouponCodeRedeemView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class AdminEmailPasswordLoginView(APIView):
-    permission_classes = [AllowAny]  # Allow unauthenticated access to the endpoint
+    permission_classes = [AllowAny]  
 
     def post(self, request):
-        login = request.data.get('login')  # Accept 'login' field for username or email
+        login = request.data.get('login')  
         password = request.data.get('password')
 
         # Validate input
@@ -1236,27 +1237,27 @@ class CreateStaffView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        # Ensure the requesting user is a superuser
+        
         if not request.user.is_superuser:
             return Response({
                 "error": "Only superadmins can create staff users"
             }, status=status.HTTP_403_FORBIDDEN)
 
-        # Extract data from request
+       
         email = request.data.get('email')
         username = request.data.get('username')
         password = request.data.get('password')
         first_name = request.data.get('first_name')
         last_name = request.data.get('last_name')
-        phone_number = request.data.get('phone_number', None)  # Optional field
+        phone_number = request.data.get('phone_number', None)  
 
-        # Validate required fields
+        
         if not all([email, username, password, first_name, last_name]):
             return Response({
                 "error": "Email, username, password, first name, and last name are required"
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        # Check if email or username already exists
+        
         if CustomUser.objects.filter(email=email).exists():
             return Response({
                 "error": "A user with this email already exists"
@@ -1266,7 +1267,7 @@ class CreateStaffView(APIView):
                 "error": "A user with this username already exists"
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        # Create the staff user
+        
         try:
             user = CustomUser.objects.create_user(
                 email=email,
@@ -1274,23 +1275,27 @@ class CreateStaffView(APIView):
                 password=password,
                 first_name=first_name,
                 last_name=last_name,
-                phone_number=phone_number,  # Optional, can be None
-                is_staff=True,  # Set as staff
-                is_superuser=False,  # Not a superadmin
-                is_active=True  # Active by default
+                phone_number=phone_number,  
+                is_staff=True,  
+                is_superuser=False,  
+                is_active=True  
             )
         except ValueError as e:
             return Response({
                 "error": str(e)
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        # Generate auth token for the new user
+        
         token, _ = Token.objects.get_or_create(user=user)
 
-        # Serialize user data
+       
         user_serializer = CustomUserSerializer(user)
 
-        # Prepare response
+        AdminActivityLog.objects.create(
+            user=request.user,
+            action=f"created staff user {user.username}"
+        )
+        
         response_data = {
             "message": "Staff user created successfully",
             "token": token.key,
