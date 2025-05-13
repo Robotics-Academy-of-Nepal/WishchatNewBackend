@@ -14,7 +14,7 @@ from .serializers import (ChatbotListSerializer, GoogleAuthSerializer,
                           ChatbotColorSerializer,
                           CouponCodeRedemptionSerializer,
                           CouponCodeSerializer)
-from .models import (CustomUser,
+from .models import (CouponCode, CustomUser,
                     OrganizationInvitation,
                     Organization,
                     Chatbot,
@@ -37,6 +37,7 @@ from django.db import models
 from django.contrib.auth import authenticate
 import logging
 from service.models import AdminActivityLog
+from rest_framework.exceptions import PermissionDenied
 
 logger = logging.getLogger(__name__)
 
@@ -1143,9 +1144,13 @@ def privacy_policy(request):
 
 
 class CouponCodeCreateView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        # Check if user is staff or superadmin
+        if not (request.user.is_staff or request.user.is_superuser):
+            raise PermissionDenied("Only staff or superadmin users can create coupon codes.")
+
         serializer = CouponCodeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -1155,6 +1160,19 @@ class CouponCodeCreateView(APIView):
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class CouponCodeListActiveView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = CouponCodeSerializer
+    queryset = CouponCode.objects.filter(is_active=True)
+
+    def get(self, request, *args, **kwargs):
+        # Check if user is staff or superadmin
+        if not (request.user.is_staff or request.user.is_superuser):
+            raise PermissionDenied("Only staff or superadmin users can view active coupon codes.")
+
+        return self.list(request, *args, **kwargs)
     
 class CouponCodeRedeemView(APIView):
     permission_classes = [IsAuthenticated]

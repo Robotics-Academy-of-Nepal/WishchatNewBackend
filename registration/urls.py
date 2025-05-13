@@ -22,7 +22,8 @@ from .views import (
     CouponCodeRedeemView,
     AdminEmailPasswordLoginView,
     UpdateStaffProfileView,
-    CreateStaffView
+    CreateStaffView,
+    CouponCodeListActiveView
 )
 from rest_framework.routers import DefaultRouter
 
@@ -50,6 +51,7 @@ urlpatterns = [
     path('chatbot/public-info/', ChatbotPublicInfoView.as_view(), name='chatbot-public-info'),
     path('<int:org_id>/chatbots/list/', AdminChatbotlistView.as_view(), name='AdminChatbotlist'),
     path('set/coupon-codes/', CouponCodeCreateView.as_view(), name='coupon-code-create'),
+    path('set/coupon-codes/active/', CouponCodeListActiveView.as_view(), name='coupon-code-list-active'),
     path('coupon/redeem/', CouponCodeRedeemView.as_view(), name='coupon-code-redeem'),
     path('staff/create/', CreateStaffView.as_view(), name='create-staff'),
     path('staff/profile/update/', UpdateStaffProfileView.as_view(),name='update-staff-profile'),
