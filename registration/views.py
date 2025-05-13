@@ -1164,15 +1164,14 @@ class CouponCodeCreateView(APIView):
 
 class CouponCodeListActiveView(APIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = CouponCodeSerializer
-    queryset = CouponCode.objects.filter(is_active=True)
-
+    
     def get(self, request, *args, **kwargs):
-        # Check if user is staff or superadmin
         if not (request.user.is_staff or request.user.is_superuser):
             raise PermissionDenied("Only staff or superadmin users can view active coupon codes.")
-
-        return self.list(request, *args, **kwargs)
+            
+        coupons = CouponCode.objects.filter(is_active=True)
+        serializer = CouponCodeSerializer(coupons, many=True)
+        return Response(serializer.data)
     
 class CouponCodeRedeemView(APIView):
     permission_classes = [IsAuthenticated]
