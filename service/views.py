@@ -13,7 +13,7 @@ from registration.serializers import (
 )
 from django.utils import timezone
 from .models import AdminActivityLog
-
+from .serializers import AdminActivityLogSerializer
 
 
 class GracePeriodModificationView(APIView):
@@ -198,7 +198,7 @@ class RevokeLifetimeStatusView(APIView):
                     action=f"revoked lifetime status for chatbot {chatbot.name}",
                     target_chatbot=chatbot
                 )
-                
+
             return Response({
                 "message": "Lifetime status revoked successfully"
             }, status=status.HTTP_200_OK)
@@ -241,3 +241,15 @@ class AdminOrganizationOverviewView(APIView):
                 "status": "Failed",
                 "error": str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+class AdminActivityLogListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        logs = AdminActivityLog.objects.all().order_by('-timestamp')
+        serializer = AdminActivityLogSerializer(logs, many=True)
+        return Response({
+            "message": "Activity logs retrieved successfully",
+            "logs": serializer.data
+        }, status=status.HTTP_200_OK)
