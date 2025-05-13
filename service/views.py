@@ -193,11 +193,11 @@ class RevokeLifetimeStatusView(APIView):
                 quota.trial_start_date = timezone.now()
                 quota.save()
 
-                AdminActivityLog.objects.create(
-                    user=request.user,
-                    action=f"revoked lifetime status for chatbot {chatbot.name}",
-                    target_chatbot=chatbot
-                )
+            AdminActivityLog.objects.create(
+                user=request.user,
+                action=f"revoked lifetime status for chatbot {chatbot.name}",
+                target_chatbot=chatbot
+            )
 
             return Response({
                 "message": "Lifetime status revoked successfully"
