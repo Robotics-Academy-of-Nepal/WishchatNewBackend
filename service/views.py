@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework import status
-from registration.models import Chatbot, ChatbotQuota, SubscriptionPlan, Organization
+from registration.models import Chatbot, CustomUser, SubscriptionPlan, Organization
 from registration.serializers import (
     GracePeriodUpdateSerializer,
     SendingStatusUpdateSerializer,
@@ -11,12 +11,13 @@ from registration.serializers import (
     TemporaryMessageBoostSerializer,
     OrganizationDetailSerializer
 )
+from rest_framework.generics import ListAPIView
 from django.utils import timezone
 from .models import AdminActivityLog
-from .serializers import AdminActivityLogSerializer
+from .serializers import AdminActivityLogSerializer, AdminUserSerializer
 from rest_framework.exceptions import PermissionDenied
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.db.models import Q
 
 class GracePeriodModificationView(APIView):
     permission_classes = [IsAdminUser]
@@ -298,3 +299,24 @@ class AdminActivityLogListView(APIView):
             "message": "Activity logs retrieved successfully",
             "logs": serializer.data
         }, status=status.HTTP_200_OK)
+    
+
+class AdminUserListView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = AdminUserSerializer
+    queryset = CustomUser.objects.filter(is_active=True).filter(
+        Q(is_staff=True) | Q(is_superuser=True)
+    )
+
+    def get(self, request, *args, **kwargs):
+        # Check if user is staff or superadmin
+        if not (request.user.is_staff or request.user.is_superuser):
+            raise PermissionDenied("Only staff or superadmin users can view admin user list.")
+
+        # Log the activity
+        AdminActivityLog.objects.create(
+            user=request.user,
+            action="viewed list of superadmin and staff users"
+        )
+
+        return self.list(request, *args, **kwargs)

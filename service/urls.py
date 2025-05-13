@@ -10,7 +10,8 @@ from .views import (
     RevokeLifetimeStatusView,
     AdminOrganizationOverviewView,
     AdminActivityLogListView,
-    SubscriptionPlanDeleteView
+    SubscriptionPlanDeleteView,
+    AdminUserListView
 )
 
 urlpatterns = [
@@ -25,4 +26,5 @@ urlpatterns = [
     path('organization-overview/', AdminOrganizationOverviewView.as_view(), name='admin-organization-overview'),
     path('activity-logs/', AdminActivityLogListView.as_view(), name='admin_activity_log_list'),
     path('subscription-plans/<int:pk>/delete/', SubscriptionPlanDeleteView.as_view(), name='subscription-plan-delete'),
+    path('users/admins/', AdminUserListView.as_view(), name='admin-user-list'),
 ]   
