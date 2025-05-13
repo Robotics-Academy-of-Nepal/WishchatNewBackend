@@ -14,6 +14,8 @@ from registration.serializers import (
 from django.utils import timezone
 from .models import AdminActivityLog
 from .serializers import AdminActivityLogSerializer
+from rest_framework.exceptions import PermissionDenied
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class GracePeriodModificationView(APIView):
@@ -88,9 +90,13 @@ class UpdateMessageLimitView(APIView):
             return Response({"error": "Chatbot not found"}, status=status.HTTP_404_NOT_FOUND)
         
 class CreateSubscriptionPlanView(APIView):
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        
+        if not (request.user.is_staff or request.user.is_superuser):
+            raise PermissionDenied("Only staff or superadmin users can delete subscription plans.")
+        
         serializer = SubscriptionPlanSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -109,12 +115,51 @@ class ListSubscriptionPlansView(APIView):
     permission_classes = [IsAuthenticated]  
 
     def get(self, request):
+        
+        if not (request.user.is_staff or request.user.is_superuser):
+            raise PermissionDenied("Only staff or superadmin users can delete subscription plans.")
+        
         plans = SubscriptionPlan.objects.filter(is_active=True)
         serializer = SubscriptionPlanSerializer(plans, many=True)
         return Response({
             "message": "Active subscription plans retrieved successfully",
             "plans": serializer.data
         }, status=status.HTTP_200_OK)
+
+class SubscriptionPlanDeleteView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, pk):
+        
+        if not (request.user.is_staff or request.user.is_superuser):
+            raise PermissionDenied("Only staff or superadmin users can delete subscription plans.")
+
+        try:
+            
+            plan = SubscriptionPlan.objects.get(pk=pk)
+        except ObjectDoesNotExist:
+            return Response(
+                {"detail": "Subscription plan not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        
+        plan_name = plan.name
+
+        
+        plan.delete()
+
+        
+        AdminActivityLog.objects.create(
+            user=request.user,
+            action=f"deleted subscription plan '{plan_name}'"
+        )
+
+        return Response(
+            {"detail": f"Subscription plan '{plan_name}' deleted successfully."},
+            status=status.HTTP_200_OK
+        )
+
 
 class AssignLifetimePlanView(APIView):
     permission_classes = [IsAdminUser]

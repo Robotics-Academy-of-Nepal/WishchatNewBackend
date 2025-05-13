@@ -9,7 +9,8 @@ from .views import (
     TemporaryMessageBoostView,
     RevokeLifetimeStatusView,
     AdminOrganizationOverviewView,
-    AdminActivityLogListView
+    AdminActivityLogListView,
+    SubscriptionPlanDeleteView
 )
 
 urlpatterns = [
@@ -23,4 +24,5 @@ urlpatterns = [
     path('chatbots/<int:chatbot_id>/revoke-lifetime/', RevokeLifetimeStatusView.as_view(), name='revoke-lifetime-status'),
     path('organization-overview/', AdminOrganizationOverviewView.as_view(), name='admin-organization-overview'),
     path('activity-logs/', AdminActivityLogListView.as_view(), name='admin_activity_log_list'),
+    path('subscription-plans/<int:pk>/delete/', SubscriptionPlanDeleteView.as_view(), name='subscription-plan-delete'),
 ]   
