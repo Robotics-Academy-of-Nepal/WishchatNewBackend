@@ -117,9 +117,6 @@ class ListSubscriptionPlansView(APIView):
 
     def get(self, request):
         
-        if not (request.user.is_staff or request.user.is_superuser):
-            raise PermissionDenied("Only staff or superadmin users can delete subscription plans.")
-        
         plans = SubscriptionPlan.objects.filter(is_active=True)
         serializer = SubscriptionPlanSerializer(plans, many=True)
         return Response({
