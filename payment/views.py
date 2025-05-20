@@ -133,7 +133,7 @@ class ChatbotQuotaView(APIView):
             chatbot = Chatbot.objects.get(id=chatbot_id)
             quota = chatbot.quota
             serializer = ChatbotQuotaSerializer(quota)
-            return Response({serializer.data}, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         
         except Chatbot.DoesNotExist:
             return Response({
