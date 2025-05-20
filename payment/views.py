@@ -1,7 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from registration.models import Chatbot , ChatbotPaymentTransaction, CouponCode, CustomUser
+from registration.models import Chatbot , ChatbotPaymentTransaction, CouponCode, CustomUser, ChatbotQuota
+from registration.serializers import ChatbotQuotaSerializer
 import base64
 import json
 from rest_framework.permissions import IsAuthenticated
@@ -122,3 +123,19 @@ class ChatbotPaymentListView(APIView):
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
+    
+class ChatbotQuotaView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self,request,chatbot_id):
+        
+        try:
+            chatbot = Chatbot.objects.get(id=chatbot_id)
+            quota = chatbot.quota
+            serializer = ChatbotQuotaSerializer(quota)
+            return Response({serializer.data}, status=status.HTTP_200_OK)
+        
+        except Chatbot.DoesNotExist:
+            return Response({
+                "error": "Chatbot not found"
+            }, status=status.HTTP_404_NOT_FOUND)

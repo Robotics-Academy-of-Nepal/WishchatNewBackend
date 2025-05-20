@@ -972,10 +972,10 @@ class OrganizationTokenCountView(APIView):
                 )
 
 class ChatbotTokenCountView(APIView):
-    permission_classes = [IsAuthenticated]  # Adjust permissions as needed
+    permission_classes = [IsAuthenticated]  
 
     def get(self, request, chatbot_id):
-        # Try to fetch the chatbot by ID
+       
         try:
             chatbot = Chatbot.objects.get(id=chatbot_id)
         except Chatbot.DoesNotExist:
@@ -1027,7 +1027,7 @@ class ChatbotTokenCountView(APIView):
                 }, status=400)
 
         else:
-            # Handle total token usage (no month filter)
+            
             try:
                 token_usage = ChatbotTokenUsage.objects.filter(
                     chatbot=chatbot
