@@ -6,6 +6,7 @@ from registration.serializers import ChatbotQuotaSerializer
 import base64
 import json
 from rest_framework.permissions import IsAuthenticated
+from .serializers import MessageCountSerializer
 
 
 class PaymentSuccessView(APIView):
@@ -133,6 +134,21 @@ class ChatbotQuotaView(APIView):
             chatbot = Chatbot.objects.get(id=chatbot_id)
             quota = chatbot.quota
             serializer = ChatbotQuotaSerializer(quota)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        except Chatbot.DoesNotExist:
+            return Response({
+                "error": "Chatbot not found"
+            }, status=status.HTTP_404_NOT_FOUND)
+        
+class MessageQuotaView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request,chatbot_id):
+        try:
+            chatbot = Chatbot.objects.get(id=chatbot_id)
+            quota = chatbot.quota
+            serializer = MessageCountSerializer(quota)
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         except Chatbot.DoesNotExist:

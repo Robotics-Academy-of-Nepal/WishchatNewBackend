@@ -130,6 +130,7 @@ class ChatbotQuotaSerializer(serializers.ModelSerializer):
     trial_end_date = serializers.SerializerMethodField()
     subscription_plan = SubscriptionPlanSerializer(read_only=True)
     message_limit = serializers.SerializerMethodField()
+    created_at = serializers.SerializerMethodField()
 
     class Meta:
         model = ChatbotQuota
@@ -152,6 +153,7 @@ class ChatbotQuotaSerializer(serializers.ModelSerializer):
             'grace_period_days',
             'is_sending_enabled',
             'last_payment_date',
+            'created_at',
         ]
         read_only_fields = [
             'messages_used',
@@ -161,6 +163,7 @@ class ChatbotQuotaSerializer(serializers.ModelSerializer):
             'is_paid',
             'subscription_end_date',
             'last_reset',
+            'created_at',
         ]
 
     def get_is_trial_valid(self, obj):
@@ -179,6 +182,9 @@ class ChatbotQuotaSerializer(serializers.ModelSerializer):
 
     def get_message_limit(self, obj):
         return obj.get_message_limit()
+    
+    def get_created_at(self, obj):
+        return obj.chatbot.created_at
 
 
 class ChatbotSerializer(serializers.ModelSerializer):
@@ -204,8 +210,6 @@ class ChatbotSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         organization = validated_data.pop('organization')
         chatbot = Chatbot.objects.create(**validated_data, organization=organization)
-
-        # Automatically create the quota for the chatbot (7-day trial, 5000 messages)
         ChatbotQuota.objects.create(chatbot=chatbot)
 
         return chatbot
