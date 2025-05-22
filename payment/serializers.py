@@ -18,5 +18,5 @@ class MessageCountSerializer(serializers.ModelSerializer):
             'message_limit',
         ]
 
-        def get_message_limit(self, obj):
-            return obj.get_message_limit()
+    def get_message_limit(self, obj):
+        return obj.get_message_limit()
