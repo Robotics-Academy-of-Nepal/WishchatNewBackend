@@ -21,12 +21,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-pg6iebm&1qiw#5+uhspvoxgv$hin+h5qd%zx1kxnm#6%z)#u(t'
+SECRET_KEY = "django-insecure-pg6iebm&1qiw#5+uhspvoxgv$hin+h5qd%zx1kxnm#6%z)#u(t"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','192.168.1.20','kfwsdw58-8000.inc1.devtunnels.ms','localhost','kfwsdw58-9000.inc1.devtunnels.ms','wishchat.goodwish.com.np']
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "192.168.1.20",
+    "kfwsdw58-8000.inc1.devtunnels.ms",
+    "localhost",
+    "kfwsdw58-9000.inc1.devtunnels.ms",
+    "wishchat.goodwish.com.np",
+]
 
 
 SITE_ID = 3
@@ -34,89 +41,85 @@ SITE_ID = 3
 # Application definition
 
 INSTALLED_APPS = [
-    'registration.apps.RegistrationConfig',
-    'storage',
-    'playground',
-    'deployment',
-    'payment',
-    'service',
-    'corsheaders',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google'
+    "registration.apps.RegistrationConfig",
+    "storage",
+    "playground",
+    "deployment",
+    "payment",
+    "service",
+    "corsheaders",
+    "rest_framework",
+    "rest_framework.authtoken",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django.contrib.sites",
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.google",
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "SCOPE":[
-            "profile",
-            "email"
-        ],
-        "AUTH_PARAMS" : {"access_type": "online" }
-    }
+    "google": {"SCOPE": ["profile", "email"], "AUTH_PARAMS": {"access_type": "online"}}
 }
 
-GOOGLE_OAUTH2_CLIENT_ID = '675550706414-4n7nop63elgh5a5bbiovb47p7v5ml0ia.apps.googleusercontent.com'
-#GOOGLE_OAUTH2_CLIENT_ID= "407408718192.apps.googleusercontent.com"
+GOOGLE_OAUTH2_CLIENT_ID = (
+    "675550706414-4n7nop63elgh5a5bbiovb47p7v5ml0ia.apps.googleusercontent.com"
+)
+# GOOGLE_OAUTH2_CLIENT_ID= "407408718192.apps.googleusercontent.com"
 
 
-AUTHENTICATION_BACKENDS=[
-    'django.contrib.auth.backends.ModelBackend',
-    "allauth.account.auth_backends.AuthenticationBackend"
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
-AUTH_USER_MODEL = 'registration.CustomUser'
+AUTH_USER_MODEL = "registration.CustomUser"
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
     ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
     ],
 }
 
-ROOT_URLCONF = 'wishchat.urls'
+ROOT_URLCONF = "wishchat.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'wishchat.wsgi.application'
+WSGI_APPLICATION = "wishchat.wsgi.application"
 
 
 # Database
@@ -130,13 +133,13 @@ WSGI_APPLICATION = 'wishchat.wsgi.application'
 # }
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'wishchat',
-        'USER': 'wishchat_user',
-        'PASSWORD': 'wishchat123',
-        'HOST': 'localhost',  # Use '127.0.0.1' or the IP address of the server
-        'PORT': '5432',       # Default PostgreSQL port
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "wishchat",
+        "USER": "postgres",
+        "PASSWORD": "4290",
+        "HOST": "localhost",  # Use '127.0.0.1' or the IP address of the server
+        "PORT": "5432",  # Default PostgreSQL port
     }
 }
 
@@ -146,16 +149,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -163,9 +166,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -175,20 +178,22 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-CORS_ALLOWED_ORIGINS = ['http://localhost:3000',
-                        'http://localhost:5173',
-                        'https://537vg0mp-5174.inc1.devtunnels.ms',
-                        'https://537vg0mp-5173.inc1.devtunnels.ms',
-                        'https://pr9rwc8x-5173.inc1.devtunnels.ms']
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://537vg0mp-5174.inc1.devtunnels.ms",
+    "https://537vg0mp-5173.inc1.devtunnels.ms",
+    "https://pr9rwc8x-5173.inc1.devtunnels.ms",
+]
 
 CORS_ALLOW_METHODS = (
     "DELETE",
@@ -206,25 +211,25 @@ CORS_ALLOW_HEADERS = (
     "user-agent",
     "x-csrftoken",
     "x-requested-with",
-    "x-api-key", 
-    'x-domain-name', 
+    "x-api-key",
+    "x-domain-name",
 )
 
 # Also add these settings
 CORS_ALLOW_CREDENTIALS = True
-CORS_EXPOSE_HEADERS = ['X-API-Key']
+CORS_EXPOSE_HEADERS = ["X-API-Key"]
 
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # or your SMTP server
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"  # or your SMTP server
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'tejashkatuwal99@gmail.com'
-EMAIL_HOST_PASSWORD = 'aepiayqwdylqdkag'  
+EMAIL_HOST_USER = "tejashkatuwal99@gmail.com"
+EMAIL_HOST_PASSWORD = "aepiayqwdylqdkag"
 
-FRONTEND_URL = 'https://537vg0mp-5173.inc1.devtunnels.ms'
+FRONTEND_URL = "https://537vg0mp-5173.inc1.devtunnels.ms"
 
-TIME_ZONE = 'Asia/Kathmandu'
+TIME_ZONE = "Asia/Kathmandu"
 USE_TZ = True
