@@ -41,6 +41,7 @@ class SubscriptionPlan(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    features = models.JSONField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.name} ({self.price} NPR, {self.message_limit} messages)"
