@@ -34,7 +34,7 @@ class InitiateEsewaPaymentView(APIView):
 
         total_amount = serializer.validated_data["total_amount"]
         coupon = serializer.validated_data.get("coupon", "")
-
+        plan_id = serializer.validated_data.get("plan_id")
         # Generate UUID
         transaction_uuid = str(uuid4())
 
@@ -47,7 +47,7 @@ class InitiateEsewaPaymentView(APIView):
             "product_code": "EPAYTEST",
             "product_service_charge": "0",
             "product_delivery_charge": "0",
-            "success_url": f"https://pr9rwc8x-5173.inc1.devtunnels.ms/payment-success/x{coupon}/",
+            "success_url": f"https://pr9rwc8x-5173.inc1.devtunnels.ms/payment-success/x{coupon}/{plan_id}/",
             "failure_url": "https://pr9rwc8x-5173.inc1.devtunnels.ms/payment-failure/",
             "signed_field_names": "total_amount,transaction_uuid,product_code",
         }
@@ -98,6 +98,7 @@ class PaymentSuccessView(APIView):
         chatbot_id = request.data.get("chatbot_id")
         # discount_applied = request.data.get('discount_applied', False)  # Boolean flag
         coupon_code = request.data.get("coupon_code")
+        subscription_plan_id = request.data.get("plan_id")
         print("coupon:", coupon_code)
 
         if not encoded_data:
@@ -152,15 +153,17 @@ class PaymentSuccessView(APIView):
                 chatbot=chatbot,
                 payment_amount=total_amount,
                 payment_transaction_code=transaction_code,
+                subscription_plan_id=subscription_plan_id,
                 coupon_code=coupon_code if coupon_code else None,
             )
+            print("Transaction created successfully:", transaction)
 
             return Response(
                 {
                     "status": "success",
                     "message": "Subscription updated successfully",
                     "chatbot_id": transaction.chatbot.id,
-                    "message_limit": transaction.chatbot.quota.message_limit,
+                    "message_limit": transaction.chatbot.quota.get_message_limit(),
                     "messages_used": transaction.chatbot.quota.messages_used,
                 },
                 status=status.HTTP_200_OK,

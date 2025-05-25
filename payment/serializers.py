@@ -24,3 +24,4 @@ class MessageCountSerializer(serializers.ModelSerializer):
 class PaymentInitiateSerializer(serializers.Serializer):
     total_amount = serializers.FloatField(min_value=0.01)
     coupon = serializers.CharField(max_length=100, required=False, allow_blank=True)
+    plan_id = serializers.IntegerField()
