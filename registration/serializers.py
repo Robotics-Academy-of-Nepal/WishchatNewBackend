@@ -558,7 +558,9 @@ class CouponCodeRedemptionSerializer(serializers.Serializer):
         chatbot = self.validated_data["chatbot"]
         coupon = CouponCode.objects.get(code=code)
 
-        discount = (coupon.discount_percent / 100) * float(subscription_plan.price)
+        discount = (float(coupon.discount_percent) / 100) * float(
+            subscription_plan.price
+        )
         discounted_amount = float(subscription_plan.price) - discount
 
         return {
