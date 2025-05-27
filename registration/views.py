@@ -116,6 +116,7 @@ class GoogleLoginView(APIView):
                     last_name=last_name,
                     password=None,
                     phone_number="",
+                    is_enterprise=False,
                 )
                 user.set_unusable_password()
                 user.save()
@@ -130,12 +131,13 @@ class GoogleLoginView(APIView):
             user_serializer = GoogleUserSerializer(user)
 
             has_organization = user.organization is not None
-
+            is_enterprise = user.is_enterprise
             response_data = {
                 "message": "Successfully logged in with Google",
                 "token": token.key,
                 "user": user_serializer.data,
                 "has_organization": has_organization,
+                "is_enterprise": is_enterprise,
                 "is_new_user": is_new_user
                 and not has_organization,  # Flag for frontend to show org creation form
                 "google_data": {
@@ -1479,3 +1481,35 @@ class UpdateStaffProfileView(APIView):
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
+
+
+class ToggleEnterpriseStatusView(APIView):
+    """View to toggle the enterprise status of a user."""
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        print(user.__dict__)
+        user_to_toggle_id = request.data.get("user_id")
+
+        if not user.is_staff and not user.is_superuser:
+            return Response(
+                {
+                    "error": "Only staff or superadmin users can toggle enterprise status."
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        user_to_toggle = get_object_or_404(CustomUser, id=user_to_toggle_id)
+
+        # Toggle the enterprise status
+        user_to_toggle.is_enterprise = not user_to_toggle.is_enterprise
+        user_to_toggle.save()
+
+        return Response(
+            {
+                "message": f"User {user_to_toggle.username} is now {'an enterprise' if user_to_toggle.is_enterprise else 'not an enterprise'}",
+                "is_enterprise": user_to_toggle.is_enterprise,
+            },
+            status=status.HTTP_200_OK,
+        )

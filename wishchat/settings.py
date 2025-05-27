@@ -229,7 +229,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "tejashkatuwal99@gmail.com"
 EMAIL_HOST_PASSWORD = "aepiayqwdylqdkag"
 
-FRONTEND_URL = "https://537vg0mp-5173.inc1.devtunnels.ms"
+FRONTEND_URL = "https://pr9rwc8x-5173.inc1.devtunnels.ms"
 
 TIME_ZONE = "Asia/Kathmandu"
 USE_TZ = True

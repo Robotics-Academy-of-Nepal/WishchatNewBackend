@@ -143,6 +143,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     # Custom User Manager
     objects = CustomUserManager()
 
+    is_enterprise = models.BooleanField(default=False)
+
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username", "first_name", "last_name"]
 
