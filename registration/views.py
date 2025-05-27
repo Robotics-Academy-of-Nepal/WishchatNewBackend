@@ -1,27 +1,34 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from django.shortcuts import render
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from django.conf import settings
-from .serializers import (ChatbotListSerializer, GoogleAuthSerializer, 
-                          GoogleUserSerializer, 
-                          OrganizationInvitationSerializer, 
-                          CustomUserSerializer,
-                          OrganizationSerializer,
-                          ChatbotSerializer,
-                          ChatbotFAQSerializer,
-                          ChatbotColorSerializer,
-                          CouponCodeRedemptionSerializer,
-                          CouponCodeSerializer)
-from .models import (CouponCode, CustomUser,
-                    OrganizationInvitation,
-                    Organization,
-                    Chatbot,
-                    ChatbotFAQ,
-                    ChatbotColor,
-                    ChatbotTokenUsage)
-from rest_framework import status , permissions , viewsets, decorators
+from .serializers import (
+    ChatbotListSerializer,
+    GoogleAuthSerializer,
+    GoogleUserSerializer,
+    OrganizationInvitationSerializer,
+    CustomUserSerializer,
+    OrganizationSerializer,
+    ChatbotSerializer,
+    ChatbotFAQSerializer,
+    ChatbotColorSerializer,
+    CouponCodeRedemptionSerializer,
+    CouponCodeSerializer,
+)
+from .models import (
+    CouponCode,
+    CustomUser,
+    OrganizationInvitation,
+    Organization,
+    Chatbot,
+    ChatbotFAQ,
+    ChatbotColor,
+    ChatbotTokenUsage,
+)
+from rest_framework import status, permissions, viewsets, decorators
 from rest_framework.authtoken.models import Token
 from django.core.exceptions import ValidationError
 from rest_framework.decorators import action
@@ -42,40 +49,44 @@ from rest_framework.exceptions import PermissionDenied
 logger = logging.getLogger(__name__)
 
 
-
-
 class GoogleLoginView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
         print("\n=== Starting Google Login Process ===")
         print("Received request data:", request.data)
-        
+
         serializer = GoogleAuthSerializer(data=request.data)
-        
+
         if not serializer.is_valid():
             print("Serializer validation failed:", serializer.errors)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            
-        google_token = serializer.validated_data['auth_token']
-        print("Retrieved token from request:", google_token[:20] + "..." if google_token else "None")
-        
+
+        google_token = serializer.validated_data["auth_token"]
+        print(
+            "Retrieved token from request:",
+            google_token[:20] + "..." if google_token else "None",
+        )
+
         try:
-            print("Attempting to verify Google token with client ID:", settings.GOOGLE_OAUTH2_CLIENT_ID)
+            print(
+                "Attempting to verify Google token with client ID:",
+                settings.GOOGLE_OAUTH2_CLIENT_ID,
+            )
             # Verify the Google token
             idinfo = id_token.verify_oauth2_token(
-                google_token, 
-                requests.Request(), 
-                settings.GOOGLE_OAUTH2_CLIENT_ID
+                google_token, requests.Request(), settings.GOOGLE_OAUTH2_CLIENT_ID
             )
             print("Token verification successful. User info:", idinfo)
 
             # Extract user info from Google response
-            email = idinfo['email']
-            first_name = idinfo.get('given_name', '')
-            last_name = idinfo.get('family_name', '')
-            print(f"Extracted user info - Email: {email}, First Name: {first_name}, Last Name: {last_name}")
-            
+            email = idinfo["email"]
+            first_name = idinfo.get("given_name", "")
+            last_name = idinfo.get("family_name", "")
+            print(
+                f"Extracted user info - Email: {email}, First Name: {first_name}, Last Name: {last_name}"
+            )
+
             # Check if user exists
             try:
                 print("Checking if user exists with email:", email)
@@ -85,13 +96,15 @@ class GoogleLoginView(APIView):
             except CustomUser.DoesNotExist:
                 print("User does not exist. Creating new user...")
                 # Create new user if doesn't exist
-                username = email.split('@')[0]  # Use email prefix as username
+                username = email.split("@")[0]  # Use email prefix as username
                 base_username = username
                 counter = 1
-                
+
                 # Handle username uniqueness
                 while CustomUser.objects.filter(username=username).exists():
-                    print(f"Username {username} already exists, trying {base_username}{counter}")
+                    print(
+                        f"Username {username} already exists, trying {base_username}{counter}"
+                    )
                     username = f"{base_username}{counter}"
                     counter += 1
 
@@ -101,8 +114,8 @@ class GoogleLoginView(APIView):
                     email=email,
                     first_name=first_name,
                     last_name=last_name,
-                    password=None,  
-                    phone_number="",  
+                    password=None,
+                    phone_number="",
                 )
                 user.set_unusable_password()
                 user.save()
@@ -112,7 +125,7 @@ class GoogleLoginView(APIView):
             # Generate or get auth token
             print("Generating auth token for user:", user.username)
             token, _ = Token.objects.get_or_create(user=user)
-            
+
             # Serialize user data
             user_serializer = GoogleUserSerializer(user)
 
@@ -123,274 +136,294 @@ class GoogleLoginView(APIView):
                 "token": token.key,
                 "user": user_serializer.data,
                 "has_organization": has_organization,
-                "is_new_user": is_new_user and not has_organization,  # Flag for frontend to show org creation form
+                "is_new_user": is_new_user
+                and not has_organization,  # Flag for frontend to show org creation form
                 "google_data": {
-                    "email": idinfo['email'],
-                    "full_name": idinfo.get('name', ''),
-                    "picture": idinfo.get('picture', ''),
-                    "given_name": idinfo.get('given_name', ''),
-                    "family_name": idinfo.get('family_name', ''),
-                    "locale": idinfo.get('locale', '')
-                }
+                    "email": idinfo["email"],
+                    "full_name": idinfo.get("name", ""),
+                    "picture": idinfo.get("picture", ""),
+                    "given_name": idinfo.get("given_name", ""),
+                    "family_name": idinfo.get("family_name", ""),
+                    "locale": idinfo.get("locale", ""),
+                },
             }
-            
+
             # Add organization information if user has one
             if has_organization:
                 response_data["organization"] = {
                     "id": user.organization.id,
                     "name": user.organization.name,
-                    "is_owner": user.is_owner
+                    "is_owner": user.is_owner,
                 }
-            
+
             # Check for invitation code in request or session
-            invitation_code = request.data.get('invitation_code') or request.session.get('pending_invitation_code')
-            
+            invitation_code = request.data.get(
+                "invitation_code"
+            ) or request.session.get("pending_invitation_code")
+
             # Clear the session variable if it exists
-            if request.session and 'pending_invitation_code' in request.session:
-                del request.session['pending_invitation_code']
-            
+            if request.session and "pending_invitation_code" in request.session:
+                del request.session["pending_invitation_code"]
+
             # Process invitation if code exists
             if invitation_code:
                 print(f"Processing invitation code: {invitation_code}")
                 try:
                     invitation = OrganizationInvitation.objects.get(
-                        invitation_code=invitation_code,
-                        status='pending'
+                        invitation_code=invitation_code, status="pending"
                     )
-                    
+
                     # Check that the authenticated user's email matches the invitation email
                     if invitation.email.lower() != email.lower():
-                        print(f"Email mismatch: invitation sent to {invitation.email}, but authenticated with {email}")
-                        response_data["invitation_error"] = f"This invitation was sent to {invitation.email}. Please log in with that email address."
+                        print(
+                            f"Email mismatch: invitation sent to {invitation.email}, but authenticated with {email}"
+                        )
+                        response_data["invitation_error"] = (
+                            f"This invitation was sent to {invitation.email}. Please log in with that email address."
+                        )
                     # Check if invitation is still valid
                     elif invitation.is_valid():
-                        print(f"Valid invitation found for organization: {invitation.organization.name}")
+                        print(
+                            f"Valid invitation found for organization: {invitation.organization.name}"
+                        )
                         # Accept the invitation
                         if invitation.accept(user):
-                            print(f"User successfully joined organization: {invitation.organization.name}")
-                            response_data["joined_organization"] = invitation.organization.name
+                            print(
+                                f"User successfully joined organization: {invitation.organization.name}"
+                            )
+                            response_data["joined_organization"] = (
+                                invitation.organization.name
+                            )
                             response_data["has_organization"] = True
-                            
+
                             # Update organization information since user now has one
                             response_data["organization"] = {
                                 "id": user.organization.id,
                                 "name": user.organization.name,
-                                "is_owner": user.is_owner  # Will be False for invited users
+                                "is_owner": user.is_owner,  # Will be False for invited users
                             }
-                            
+
                             # Reset is_new_user flag since they don't need to create an org
                             response_data["is_new_user"] = False
                         else:
                             print("Failed to accept invitation")
-                            response_data["invitation_error"] = "Failed to accept invitation"
+                            response_data["invitation_error"] = (
+                                "Failed to accept invitation"
+                            )
                     else:
                         print("Invitation has expired")
                         response_data["invitation_error"] = "Invitation has expired"
-                        
+
                 except OrganizationInvitation.DoesNotExist:
                     print(f"No valid invitation found with code: {invitation_code}")
                     response_data["invitation_error"] = "Invalid invitation"
-            
+
             print("=== Google Login Process Completed Successfully ===\n")
             return Response(response_data, status=status.HTTP_200_OK)
 
         except ValidationError as ve:
             print("Validation Error occurred:", str(ve))
-            return Response({
-                "error": "Invalid token",
-                "detail": str(ve)
-            }, status=status.HTTP_400_BAD_REQUEST)
-            
+            return Response(
+                {"error": "Invalid token", "detail": str(ve)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         except Exception as e:
             print("Unexpected error occurred:", str(e))
             print("Error type:", type(e).__name__)
             import traceback
-            print("Full traceback:", traceback.format_exc())
-            return Response({
-                "error": str(e),
-                "error_type": type(e).__name__
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        
+            print("Full traceback:", traceback.format_exc())
+            return Response(
+                {"error": str(e), "error_type": type(e).__name__},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
 
 class IsOrganizationOwner(permissions.BasePermission):
     """Custom permission to only allow organization owners to perform actions."""
+
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.is_owner
-    
+
     def has_object_permission(self, request, view, obj):
         # Check if the user is the owner of the organization related to the object
-        return request.user.is_owner and request.user.organization == obj.organization 
-    
+        return request.user.is_owner and request.user.organization == obj.organization
+
 
 class DeleteOrganizationMemberView(APIView):
     """View for organization owners to remove members."""
+
     permission_classes = [IsOrganizationOwner]
-    
+
     def delete(self, request, member_id):
         try:
             # Get the member to delete
             member = CustomUser.objects.get(id=member_id)
-            
+
             # Check if member is in the same organization as the requesting user
             if member.organization != request.user.organization:
                 return Response(
                     {"error": "This user is not a member of your organization"},
-                    status=status.HTTP_403_FORBIDDEN
+                    status=status.HTTP_403_FORBIDDEN,
                 )
-            
+
             # Prevent owners from deleting themselves through this endpoint
             if member.id == request.user.id:
                 return Response(
                     {"error": "You cannot remove yourself using this endpoint"},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
-            
+
             # Prevent deleting other owners (optional, remove if owners should be able to delete other owners)
             if member.is_owner:
                 return Response(
                     {"error": "You cannot remove other organization owners"},
-                    status=status.HTTP_403_FORBIDDEN
+                    status=status.HTTP_403_FORBIDDEN,
                 )
-            
+
             # Remove the user from the organization
             member.organization = None
             member.save()
-            
+
             return Response(
-                {"message": f"User {member.email} has been removed from your organization"},
-                status=status.HTTP_200_OK
+                {
+                    "message": f"User {member.email} has been removed from your organization"
+                },
+                status=status.HTTP_200_OK,
             )
-            
+
         except CustomUser.DoesNotExist:
             return Response(
-                {"error": "User not found"},
-                status=status.HTTP_404_NOT_FOUND
+                {"error": "User not found"}, status=status.HTTP_404_NOT_FOUND
             )
+
 
 class OrganizationInvitationViewSet(viewsets.ModelViewSet):
     serializer_class = OrganizationInvitationSerializer
     permission_classes = [permissions.IsAuthenticated]
-    
+
     def get_queryset(self):
         user = self.request.user
-        
+
         # If user is an organization owner, return all invitations for their org
         if user.is_owner:
             return OrganizationInvitation.objects.filter(organization=user.organization)
-        
+
         # For regular users, only show invitations sent to their email
         return OrganizationInvitation.objects.filter(email=user.email)
-    
+
     def get_permissions(self):
         """
         Custom permissions:
         - Organization owners can create/list/delete invitations
         - Anyone can retrieve/accept/decline invitations sent to them
         """
-        if self.action in ['create', 'destroy', 'list', 'bulk_invite']:
+        if self.action in ["create", "destroy", "list", "bulk_invite"]:
             self.permission_classes = [IsOrganizationOwner]
         return super().get_permissions()
-    
+
     def perform_create(self, serializer):
         serializer.save(
-            organization=self.request.user.organization,
-            invited_by=self.request.user
+            organization=self.request.user.organization, invited_by=self.request.user
         )
-    
-    @action(detail=True, methods=['post'])
+
+    @action(detail=True, methods=["post"])
     def accept(self, request, pk=None):
         """Accept an invitation and join the organization."""
         try:
             invitation = self.get_object()
-            
+
             # For users who are already logged in
             if request.user.is_authenticated:
                 # Check if invitation is for this user
                 if invitation.email.lower() != request.user.email.lower():
                     return Response(
-                        {"error": "This invitation is not for you. It was sent to " + invitation.email},
-                        status=status.HTTP_403_FORBIDDEN
+                        {
+                            "error": "This invitation is not for you. It was sent to "
+                            + invitation.email
+                        },
+                        status=status.HTTP_403_FORBIDDEN,
                     )
-                
+
                 # Check if invitation is valid (not expired, still pending)
                 if not invitation.is_valid():
                     return Response(
                         {"error": "This invitation has expired or is no longer valid."},
-                        status=status.HTTP_400_BAD_REQUEST
+                        status=status.HTTP_400_BAD_REQUEST,
                     )
-                
+
                 # Accept invitation
                 if invitation.accept(request.user):
                     return Response(
                         {"message": f"You have joined {invitation.organization.name}."},
-                        status=status.HTTP_200_OK
+                        status=status.HTTP_200_OK,
                     )
-                
+
                 return Response(
                     {"error": "Could not accept invitation."},
-                    status=status.HTTP_400_BAD_REQUEST
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
-                
+
             # For new users (via Google login)
             else:
                 # Store invitation code AND expected email in session for after login
-                request.session['pending_invitation_code'] = invitation.invitation_code
-                request.session['pending_invitation_email'] = invitation.email
-                
+                request.session["pending_invitation_code"] = invitation.invitation_code
+                request.session["pending_invitation_email"] = invitation.email
+
                 # Return response with redirect information
-                return Response({
-                    "status": "redirect",
-                    "redirect_to": "google_login",
-                    "invitation_code": invitation.invitation_code,
-                    "expected_email": invitation.email,  # Also include the expected email in the response
-                    "message": f"Please login with Google using {invitation.email} to accept this invitation."
-                }, status=status.HTTP_200_OK)
-                
+                return Response(
+                    {
+                        "status": "redirect",
+                        "redirect_to": "google_login",
+                        "invitation_code": invitation.invitation_code,
+                        "expected_email": invitation.email,  # Also include the expected email in the response
+                        "message": f"Please login with Google using {invitation.email} to accept this invitation.",
+                    },
+                    status=status.HTTP_200_OK,
+                )
+
         except Exception as e:
             return Response(
                 {"error": f"Error processing invitation: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-    
-    @action(detail=False, methods=['get'])
+
+    @action(detail=False, methods=["get"])
     def pending(self, request):
         """List only pending invitations."""
-        queryset = self.get_queryset().filter(status='pending')
+        queryset = self.get_queryset().filter(status="pending")
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-        
-    @action(detail=False, methods=['post'])
+
+    @action(detail=False, methods=["post"])
     def bulk_invite(self, request):
         """
         Create invitations and send invitation emails for multiple recipients at once.
-        
+
         Expected request format:
         {
             "emails": ["user1@example.com", "user2@example.com", ...]
         }
         """
-        emails = request.data.get('emails', [])
+        emails = request.data.get("emails", [])
         if not emails or not isinstance(emails, list):
             return Response(
                 {"error": "A list of emails is required"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
-            
+
         user = request.user
         if not user.organization or not user.is_owner:
             return Response(
                 {"error": "You must be an organization owner to send invitations"},
-                status=status.HTTP_403_FORBIDDEN
+                status=status.HTTP_403_FORBIDDEN,
             )
-            
-        results = {
-            "successful": [],
-            "failed": []
-        }
-        
+
+        results = {"successful": [], "failed": []}
+
         frontend_url = settings.FRONTEND_URL
-        
+
         for email in emails:
             try:
                 # Create invitation
@@ -398,39 +431,47 @@ class OrganizationInvitationViewSet(viewsets.ModelViewSet):
                     organization=user.organization,
                     invited_by=user,
                     email=email.lower(),  # Store email in lowercase for consistent matching
-                    status='pending',
-                    expires_at=timezone.now() + timezone.timedelta(days=7)
+                    status="pending",
+                    expires_at=timezone.now() + timezone.timedelta(days=7),
                 )
-                
+
                 # Send invitation email
                 try:
                     send_invitation_email(invitation, frontend_url)
-                    results["successful"].append({
-                        "email": email,
-                        "invitation_code": invitation.invitation_code,
-                        "message": "Invitation created and email sent successfully"
-                    })
+                    results["successful"].append(
+                        {
+                            "email": email,
+                            "invitation_code": invitation.invitation_code,
+                            "message": "Invitation created and email sent successfully",
+                        }
+                    )
                 except Exception as email_error:
                     # If email fails, keep the invitation but report the error
-                    results["failed"].append({
-                        "email": email,
-                        "invitation_code": invitation.invitation_code,
-                        "error": f"Invitation created but email failed: {str(email_error)}"
-                    })
-                    
+                    results["failed"].append(
+                        {
+                            "email": email,
+                            "invitation_code": invitation.invitation_code,
+                            "error": f"Invitation created but email failed: {str(email_error)}",
+                        }
+                    )
+
             except Exception as invitation_error:
-                results["failed"].append({
-                    "email": email,
-                    "error": f"Failed to create invitation: {str(invitation_error)}"
-                })
-                
-        return Response({
-            "message": f"Processed {len(emails)} invitations",
-            "results": results
-        }, status=status.HTTP_200_OK)
+                results["failed"].append(
+                    {
+                        "email": email,
+                        "error": f"Failed to create invitation: {str(invitation_error)}",
+                    }
+                )
+
+        return Response(
+            {"message": f"Processed {len(emails)} invitations", "results": results},
+            status=status.HTTP_200_OK,
+        )
+
 
 class OrganizationMemberViewSet(viewsets.ModelViewSet):
     """ViewSet for listing organization members."""
+
     serializer_class = CustomUserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -440,254 +481,271 @@ class OrganizationMemberViewSet(viewsets.ModelViewSet):
             return CustomUser.objects.none()
         return CustomUser.objects.filter(organization=user.organization)
 
-    @decorators.action(detail=False, methods=['get'])
+    @decorators.action(detail=False, methods=["get"])
     def owners(self, request):
         """List only organization owners."""
         queryset = self.get_queryset().filter(is_owner=True)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    @decorators.action(detail=False, methods=['get'])
+    @decorators.action(detail=False, methods=["get"])
     def members(self, request):
         """List only regular members (non-owners)."""
         queryset = self.get_queryset().filter(is_owner=False)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
-    
+
     def destroy(self, request, pk=None):
         """Delete an organization member."""
         user = self.request.user
-        
+
         # Ensure the user is an organization owner
         if not user.is_owner:
-            return Response({"detail": "Only organization owners can remove members."}, 
-                        status=status.HTTP_403_FORBIDDEN)
-        
+            return Response(
+                {"detail": "Only organization owners can remove members."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         # Get the specific user by ID
         try:
             # Use get() instead of filter() to ensure we get exactly one user
             target_user = CustomUser.objects.get(pk=pk, organization=user.organization)
-            
+
             # Prevent self-deletion
             if target_user.id == user.id:
-                return Response({"detail": "You cannot remove yourself."}, 
-                            status=status.HTTP_400_BAD_REQUEST)
-            
+                return Response(
+                    {"detail": "You cannot remove yourself."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
             # Store the ID for logging
             target_id = target_user.id
-            
+
             # Delete the specific user
             target_user.delete()
 
             print(f"Member with ID {target_id} deleted successfully.")
-            
-            return Response({"detail": f"Member with ID {target_id} deleted successfully."}, 
-                status=status.HTTP_200_OK)
-            
+
+            return Response(
+                {"detail": f"Member with ID {target_id} deleted successfully."},
+                status=status.HTTP_200_OK,
+            )
+
         except CustomUser.DoesNotExist:
-            return Response({"detail": "User not found in your organization."}, 
-                        status=status.HTTP_404_NOT_FOUND)
-    
-        
+            return Response(
+                {"detail": "User not found in your organization."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+
 class CreateOrganizationView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    
+
     def post(self, request):
         # Check if user already has an organization
         user = request.user
         if user.organization:
             return Response(
                 {"error": "User already belongs to an organization"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
-        
+
         # Get organization name from request
-        organization_name = request.data.get('name')
+        organization_name = request.data.get("name")
         if not organization_name:
             return Response(
                 {"error": "Organization name is required"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
-        
+
         # Check if organization with this name already exists
         if Organization.objects.filter(name=organization_name).exists():
             return Response(
                 {"error": "An organization with this name already exists"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
-        
+
         # Create the organization
         organization = Organization.objects.create(name=organization_name)
-        
+
         # Associate user with organization as owner
         user.organization = organization
         user.is_owner = True
         user.save()
-        
+
         # Return response with organization data
         serializer = OrganizationSerializer(organization)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+
 
 class ChatbotViewSet(viewsets.ModelViewSet):
     serializer_class = ChatbotSerializer
     permission_classes = [permissions.IsAuthenticated]
-    http_method_names = ['get', 'post', 'put', 'patch', 'delete', 'options']  
-    
+    http_method_names = ["get", "post", "put", "patch", "delete", "options"]
+
     def get_queryset(self):
         user = self.request.user
         if not user.organization:
             return Chatbot.objects.none()
         return Chatbot.objects.filter(organization=user.organization)
-    
+
     def perform_create(self, serializer):
         if not self.request.user.organization:
-            raise ValidationError("User must belong to an organization to create a chatbot.")
+            raise ValidationError(
+                "User must belong to an organization to create a chatbot."
+            )
         serializer.save(organization=self.request.user.organization)
-    
+
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         chatbot_count = queryset.count()
         serializer = ChatbotListSerializer(queryset, many=True)
-        return Response({
-            "count": chatbot_count,
-            "chatbots": serializer.data
-        })
-    
+        return Response({"count": chatbot_count, "chatbots": serializer.data})
+
     def destroy(self, request, *args, **kwargs):
         logger.debug(f"Received DELETE request for chatbot ID: {self.kwargs.get('pk')}")
         chatbot = self.get_object()
         chatbot_name = chatbot.name
-        
+
         try:
             doc_group = ChatbotDocumentGroup.objects.get(chatbot=chatbot)
             consolidated_index_name = doc_group.index_name
             try:
                 delete_index_files(consolidated_index_name)
-                logger.info(f"Successfully deleted Azure index: {consolidated_index_name}")
+                logger.info(
+                    f"Successfully deleted Azure index: {consolidated_index_name}"
+                )
             except Exception as e:
                 logger.error(f"Error deleting Azure index: {str(e)}")
-            
+
             for document in doc_group.active_documents.all():
                 document.delete()
-            
+
             doc_group.active_documents.clear()
             doc_group.delete()
         except ChatbotDocumentGroup.DoesNotExist:
             logger.info(f"No document group found for chatbot {chatbot_name}")
         except Exception as e:
             logger.error(f"Error handling document group deletion: {str(e)}")
-        
+
         response = super().destroy(request, *args, **kwargs)
         if response.status_code == status.HTTP_204_NO_CONTENT:
-            return Response({
-                "message": f"Chatbot '{chatbot_name}' and all associated resources deleted successfully"
-            }, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "message": f"Chatbot '{chatbot_name}' and all associated resources deleted successfully"
+                },
+                status=status.HTTP_200_OK,
+            )
         return response
 
     def http_method_not_allowed(self, request, *args, **kwargs):
         logger.error(f"Method not allowed: {request.method} on {request.path}")
         return super().http_method_not_allowed(request, *args, **kwargs)
-    
+
+
 class DeleteOrganizationView(APIView):
     """View for organization owners to delete their entire organization."""
+
     permission_classes = [IsOrganizationOwner]
-    
+
     def delete(self, request):
         user = request.user
         organization = user.organization
-        
+
         if not organization:
             return Response(
                 {"error": "You are not part of any organization"},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
-        
+
         try:
             with transaction.atomic():
                 # Get all organization members
                 members = CustomUser.objects.filter(organization=organization)
-                
+
                 # Get all organization chatbots (to clean up related resources)
                 chatbots = Chatbot.objects.filter(organization=organization)
-                
+
                 # Delete all chatbots and their related resources
                 for chatbot in chatbots:
-                    
                     try:
                         doc_group = ChatbotDocumentGroup.objects.get(chatbot=chatbot)
                         consolidated_index_name = doc_group.index_name
-                        
+
                         # Delete Azure Search index if it exists
                         try:
                             delete_index_files(consolidated_index_name)
                         except Exception as e:
                             print(f"Error deleting Azure index: {str(e)}")
-                        
+
                         # Delete all documents associated with this chatbot
                         doc_group.active_documents.all().delete()
                         doc_group.delete()
-                        
+
                     except ChatbotDocumentGroup.DoesNotExist:
                         pass
-                    
+
                     # Now delete the chatbot itself
                     chatbot.delete()
-                
+
                 # Remove organization link from all members
                 for member in members:
                     member.organization = None
                     member.is_owner = False
                     member.save()
-                
+
                 # Get organization name for the response
                 org_name = organization.name
-                
+
                 # Delete the organization
                 organization.delete()
-                
+
                 return Response(
-                    {"message": f"Organization '{org_name}' and all its resources have been deleted successfully"},
-                    status=status.HTTP_200_OK
+                    {
+                        "message": f"Organization '{org_name}' and all its resources have been deleted successfully"
+                    },
+                    status=status.HTTP_200_OK,
                 )
-                
+
         except Exception as e:
             return Response(
                 {"error": f"Error deleting organization: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-        
+
+
 class LogoutView(APIView):
     """View for user logout by invalidating their auth token."""
+
     permission_classes = [permissions.IsAuthenticated]
-    
+
     def post(self, request):
         try:
             # Delete the user's auth token
             Token.objects.filter(user=request.user).delete()
-            
+
             return Response(
-                {"message": "Successfully logged out"},
-                status=status.HTTP_200_OK
+                {"message": "Successfully logged out"}, status=status.HTTP_200_OK
             )
         except Exception as e:
             return Response(
                 {"error": f"Error during logout: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
-        
+
+
 class ChatbotFAQViewSet(viewsets.ModelViewSet):
     serializer_class = ChatbotFAQSerializer
     permission_classes = [IsAuthenticated]  # Require authentication
 
     def get_queryset(self):
         """Filter FAQs to the chatbot specified in the URL."""
-        chatbot_id = self.kwargs['chatbot_id']
+        chatbot_id = self.kwargs["chatbot_id"]
         return ChatbotFAQ.objects.filter(chatbot__id=chatbot_id)
 
     def get_chatbot(self):
         """Helper to retrieve the chatbot from the URL parameter."""
-        chatbot_id = self.kwargs['chatbot_id']
+        chatbot_id = self.kwargs["chatbot_id"]
         return get_object_or_404(Chatbot, id=chatbot_id)
 
     def perform_create(self, serializer):
@@ -710,19 +768,19 @@ class ChatbotFAQViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @decorators.action(detail=False, methods=['delete'], url_path='delete-all')
+    @decorators.action(detail=False, methods=["delete"], url_path="delete-all")
     def delete_all(self, request, chatbot_id=None):
         """Custom action to delete all FAQs for the chatbot."""
         chatbot = self.get_chatbot()
         deleted_count, _ = ChatbotFAQ.objects.filter(chatbot=chatbot).delete()
         return Response(
-            {'message': f'Deleted {deleted_count} FAQs for chatbot {chatbot.name}'},
-            status=status.HTTP_204_NO_CONTENT
+            {"message": f"Deleted {deleted_count} FAQs for chatbot {chatbot.name}"},
+            status=status.HTTP_204_NO_CONTENT,
         )
 
     def update(self, request, *args, **kwargs):
         """Allow partial updates (e.g., edit only the answer)."""
-        partial = kwargs.pop('partial', False)
+        partial = kwargs.pop("partial", False)
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
@@ -739,28 +797,31 @@ class ChatbotFAQViewSet(viewsets.ModelViewSet):
         chatbot = self.get_chatbot()
         # Example: Ensure the user is part of the chatbot's organization
         if chatbot.organization not in [request.user.organization]:
-            self.permission_denied(request, message="You do not have permission to modify this chatbot's FAQs.")
+            self.permission_denied(
+                request,
+                message="You do not have permission to modify this chatbot's FAQs.",
+            )
+
 
 class ChatbotColorViewSet(viewsets.ViewSet):
     """ViewSet for managing chatbot color settings with only POST and GET."""
+
     serializer_class = ChatbotColorSerializer
     permission_classes = [IsAuthenticated]
 
     def get_chatbot(self):
         """Helper to retrieve the chatbot from the URL parameter."""
-        chatbot_id = self.kwargs.get('chatbot_id')
+        chatbot_id = self.kwargs.get("chatbot_id")
         return get_object_or_404(Chatbot, id=chatbot_id)
 
     def create(self, request, *args, **kwargs):
         """Handle POST to create or update chatbot color settings."""
         chatbot = self.get_chatbot()
         existing_colors = ChatbotColor.objects.filter(chatbot=chatbot).first()
-        
+
         if existing_colors:
             serializer = self.serializer_class(
-                existing_colors,
-                data=request.data,
-                partial=True
+                existing_colors, data=request.data, partial=True
             )
             serializer.is_valid(raise_exception=True)
             serializer.save()
@@ -784,29 +845,29 @@ class ChatbotColorViewSet(viewsets.ViewSet):
         if chatbot.organization != request.user.organization:
             self.permission_denied(
                 request,
-                message="You do not have permission to access this chatbot's color settings."
+                message="You do not have permission to access this chatbot's color settings.",
             )
 
-class AdminOrganizationView(APIView):
 
+class AdminOrganizationView(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             total_organizations = Organization.objects.count()
             organizations = Organization.objects.all()
             serializer = OrganizationSerializer(organizations, many=True)
-            return Response({
-                "total organizations": total_organizations,
-                "organizations": serializer.data
-            }, status=200)
-        
+            return Response(
+                {
+                    "total organizations": total_organizations,
+                    "organizations": serializer.data,
+                },
+                status=200,
+            )
+
         except Exception as e:
-            return Response({
-                "status": "Failed",
-                "error": e
-            }, status=400)
-        
-    
+            return Response({"status": "Failed", "error": e}, status=400)
+
 
 class AdminChatbotlistView(APIView):
     permission_classes = [IsAuthenticated]
@@ -816,196 +877,200 @@ class AdminChatbotlistView(APIView):
             organization = Organization.objects.get(id=org_id)
             chatbots = organization.chatbots.all()
             serializer = ChatbotSerializer(chatbots, many=True)
-            return Response({
-                "Status":"OK",
-                "Chatbots": serializer.data
-            }, status= 200)
-        
+            return Response({"Status": "OK", "Chatbots": serializer.data}, status=200)
+
         except Organization.DoesNotExist:
-            return Response({
-                "status": "Failed",
-                "response": "Invalid request, organization with given id does not exist"
-            }, status=404)
-        
+            return Response(
+                {
+                    "status": "Failed",
+                    "response": "Invalid request, organization with given id does not exist",
+                },
+                status=404,
+            )
+
+
 class TotalTokenUsageView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        
-        month_param = request.query_params.get('month', None)
+        month_param = request.query_params.get("month", None)
 
         if month_param:
             try:
-                year, month = map(int, month_param.split('-'))
+                year, month = map(int, month_param.split("-"))
                 tokenusage = ChatbotTokenUsage.objects.filter(
-                    timestamp__year=year,
-                    timestamp__month=month
+                    timestamp__year=year, timestamp__month=month
                 ).aggregate(
-                    total=Sum('total_tokens'),
-                    input=Sum('input_tokens'),
-                    output=Sum('output_tokens')
+                    total=Sum("total_tokens"),
+                    input=Sum("input_tokens"),
+                    output=Sum("output_tokens"),
                 )
 
-                total_tokens = tokenusage['total'] or 0
-                input_tokens = tokenusage['input'] or 0
-                output_tokens = tokenusage['output'] or 0
+                total_tokens = tokenusage["total"] or 0
+                input_tokens = tokenusage["input"] or 0
+                output_tokens = tokenusage["output"] or 0
 
                 response_data = {
-                    "status" : "ok",
+                    "status": "ok",
                     "month": month_param,
                     "total_tokens": total_tokens,
                     "input_tokens": input_tokens,
-                    "output_tokens": output_tokens
+                    "output_tokens": output_tokens,
                 }
 
                 return Response(response_data, status=200)
-            
+
             except (ValueError, TypeError):
-                return Response({
-                    "staus": "Failed",
-                    "error": "Invalid month format. Use YYYY-MM (e.g., 2025-03)",
-                },
-                status=400
+                return Response(
+                    {
+                        "staus": "Failed",
+                        "error": "Invalid month format. Use YYYY-MM (e.g., 2025-03)",
+                    },
+                    status=400,
                 )
-            
+
         else:
             try:
                 token_usage = ChatbotTokenUsage.objects.aggregate(
-                    total=Sum('total_tokens'),
-                    input=Sum('input_tokens'),
-                    output=Sum('output_tokens')
+                    total=Sum("total_tokens"),
+                    input=Sum("input_tokens"),
+                    output=Sum("output_tokens"),
                 )
 
-                total_tokens = token_usage['total'] or 0
-                input_tokens = token_usage['input'] or 0
-                output_tokens = token_usage['output'] or 0
+                total_tokens = token_usage["total"] or 0
+                input_tokens = token_usage["input"] or 0
+                output_tokens = token_usage["output"] or 0
 
                 response_data = {
                     "status": "OK",
                     "total_tokens": total_tokens,
                     "input_tokens": input_tokens,
-                    "output_tokens": output_tokens
+                    "output_tokens": output_tokens,
                 }
 
                 return Response(response_data, status=200)
-            
+
             except (ValueError, TypeError):
-                return Response({
-                    "staus": "Failed",
-                    "error": "Invalid month format. Use YYYY-MM (e.g., 2025-03)",
-                },
-                status=400
+                return Response(
+                    {
+                        "staus": "Failed",
+                        "error": "Invalid month format. Use YYYY-MM (e.g., 2025-03)",
+                    },
+                    status=400,
                 )
-            
+
 
 class OrganizationTokenCountView(APIView):
-    
-    permission_classes= [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
-    def get(self,request, org_id):
+    def get(self, request, org_id):
         try:
             organization = Organization.objects.get(id=org_id)
 
         except Organization.DoesNotExist:
-            return Response({
-                "status": "Failed",
-                "response": "Invalid request, organization with given id does not exist"
-            }, status=404)
-        
-        month_param = request.query_params.get('month', None)
+            return Response(
+                {
+                    "status": "Failed",
+                    "response": "Invalid request, organization with given id does not exist",
+                },
+                status=404,
+            )
+
+        month_param = request.query_params.get("month", None)
         print("month_param", month_param)
 
         if month_param:
-            
             try:
-                year , month = map(int, month_param.split('-'))
+                year, month = map(int, month_param.split("-"))
 
                 print(year, month)
 
-                token_usage = organization.total_tokens_used_by_month(year, month)  # Get dict
-                total_tokens = token_usage['total'] or 0
-                input_tokens = token_usage['input'] or 0
-                output_tokens = token_usage['output'] or 0
+                token_usage = organization.total_tokens_used_by_month(
+                    year, month
+                )  # Get dict
+                total_tokens = token_usage["total"] or 0
+                input_tokens = token_usage["input"] or 0
+                output_tokens = token_usage["output"] or 0
 
                 response_data = {
                     "status": "OK",
                     "total_tokens": total_tokens,
                     "input_tokens": input_tokens,
-                    "output_tokens": output_tokens
+                    "output_tokens": output_tokens,
                 }
 
                 return Response(response_data, status=200)
-            
+
             except (ValueError, TypeError):
-                return Response({
-                    "staus": "Failed",
-                    "error": "Invalid month format. Use YYYY-MM (e.g., 2025-03)",
-                },
-                status=400
+                return Response(
+                    {
+                        "staus": "Failed",
+                        "error": "Invalid month format. Use YYYY-MM (e.g., 2025-03)",
+                    },
+                    status=400,
                 )
-            
+
         else:
-
             try:
-                
-
                 token_usage = organization.total_tokens_used()  # Get dict
-                total_tokens = token_usage['total'] or 0
-                input_tokens = token_usage['input'] or 0
-                output_tokens = token_usage['output'] or 0
+                total_tokens = token_usage["total"] or 0
+                input_tokens = token_usage["input"] or 0
+                output_tokens = token_usage["output"] or 0
 
                 response_data = {
                     "status": "OK",
                     "total_tokens": total_tokens,
                     "input_tokens": input_tokens,
-                    "output_tokens": output_tokens
+                    "output_tokens": output_tokens,
                 }
 
                 return Response(response_data, status=200)
-            
+
             except (ValueError, TypeError):
-                return Response({
-                    "staus": "Failed",
-                    "error": "Invalid month format. Use YYYY-MM (e.g., 2025-03)",
-                },
-                status=400
+                return Response(
+                    {
+                        "staus": "Failed",
+                        "error": "Invalid month format. Use YYYY-MM (e.g., 2025-03)",
+                    },
+                    status=400,
                 )
+
 
 class ChatbotTokenCountView(APIView):
-    permission_classes = [IsAuthenticated]  
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, chatbot_id):
-       
         try:
             chatbot = Chatbot.objects.get(id=chatbot_id)
         except Chatbot.DoesNotExist:
-            return Response({
-                "status": "Failed",
-                "response": "Invalid request, chatbot with given ID does not exist"
-            }, status=404)
+            return Response(
+                {
+                    "status": "Failed",
+                    "response": "Invalid request, chatbot with given ID does not exist",
+                },
+                status=404,
+            )
 
         # Get the optional 'month' query parameter (e.g., '2025-03')
-        month_param = request.query_params.get('month', None)
+        month_param = request.query_params.get("month", None)
 
         if month_param:
             # Handle monthly token usage
             try:
-                year, month = map(int, month_param.split('-'))
-                
+                year, month = map(int, month_param.split("-"))
+
                 # Filter token usage by year and month
                 token_usage = ChatbotTokenUsage.objects.filter(
-                    chatbot=chatbot,
-                    timestamp__year=year,
-                    timestamp__month=month
+                    chatbot=chatbot, timestamp__year=year, timestamp__month=month
                 ).aggregate(
-                    total=Sum('total_tokens'),
-                    input=Sum('input_tokens'),
-                    output=Sum('output_tokens')
+                    total=Sum("total_tokens"),
+                    input=Sum("input_tokens"),
+                    output=Sum("output_tokens"),
                 )
 
-                total_tokens = token_usage['total'] or 0
-                input_tokens = token_usage['input'] or 0
-                output_tokens = token_usage['output'] or 0
+                total_tokens = token_usage["total"] or 0
+                input_tokens = token_usage["input"] or 0
+                output_tokens = token_usage["output"] or 0
 
                 response_data = {
                     "status": "OK",
@@ -1015,31 +1080,33 @@ class ChatbotTokenCountView(APIView):
                     "input_tokens": input_tokens,
                     "output_tokens": output_tokens,
                     "year": year,
-                    "month": month
+                    "month": month,
                 }
 
                 return Response(response_data, status=200)
 
             except (ValueError, TypeError):
-                return Response({
-                    "status": "Failed",
-                    "error": "Invalid month format. Use YYYY-MM (e.g., 2025-03)"
-                }, status=400)
+                return Response(
+                    {
+                        "status": "Failed",
+                        "error": "Invalid month format. Use YYYY-MM (e.g., 2025-03)",
+                    },
+                    status=400,
+                )
 
         else:
-            
             try:
                 token_usage = ChatbotTokenUsage.objects.filter(
                     chatbot=chatbot
                 ).aggregate(
-                    total=Sum('total_tokens'),
-                    input=Sum('input_tokens'),
-                    output=Sum('output_tokens')
+                    total=Sum("total_tokens"),
+                    input=Sum("input_tokens"),
+                    output=Sum("output_tokens"),
                 )
 
-                total_tokens = token_usage['total'] or 0
-                input_tokens = token_usage['input'] or 0
-                output_tokens = token_usage['output'] or 0
+                total_tokens = token_usage["total"] or 0
+                input_tokens = token_usage["input"] or 0
+                output_tokens = token_usage["output"] or 0
 
                 response_data = {
                     "status": "OK",
@@ -1047,17 +1114,18 @@ class ChatbotTokenCountView(APIView):
                     "chatbot_name": chatbot.name,
                     "total_tokens": total_tokens,
                     "input_tokens": input_tokens,
-                    "output_tokens": output_tokens
+                    "output_tokens": output_tokens,
                 }
 
                 return Response(response_data, status=200)
 
             except (ValueError, TypeError):
-                return Response({
-                    "status": "Failed",
-                    "error": "An unexpected error occurred"
-                }, status=400)
-        
+                return Response(
+                    {"status": "Failed", "error": "An unexpected error occurred"},
+                    status=400,
+                )
+
+
 class AddDomainNameView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -1069,78 +1137,81 @@ class AddDomainNameView(APIView):
                 chatbot.domain_name = domain
                 chatbot.save()
 
-                return Response({
-                    "status": "Success",
-                    "message": "Domain Name successfully added."
-                }, status=200)
+                return Response(
+                    {"status": "Success", "message": "Domain Name successfully added."},
+                    status=200,
+                )
             else:
-                return Response({
-                    "Status": "Error",
-                    "message": "Domian name not found"
-                }, status=status.HTTP_400_BAD_REQUEST)
-        
+                return Response(
+                    {"Status": "Error", "message": "Domian name not found"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
         except Chatbot.DoesNotExist:
-            return Response({"error": "Chatbot not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"error": "Chatbot not found"}, status=status.HTTP_404_NOT_FOUND
+            )
 
 
 class ChatbotPublicInfoView(APIView):
-    permission_classes = [AllowAny] 
-    
+    permission_classes = [AllowAny]
+
     def get(self, request):
-        
-        domain_name = request.headers.get('X-Domain-Name')  
+        domain_name = request.headers.get("X-Domain-Name")
         print(domain_name)
-        
+
         if not domain_name:
-            return Response({
-                "status": "error",
-                "message": "Domain name is required in X-Domain-Name header"
-            }, status=status.HTTP_400_BAD_REQUEST)
-        
+            return Response(
+                {
+                    "status": "error",
+                    "message": "Domain name is required in X-Domain-Name header",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         try:
-           
             chatbot = Chatbot.objects.get(domain_name=domain_name)
-            
-           
+
             faqs = ChatbotFAQSerializer(chatbot.faqs.all(), many=True).data
-            
-            
-            colors = ChatbotColorSerializer(chatbot.colors).data if hasattr(chatbot, 'colors') else None
-            
-            
-            can_send_message = chatbot.quota.can_send_message() if hasattr(chatbot, 'quota') else False
-            
+
+            colors = (
+                ChatbotColorSerializer(chatbot.colors).data
+                if hasattr(chatbot, "colors")
+                else None
+            )
+
+            can_send_message = (
+                chatbot.quota.can_send_message() if hasattr(chatbot, "quota") else False
+            )
+
             api_key = chatbot.api_key
-            
+
             response_data = {
                 "status": "success",
                 "chatbot": {
                     "faqs": faqs,
                     "colors": colors,
                     "can_send_message": can_send_message,
-                    "api_key": api_key
-                }
+                    "api_key": api_key,
+                },
             }
-            
+
             return Response(response_data, status=status.HTTP_200_OK)
-            
+
         except Chatbot.DoesNotExist:
-            return Response({
-                "status": "error",
-                "message": "No chatbot found for this domain"
-            }, status=status.HTTP_404_NOT_FOUND)
+            return Response(
+                {"status": "error", "message": "No chatbot found for this domain"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
         except Exception as e:
-            return Response({
-                "status": "error",
-                "message": f"An error occurred: {str(e)}"
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {"status": "error", "message": f"An error occurred: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
-
-
-from django.shortcuts import render
 
 def privacy_policy(request):
-    return render(request, 'D:\\open-ai\\openai_backend\\wishchat\\registration\\templates\\privacy_policy.html')
+    return render(request, "privacy_policy.html")
 
 
 class CouponCodeCreateView(APIView):
@@ -1149,30 +1220,35 @@ class CouponCodeCreateView(APIView):
     def post(self, request):
         # Check if user is staff or superadmin
         if not (request.user.is_staff or request.user.is_superuser):
-            raise PermissionDenied("Only staff or superadmin users can create coupon codes.")
+            raise PermissionDenied(
+                "Only staff or superadmin users can create coupon codes."
+            )
 
         serializer = CouponCodeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             AdminActivityLog.objects.create(
                 user=request.user,
-                action=f"created coupon code {serializer.instance.code}"
+                action=f"created coupon code {serializer.instance.code}",
             )
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 class CouponCodeListActiveView(APIView):
     permission_classes = [IsAuthenticated]
-    
+
     def get(self, request, *args, **kwargs):
         if not (request.user.is_staff or request.user.is_superuser):
-            raise PermissionDenied("Only staff or superadmin users can view active coupon codes.")
-            
+            raise PermissionDenied(
+                "Only staff or superadmin users can view active coupon codes."
+            )
+
         coupons = CouponCode.objects.filter(is_active=True)
         serializer = CouponCodeSerializer(coupons, many=True)
         return Response(serializer.data)
-    
+
+
 class CouponCodeRedeemView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -1182,45 +1258,54 @@ class CouponCodeRedeemView(APIView):
             result = serializer.redeem()
             return Response(result, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
 class AdminEmailPasswordLoginView(APIView):
-    permission_classes = [AllowAny]  
+    permission_classes = [AllowAny]
 
     def post(self, request):
-        login = request.data.get('login')  
-        password = request.data.get('password')
+        login = request.data.get("login")
+        password = request.data.get("password")
 
         # Validate input
         if not login or not password:
-            return Response({
-                "error": "Login (username or email) and password are required"
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "Login (username or email) and password are required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         # Try to find user by username or email
         try:
-            user = CustomUser.objects.get(models.Q(username=login) | models.Q(email=login))
+            user = CustomUser.objects.get(
+                models.Q(username=login) | models.Q(email=login)
+            )
         except CustomUser.DoesNotExist:
-            return Response({
-                "error": "Invalid username/email or password"
-            }, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {"error": "Invalid username/email or password"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
         # Verify password
         if not user.check_password(password):
-            return Response({
-                "error": "Invalid username/email or password"
-            }, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(
+                {"error": "Invalid username/email or password"},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
 
         # Check if user is a superuser or staff (service team)
         if not (user.is_superuser or user.is_staff):
-            return Response({
-                "error": "This endpoint is restricted to super admins and service team members only"
-            }, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {
+                    "error": "This endpoint is restricted to super admins and service team members only"
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         # Ensure user is active
         if not user.is_active:
-            return Response({
-                "error": "User account is inactive"
-            }, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"error": "User account is inactive"}, status=status.HTTP_403_FORBIDDEN
+            )
 
         # Generate or get auth token
         token, _ = Token.objects.get_or_create(user=user)
@@ -1236,7 +1321,7 @@ class AdminEmailPasswordLoginView(APIView):
             "user": user_serializer.data,
             "has_organization": has_organization,
             "is_superuser": user.is_superuser,
-            "is_staff": user.is_staff
+            "is_staff": user.is_staff,
         }
 
         # Add organization information if user has one
@@ -1244,47 +1329,48 @@ class AdminEmailPasswordLoginView(APIView):
             response_data["organization"] = {
                 "id": user.organization.id,
                 "name": user.organization.name,
-                "is_owner": user.is_owner
+                "is_owner": user.is_owner,
             }
 
         return Response(response_data, status=status.HTTP_200_OK)
-    
+
 
 class CreateStaffView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        
         if not request.user.is_superuser:
-            return Response({
-                "error": "Only superadmins can create staff users"
-            }, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"error": "Only superadmins can create staff users"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
-       
-        email = request.data.get('email')
-        username = request.data.get('username')
-        password = request.data.get('password')
-        first_name = request.data.get('first_name')
-        last_name = request.data.get('last_name')
-        phone_number = request.data.get('phone_number', None)  
+        email = request.data.get("email")
+        username = request.data.get("username")
+        password = request.data.get("password")
+        first_name = request.data.get("first_name")
+        last_name = request.data.get("last_name")
+        phone_number = request.data.get("phone_number", None)
 
-        
         if not all([email, username, password, first_name, last_name]):
-            return Response({
-                "error": "Email, username, password, first name, and last name are required"
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    "error": "Email, username, password, first name, and last name are required"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        
         if CustomUser.objects.filter(email=email).exists():
-            return Response({
-                "error": "A user with this email already exists"
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "A user with this email already exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         if CustomUser.objects.filter(username=username).exists():
-            return Response({
-                "error": "A user with this username already exists"
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "A user with this username already exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        
         try:
             user = CustomUser.objects.create_user(
                 email=email,
@@ -1292,67 +1378,73 @@ class CreateStaffView(APIView):
                 password=password,
                 first_name=first_name,
                 last_name=last_name,
-                phone_number=phone_number,  
-                is_staff=True,  
-                is_superuser=False,  
-                is_active=True  
+                phone_number=phone_number,
+                is_staff=True,
+                is_superuser=False,
+                is_active=True,
             )
         except ValueError as e:
-            return Response({
-                "error": str(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-        
         token, _ = Token.objects.get_or_create(user=user)
 
-       
         user_serializer = CustomUserSerializer(user)
 
         AdminActivityLog.objects.create(
-            user=request.user,
-            action=f"created staff user {user.username}"
+            user=request.user, action=f"created staff user {user.username}"
         )
-        
+
         response_data = {
             "message": "Staff user created successfully",
             "token": token.key,
-            "user": user_serializer.data
+            "user": user_serializer.data,
         }
 
         return Response(response_data, status=status.HTTP_201_CREATED)
-    
+
+
 class UpdateStaffProfileView(APIView):
-    permission_classes = [permissions.IsAuthenticated]  # Restrict to authenticated users
+    permission_classes = [
+        permissions.IsAuthenticated
+    ]  # Restrict to authenticated users
 
     def patch(self, request):
         # Ensure the user is a staff member
         if not request.user.is_staff:
-            return Response({
-                "error": "Only staff members can update their profile"
-            }, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"error": "Only staff members can update their profile"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         # Get the authenticated user
         user = request.user
 
         # Extract data from request
-        username = request.data.get('username')
-        password = request.data.get('password')
-        first_name = request.data.get('first_name')
-        last_name = request.data.get('last_name')
-        phone_number = request.data.get('phone_number')
+        username = request.data.get("username")
+        password = request.data.get("password")
+        first_name = request.data.get("first_name")
+        last_name = request.data.get("last_name")
+        phone_number = request.data.get("phone_number")
 
         # Validate input (at least one field must be provided)
         if not any([username, password, first_name, last_name, phone_number]):
-            return Response({
-                "error": "At least one of username, password, first name, last name, or phone number must be provided"
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    "error": "At least one of username, password, first name, last name, or phone number must be provided"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         # Update username if provided
         if username:
-            if username != user.username and CustomUser.objects.filter(username=username).exists():
-                return Response({
-                    "error": "A user with this username already exists"
-                }, status=status.HTTP_400_BAD_REQUEST)
+            if (
+                username != user.username
+                and CustomUser.objects.filter(username=username).exists()
+            ):
+                return Response(
+                    {"error": "A user with this username already exists"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             user.username = username
 
         # Update password if provided
@@ -1375,9 +1467,7 @@ class UpdateStaffProfileView(APIView):
         try:
             user.save()
         except ValueError as e:
-            return Response({
-                "error": str(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
         # Serialize updated user data
         user_serializer = CustomUserSerializer(user)
@@ -1385,9 +1475,7 @@ class UpdateStaffProfileView(APIView):
         # Prepare response
         response_data = {
             "message": "Profile updated successfully",
-            "user": user_serializer.data
+            "user": user_serializer.data,
         }
 
         return Response(response_data, status=status.HTTP_200_OK)
-    
-
