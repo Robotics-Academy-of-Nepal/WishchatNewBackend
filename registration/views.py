@@ -2,9 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.shortcuts import render
+from django.db.models import DurationField
+from django.db.models.expressions import Func, ExpressionWrapper
 from google.oauth2 import id_token
 from google.auth.transport import requests
 from django.conf import settings
+from django.db.models.functions import Now
+from django.db.models import Q, F
 from .serializers import (
     ChatbotListSerializer,
     GoogleAuthSerializer,
@@ -27,6 +31,7 @@ from .models import (
     ChatbotFAQ,
     ChatbotColor,
     ChatbotTokenUsage,
+    ChatbotQuota,
 )
 from rest_framework import status, permissions, viewsets, decorators
 from rest_framework.authtoken.models import Token
@@ -131,13 +136,11 @@ class GoogleLoginView(APIView):
             user_serializer = GoogleUserSerializer(user)
 
             has_organization = user.organization is not None
-            is_enterprise = user.is_enterprise
             response_data = {
                 "message": "Successfully logged in with Google",
                 "token": token.key,
                 "user": user_serializer.data,
                 "has_organization": has_organization,
-                "is_enterprise": is_enterprise,
                 "is_new_user": is_new_user
                 and not has_organization,  # Flag for frontend to show org creation form
                 "google_data": {
@@ -591,18 +594,75 @@ class ChatbotViewSet(viewsets.ModelViewSet):
             return Chatbot.objects.none()
         return Chatbot.objects.filter(organization=user.organization)
 
-    def perform_create(self, serializer):
-        if not self.request.user.organization:
-            raise ValidationError(
-                "User must belong to an organization to create a chatbot."
+    def create(self, request, *args, **kwargs):
+        organization = request.user.organization
+        if not organization:
+            return Response(
+                {"message": "User must belong to an organization to create a chatbot."},
+                status=status.HTTP_400_BAD_REQUEST,
             )
-        serializer.save(organization=self.request.user.organization)
+        organization = self.request.user.organization
+
+        # Create an INTERVAL from grace_period_days for PostgreSQL
+        interval_expression = ExpressionWrapper(
+            Func(
+                F("grace_period_days"),
+                function="days",
+                template="%(expressions)s * INTERVAL '1 day'",
+            ),
+            output_field=DurationField(),
+        )
+
+        # Count the number of invalid subscriptions for the organization's chatbots
+        invalid_subscription_count = (
+            ChatbotQuota.objects.filter(chatbot__organization=organization)
+            .filter(
+                ~Q(is_lifetime_free=True)
+                & ~Q(subscription_plan__is_lifetime=True)
+                & (
+                    Q(is_paid=False)
+                    | Q(subscription_end_date__isnull=True)
+                    | Q(subscription_end_date__lt=Now() - interval_expression)
+                )
+            )
+            .count()
+        )
+        # Enforce the limit if there are more than 2 chatbots with invalid subscriptions
+        if invalid_subscription_count >= 2:
+            return Response(
+                {"message": "Cannot create more than 2 trial chatbots."},
+                status=status.HTTP_409_CONFLICT,
+            )
+        chatbot_name = request.data.get("name")
+        if Chatbot.objects.filter(
+            name=chatbot_name, organization=organization
+        ).exists():
+            return Response(
+                {
+                    "message": f"Chatbot with name '{chatbot_name}' already exists in this organization."
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(organization=organization)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
+        )
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         chatbot_count = queryset.count()
+
         serializer = ChatbotListSerializer(queryset, many=True)
-        return Response({"count": chatbot_count, "chatbots": serializer.data})
+        return Response(
+            {
+                "count": chatbot_count,
+                "chatbots": serializer.data,
+            }
+        )
 
     def destroy(self, request, *args, **kwargs):
         logger.debug(f"Received DELETE request for chatbot ID: {self.kwargs.get('pk')}")
@@ -1490,8 +1550,7 @@ class ToggleEnterpriseStatusView(APIView):
 
     def post(self, request):
         user = request.user
-        print(user.__dict__)
-        user_to_toggle_id = request.data.get("user_id")
+        organization_to_toggle_id = request.data.get("organization_id")
 
         if not user.is_staff and not user.is_superuser:
             return Response(
@@ -1500,16 +1559,18 @@ class ToggleEnterpriseStatusView(APIView):
                 },
                 status=status.HTTP_403_FORBIDDEN,
             )
-        user_to_toggle = get_object_or_404(CustomUser, id=user_to_toggle_id)
+        organization_to_toggle = get_object_or_404(
+            Organization, id=organization_to_toggle_id
+        )
 
         # Toggle the enterprise status
-        user_to_toggle.is_enterprise = not user_to_toggle.is_enterprise
-        user_to_toggle.save()
+        organization_to_toggle.is_enterprise = not organization_to_toggle.is_enterprise
+        organization_to_toggle.save()
 
         return Response(
             {
-                "message": f"User {user_to_toggle.username} is now {'an enterprise' if user_to_toggle.is_enterprise else 'not an enterprise'}",
-                "is_enterprise": user_to_toggle.is_enterprise,
+                "message": f"{organization_to_toggle.name} is now {'an enterprise' if organization_to_toggle.is_enterprise else 'not an enterprise'}",
+                "is_enterprise": organization_to_toggle.is_enterprise,
             },
             status=status.HTTP_200_OK,
         )
