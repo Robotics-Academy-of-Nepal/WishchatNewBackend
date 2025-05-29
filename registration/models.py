@@ -7,8 +7,8 @@ from django.contrib.auth.models import (
 import uuid
 from django.utils import timezone
 from datetime import timedelta
-import uuid
-import json, pickle
+import json
+import pickle
 
 
 class SubscriptionPlan(models.Model):
@@ -53,6 +53,13 @@ class SubscriptionPlan(models.Model):
 
 class Organization(models.Model):
     name = models.CharField(max_length=255, unique=True, null=True)
+    is_enterprise = models.BooleanField(default=False)
+    discount_percentage = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0.00,
+        help_text="Discount percentage for enterprise organizations",
+    )
 
     def total_messages_used(self):
         """Get total messages used across all chatbots in this organization."""
@@ -142,8 +149,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     # Custom User Manager
     objects = CustomUserManager()
-
-    is_enterprise = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username", "first_name", "last_name"]
@@ -469,6 +474,7 @@ class ChatbotPaymentTransaction(models.Model):
         payment_transaction_code,
         subscription_plan_id,
         coupon_code=None,
+        organization=None,  # Added to handle enterprise discount
     ):
         """Creates and confirms a transaction based on payment data and selected plan."""
         if ChatbotPaymentTransaction.objects.filter(
@@ -487,7 +493,15 @@ class ChatbotPaymentTransaction(models.Model):
 
         applied_coupon = None
         original_amount = plan.price
+        final_amount = original_amount  # Default to original price
 
+        # Apply enterprise discount if organization is provided and is enterprise
+        if organization and organization.is_enterprise:
+            discount_percentage = organization.discount_percentage
+            final_amount = original_amount * (1 - discount_percentage / 100)
+            final_amount = round(final_amount, 2)
+
+        # Apply coupon discount if provided (after enterprise discount)
         if coupon_code:
             try:
                 coupon = CouponCode.objects.get(code=coupon_code)
@@ -495,28 +509,32 @@ class ChatbotPaymentTransaction(models.Model):
                     raise ValueError(
                         "Coupon code is invalid, expired, or already used by this chatbot."
                     )
-                expected_discounted = float(original_amount) * (
+                expected_discounted = float(final_amount) * (
                     1 - float(coupon.discount_percent) / 100
                 )
+                expected_discounted = round(expected_discounted, 2)
                 if abs(float(payment_amount) - expected_discounted) > 1:
                     raise ValueError(
                         "Payment amount does not match the discounted plan price."
                     )
                 applied_coupon = coupon
+                final_amount = expected_discounted
             except CouponCode.DoesNotExist:
                 raise ValueError("Coupon code does not exist.")
         else:
-            if float(payment_amount) != float(original_amount):
+            if abs(float(payment_amount) - float(final_amount)) > 1:
                 raise ValueError(
-                    f"Payment amount must be {original_amount} NPR for the selected plan."
+                    f"Payment amount must be {final_amount} NPR for the selected plan."
                 )
 
         transaction = ChatbotPaymentTransaction.objects.create(
             chatbot=chatbot,
             subscription_plan=plan,
             transaction_id=payment_transaction_code,
-            amount=original_amount,
-            discounted_amount=payment_amount if coupon_code else None,
+            amount=original_amount,  # Always store the original plan price
+            discounted_amount=final_amount
+            if coupon_code or (organization and organization.is_enterprise)
+            else None,
             coupon_code=applied_coupon,
         )
 

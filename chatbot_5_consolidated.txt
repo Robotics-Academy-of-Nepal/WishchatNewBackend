@@ -1,0 +1,646 @@
+
+
+--- File: bksdatabase ---
+
+	PRIME COLLEGE	
+  	Khusibun, Kathmandu
+
+
+
+
+LAB REPORT
+ OF
+ADVANCED DATABASE
+
+
+Submitted by:						         Submitted to:
+Name: Bikesh Maharjan				      Radha Krishna Gajurel 
+Faculty: BSc.CSIT
+Semester: 8th 
+
+
+
+
+
+
+CONTENTS
+
+
+
+
+
+Lab 1
+Database Operation
+Create Database.
+CREATE DATABASE bikesh;
+Use the created database.
+USE bikesh;
+Create Table.
+Create table normally:
+CREATE TABLE student (
+    id INT PRIMARY KEY,
+    student_name VARCHAR(100) NOT NULL
+);
+
+Create table using another table:
+CREATE TABLE student2 AS
+SELECT * FROM student;
+
+Alter table
+Add column:
+ALTER TABLE student ADD roll_no DECIMAL(10,2);
+
+Drop column:
+ALTER TABLE student2 DROP COLUMN roll_no ;
+
+Alter/Modify column:
+ALTER TABLE student MODIFY COLUMN roll_no SMALLINT;
+
+Constraints.
+NOT NULL: Ensures that a column cannot have a NULL value.
+Apply NOT NULL while creating table:
+CREATE TABLE employee (
+    id INT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL
+);
+
+Apply NOT NULL Using ALTER TABLE:
+ALTER TABLE employee MODIFY name VARCHAR(100) NOT NULL;
+
+UNIQUE: Ensures that all values in a column are different.
+Unique Constraint While Creating Table:
+CREATE TABLE worker (
+    id INT UNIQUE,
+    name VARCHAR(100)
+);
+
+Add Unique Constraint Using ALTER TABLE:
+ALTER TABLE worker ADD CONSTRAINT unique_name UNIQUE (Name);
+
+Drop a Unique Constraint:
+ALTER TABLE worker DROP CONSTRAINT unique_name;
+
+PRIMARY KEY: A combination of a NOT NULL and UNIQUE. Uniquely identifies each row in a table.
+Primary key constraint:
+CREATE TABLE school (
+    id INT PRIMARY KEY,
+    name VARCHAR(255)
+);
+
+Primary Key on Multiple Columns:
+CREATE TABLE OrderDetails (
+    OrderID INT,
+    ProductID INT,
+    Quantity INT,
+    PRIMARY KEY (OrderID, ProductID)
+);
+
+
+Add Primary Key on ALTER TABLE:
+ALTER TABLE OrderDetails ADD PRIMARY KEY (OrderID);
+
+Drop a PK constraint:
+ALTER TABLE OrderDetails DROP PRIMARY KEY;
+
+FOREIGN KEY: Uniquely identifies a row/record in another table.
+Foreign key constraint:
+CREATE TABLE Customers (
+    CustomerID INT PRIMARY KEY, CustomerName VARCHAR(100)
+);
+
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY,
+    CustomerID INT,
+    FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
+);
+Add Foreign Key on ALTER TABLE:
+ALTER TABLE Orders 
+ADD CONSTRAINT fk_customer 
+FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID);
+
+
+Drop a Foreign Key Constraint:
+ALTER TABLE Orders DROP CONSTRAINT fk_customer;
+
+DEFAULT Constraint: Sets up a default value for the field.
+SQL DEFAULT Constraint:
+CREATE TABLE company (
+    EmployeeID INT PRIMARY KEY,
+    Name VARCHAR(100),
+    Department VARCHAR(50) DEFAULT 'General'
+);
+
+Add DEFAULT Using ALTER TABLE:
+ALTER TABLE company ALTER COLUMN Department SET DEFAULT 'HR';
+Drop a DEFAULT Constraint:
+ALTER TABLE company ALTER COLUMN Department DROP DEFAULT;
+CHECK Constraint: This is used to enforce rules on column values to ensure data integrity.
+SQL CHECK Constraint (While creating a Table):
+CREATE TABLE emp (
+    EmployeeID INT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Age INT CHECK (Age >= 18),
+    Salary DECIMAL(10,2) CHECK (Salary > 0)
+);
+
+CHECK Constraint for Multiple Columns:
+CREATE TABLE Orders (
+    OrderID INT PRIMARY KEY,
+    Quantity INT,
+    Price DECIMAL(10,2),
+    CHECK (Quantity > 0 AND Price > 0)
+);
+
+SQL Check on ALTER Table:
+ALTER TABLE emp ADD CONSTRAINT chk_age CHECK (Age >= 18);
+
+Drop a CHECK Constraint:
+ALTER TABLE emp DROP CONSTRAINT chk_age;
+
+SQL Index.
+Create index:
+CREATE INDEX idx_name ON emp(Name);
+
+Drop index:
+DROP INDEX idx_name ON emp;
+
+Auto Increment Field.
+CREATE TABLE fruit (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+Insert Query.
+INSERT INTO fruit (Name) VALUES ('name');
+
+Update Table.
+UPDATE fruit SET Name = 'name' WHERE id = 1;
+
+SQL Delete.
+DELETE FROM fruit WHERE Name = 'name';	
+
+SQL truncate table.
+TRUNCATE TABLE fruit;
+
+DROP table.
+DROP TABLE fruit;
+
+Lab 2
+Data Control Language
+Creating User
+CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';
+
+Grant privilege
+Individual privilege like CREATE, DELETE, INSERT, UPDATE, SELECT, etc.
+GRANT READ ON <database.table> TO 'username'@'localhost'; 
+
+Provide all the privileges to the created user.
+GRANT ALL PRIVILEGES ON *.* TO 'username'@'localhost';
+
+Connect to User
+First, exit from the DBMS and then in the command prompt, login using credentials.
+
+Remove permission
+Remove the permission to create from all the tables for the user ‘<username>’;
+REVOKE SELECT ON *.* FROM ‘username’@’localhost’;
+As we can see, the READ permission has been revoked.
+Drop User
+DROP USER ‘username’@‘localhost’;
+
+Lab 3
+Active Database and Triggers
+Step 1: Create Tables
+CREATE TABLE main_table (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    active BOOLEAN DEFAULT TRUE
+);
+CREATE TABLE active_table (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    active BOOLEAN DEFAULT TRUE
+);
+
+Step 2: Define Trigger
+DELIMITER //
+CREATE TRIGGER update_active_flag 
+AFTER UPDATE ON main_table
+FOR EACH ROW
+BEGIN
+    IF OLD.active IS DISTINCT FROM NEW.active THEN
+        UPDATE active_table
+        SET active = NEW.active
+        WHERE id = NEW.id;
+    END IF;
+END //
+DELIMITER ;
+
+Step 3: Insert Data and Update
+Insert some data into the main_table.
+INSERT INTO main_table (name) VALUES ('Item 1'), ('Item 2');
+Insert corresponding data into the active_table.
+INSERT   active_table (name) VALUES ('Item 1'), ('Item 2');
+Update the active flag in main_table
+UPDATE main_table SET active = FALSE WHERE id = 1;
+
+Step 4: View Data
+SELECT * FROM active_table;
+Step 5: Clean Up (Drop the tables)
+DROP TABLE IF EXISTS main_table;
+
+
+
+
+
+
+DROP TABLE IF EXISTS active_table;
+
+
+
+
+
+Lab 4
+Deductive Database
+Step1: Create Database and Tables
+CREATE DATABASE IF NOT EXISTS dbase;
+USE dbase;
+CREATE TABLE IF NOT EXISTS parents (
+    parent VARCHAR(255),
+    child VARCHAR(255)
+);
+CREATE TABLE IF NOT EXISTS ancestors (
+    ancestor VARCHAR(255),
+    descendant VARCHAR(255),
+    UNIQUE KEY unique_ancestor_descendant (ancestor, descendant)
+);
+SHOW TABLES;
+
+Step 2: Insert data
+INSERT INTO parents (parent, child) VALUES
+    ('a', 'b'),
+    ('b', 'c'),
+    ('c', 'd');
+
+Step 3: Stored Procedure
+DELIMITER &&
+
+CREATE PROCEDURE populate_ancestors()
+BEGIN
+    DECLARE rows_inserted INT DEFAULT 0;
+
+    -- Clear existing data
+    TRUNCATE TABLE ancestors;
+
+    -- Insert direct parent-child relationships
+    INSERT INTO ancestors (ancestor, descendant)
+    SELECT parent, child FROM parents;
+
+    SET rows_inserted = ROW_COUNT();
+
+    -- Repeat until no new rows are added
+    label: REPEAT
+        INSERT INTO ancestors (ancestor, descendant)
+        SELECT a.ancestor, p.child
+        FROM ancestors a
+        JOIN parents p ON a.descendant = p.parent
+        ON DUPLICATE KEY UPDATE descendant = p.child;
+
+        SET rows_inserted = ROW_COUNT();
+
+    UNTIL rows_inserted = 0
+    END REPEAT label;
+END &&
+
+DELIMITER ;DELIMITER &&
+
+CREATE PROCEDURE populate_ancestors()
+BEGIN
+    DECLARE rows_inserted INT DEFAULT 0;
+
+    -- Clear existing data
+    TRUNCATE TABLE ancestors;
+
+    -- Insert direct parent-child relationships
+    INSERT INTO ancestors (ancestor, descendant)
+    SELECT parent, child FROM parents;
+
+    SET rows_inserted = ROW_COUNT();
+
+    -- Repeat until no new rows are added
+    label: REPEAT
+        INSERT INTO ancestors (ancestor, descendant)
+        SELECT a.ancestor, p.child
+        FROM ancestors a
+        JOIN parents p ON a.descendant = p.parent
+        ON DUPLICATE KEY UPDATE descendant = p.child;
+
+        SET rows_inserted = ROW_COUNT();
+
+    UNTIL rows_inserted = 0
+    END REPEAT label;
+END &&
+
+DELIMITER ;
+
+Step 4: Procedure Execution
+CALL populate_ancestors();
+
+Step 5: Querying the results
+SELECT * FROM ancestors;
+
+
+
+
+Lab 5
+Multimedia Database
+Step 1: Create Database and Tables
+CREATE DATABASE IF NOT EXISTS mdb;
+USE mdb;
+
+CREATE TABLE IF NOT EXISTS images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    image_data LONGBLOB
+);
+
+CREATE TABLE IF NOT EXISTS audio (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    audio_data LONGBLOB
+);
+
+CREATE TABLE IF NOT EXISTS videos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),
+    video_data LONGBLOB
+);
+
+Step 2: Insert media files
+Insert an image.
+INSERT INTO images (name, image_data)
+VALUES ('Image 1', LOAD_FILE(' C:\Users\bksmh\Pictures\Screenshots\image.png));
+Insert an audio file.
+INSERT INTO audio (name, audio_data) VALUES ('Audio', LOAD_FILE(‘C:\Users\bksmh\Documents\Microsoft.WindowsSoundRecorder_8wekyb3d8bbwe!App\Sound Recordings));
+
+Insert a video file.
+INSERT INTO videos (name, video_data) VALUES ('Video', LOAD_FILE(‘C:\Users\bksmh\Videos\Screen Recordings’));
+
+Step 3: Retrieve media files
+Retrieve an image.
+SELECT id, name, LENGTH(image_data) AS size FROM images WHERE id = 1;
+
+Retrieve an audio file.
+SELECT id, name, LENGTH(audio_data) AS size FROM audio WHERE id=1;
+
+Retrieve a video file.
+SELECT id, name, LENGTH(video_data) AS size FROM videos;
+
+Lab 6
+Spatial Database
+Step 1: Verify Spatial Extensions
+SHOW VARIABLES LIKE 'have_%';
+
+Step 2: Create the Database and Table
+CREATE DATABASE IF NOT EXISTS spatial_database;
+USE spatial_database;
+CREATE TABLE locations (
+    id INT AUTO_INCREMENT PRIMARY KEY, 
+    name VARCHAR(255), coordinates POINT
+);
+Step 3: Insert Spatial Data
+INSERT INTO locations (name, coordinates) VALUES
+    ('Location A', POINT(1.2345, 2.3456)),
+    ('Location B', POINT(3.4567, 4.5678)),
+    ('Location C', POINT(5.6789, 6.7890));
+
+Step 4: Perform a Spatial Query
+SELECT name 
+FROM locations 
+WHERE ST_DISTANCE(coordinates, POINT(1.0, 2.0)) < 1.0;
+
+Lab 7
+Temporal database
+Create a new database.
+CREATE DATABASE IF NOT EXISTS tdd;
+Use the created database.
+USE tdd;
+
+Create Table.
+CREATE TABLE a_table (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    data VARCHAR(255),
+    valid_from DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    valid_to DATETIME NOT NULL DEFAULT '9999-12-31 23:59:59'
+);
+
+Insert Data
+INSERT INTO a_table (data) VALUES ('Data 1');
+INSERT INTO a_table (data) VALUES ('Data 2');
+Update Data
+UPDATE a_table 
+SET valid_to = NOW() 
+WHERE id = 1 AND valid_to = '9999-12-31 23:59:59';
+INSERT INTO a_table (data, valid_from, valid_to) 
+VALUES ('Updated Data', NOW(), '9999-12-31 23:59:59');
+Delete Data
+DELETE FROM a_table WHERE id = 2;
+
+View Current Data
+SELECT * FROM a_table
+WHERE valid_to = '9999-12-31 23:59:59';
+
+View Historical Data
+SELECT * FROM a_table;
+
+Drop the database
+DROP DATABASE IF EXISTS tdd;
+
+Lab 8
+Converting EER model to Relational model
+Consider the following EER.
+
+Now, write the SQL code to convert EMPLOYEE, DEPARTMENT and PROJECT into relational model. (Just use CREATE statement)
+Employee:
+CREATE TABLE EMPLOYEE (
+    Ssn CHAR(9) PRIMARY KEY,
+    Fname VARCHAR(30),
+    Minit CHAR(1),
+    Lname VARCHAR(30),
+    Bdate DATE,
+    Address VARCHAR(100),
+    Sex CHAR(1),
+    Salary DECIMAL(10, 2)
+);
+
+Department
+CREATE TABLE DEPARTMENT (
+    Number INT PRIMARY KEY,
+    Name VARCHAR(30),
+    Locations VARCHAR(100),
+    Number_of_employees INT
+);
+
+Project
+CREATE TABLE PROJECT (
+    Number INT PRIMARY KEY,
+    Name VARCHAR(30),
+    Location VARCHAR(100)
+);
+Lab 9
+Object Oriented Database Management System
+Source Code:
+Download DB4o jar file and add to the library
+Step 1 (Import necessary class and interfaces) 
+import com.db4o.Db4o; 
+import com.db4o.ObjectContainer; 
+import com.db4o.config.Configuration; 
+import com.db4o.Db4oEmbedded; 
+import com.db4o.ObjectSet; 
+import com.db4o.config.EmbeddedConfiguration; 
+Step 2 (Create a class) 
+class Student {
+  private int sid;
+  private String name;
+  public Student(int s, String n) {
+    sid = s;
+    name = n;
+  }
+  public String toString() {
+    return sid + "," + name;
+  }
+}
+Step 3 (Now store and retrieve the object of Student class) 
+public class ADBMS_OODB {
+  public static void main(String[] args) {
+    EmbeddedConfiguration conf = Db4oEmbedded.newConfiguration();
+    ObjectContainer db = Db4oEmbedded.openFile(conf, "student.db4o");
+    createFewStudents(db);
+    printStudents(db);
+    db.close();
+  }
+  public static void createFewStudents(ObjectContainer db) {
+    Student S1 = new Student(1, "Ram");
+    Student S2 = new Student(2, "Hari");
+    db.store(S1);
+    db.store(S2);
+  }
+  public static void printStudents(ObjectContainer db) {
+    ObjectSet < Student > result = db.queryByExample(Student.class);
+    System.out.println("Number of students = " + result.size() + "\n");
+    while (result.hasNext()) {
+      System.out.println(result.next());
+    }
+  }
+}
+
+Output:
+
+Lab 10
+Map Reduce
+
+Create a class MapReduce and perform all the tasks as described above for the corpus you will be provided by the instructor.
+Source Code:
+import multiprocessing
+from collections import defaultdict
+class MapReduce:
+    def __init__(self, num_workers=2):
+        self.num_workers = num_workers
+    def map(self, chunk):
+        word_counts = defaultdict(int)
+        for word in chunk.split():
+            word_counts[word] += 1
+        return list(word_counts.items())
+    def shuffle_sort(self, mapped_data):
+        shuffled_data = defaultdict(list)
+        for sublist in mapped_data:
+            for word, count in sublist:
+                shuffled_data[word].append(count)
+        return shuffled_data
+    def reduce(self, shuffled_data):
+        return {word: sum(counts) for word, counts in shuffled_data.items()}
+    def execute(self, text):
+        chunks = text.split("\n")
+        # Step 1: Map Phase (Parallel Processing)
+        with multiprocessing.Pool(self.num_workers) as pool:
+            mapped_data = pool.map(self.map, chunks)
+        # Step 2: Shuffle and Sort Phase
+        shuffled_data = self.shuffle_sort(mapped_data)
+        # Step 3: Reduce Phase
+        final_result = self.reduce(shuffled_data)
+        return final_result
+if __name__ == "__main__":
+    text_corpus = """Deer Bear River
+                     Car Car River
+                     Deer Car Bear"""
+    mr = MapReduce(num_workers=3)
+    result = mr.execute(text_corpus)
+    print("Final Word Count:", result)
+Output:
+Lab 11
+NoSQL Operation
+Open MongoDB Shell.
+mongosh;
+
+Create a database
+use office;
+
+Create a Collection (table).
+db.createCollection(“employees”);
+
+Show existing databases and collections.
+Show database:
+show dbs;
+
+Show collections:
+show collections;
+
+Insert Data into Collections.
+Insert a single document:
+db.employees.insertOne({
+    name: "AMY",
+    age: 30,
+})
+Insert multiple documents:
+db.employees.insertMany([
+   { name: "GOOFY", age: 25},
+   { name: "POM", age: 69 }
+])
+Querying Data.
+Retrieve all documents:
+db.employees.find().pretty();
+
+Find an employee where age > 25:
+db.employees.find({ age: { $gt: 25 } });
+
+Find an employee by name:
+db.employees.find({ name: "Habit Rai" });
+
+Updating Data.
+Update an employee’s grade:
+db.employees.updateOne({ name: "Sita Manandhar" }, { $set: { age: 22 } });
+
+Update multiple documents (increase age by 1 for all employees):
+db.employees.updateMany({},{ $inc: { age: 1 } });
+
+Deleting Data.
+Delete an employee based on name:
+db.employees.deleteOne({ name: "Sammy Basnet" });
+
+Delete all employees with age = 69:
+db.employees.deleteMany({ age: 69 });
+
+Indexing for Performance.
+Create an index on the ‘name’ field:
+db.employees.createIndex({ name: 1 });
+View all indexes:
+db.employees.getIndexes();
+
+Dropping Collection and Databases.
+Drop the employees collection:
+db.employees.drop();
+
+Drop the ‘office’ database:
+db.dropDatabase();
+
+
+

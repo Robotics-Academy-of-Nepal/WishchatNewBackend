@@ -138,8 +138,21 @@ class ListSubscriptionPlansView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        # Get the user's organization (if any)
+        organization = (
+            request.user.organization
+            if request.user.is_authenticated and hasattr(request.user, "organization")
+            else None
+        )
+
+        # Get all active subscription plans
         plans = SubscriptionPlan.objects.filter(is_active=True)
-        serializer = SubscriptionPlanSerializer(plans, many=True)
+
+        # Pass the organization in the serializer context
+        serializer = SubscriptionPlanSerializer(
+            plans, many=True, context={"organization": organization}
+        )
+
         return Response(
             {
                 "message": "Active subscription plans retrieved successfully",

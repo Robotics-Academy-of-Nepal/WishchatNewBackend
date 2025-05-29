@@ -35,7 +35,7 @@ class GoogleUserSerializer(serializers.ModelSerializer):
 class OrganizationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Organization
-        fields = ["id", "name"]
+        fields = ["id", "name", "is_enterprise"]
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
@@ -59,7 +59,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
             "is_active",
             "is_staff",
             "is_superuser",
-            "is_enterprise",
         ]
         read_only_fields = ["is_active", "is_staff", "is_superuser"]
         extra_kwargs = {"password": {"write_only": True}}
@@ -126,6 +125,25 @@ class SubscriptionPlanSerializer(serializers.ModelSerializer):
             "features",
         ]
         read_only_fields = ["created_at", "updated_at"]
+
+    def to_representation(self, instance):
+        """Customize the serialized output to include discounted price for enterprise organizations."""
+        # Get the default representation
+        representation = super().to_representation(instance)
+
+        # Get the organization from the serializer context
+        organization = self.context.get("organization")
+
+        # If organization exists and is enterprise, apply the discount
+        if organization and organization.is_enterprise:
+            original_price = instance.price
+            discount_percentage = organization.discount_percentage
+            # Calculate discounted price: price * (1 - discount_percentage)
+            discounted_price = original_price * (1 - discount_percentage / 100)
+            # Round to 2 decimal places to match the model's decimal_places
+            representation["price"] = str(round(discounted_price, 2))
+
+        return representation
 
 
 class ChatbotQuotaSerializer(serializers.ModelSerializer):
@@ -223,7 +241,7 @@ class ChatbotSerializer(serializers.ModelSerializer):
 class ChatbotListQuotaSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatbotQuota
-        fields = ["messages_used"]
+        fields = ["messages_used", "is_trial"]
 
 
 class ChatbotListSerializer(serializers.ModelSerializer):
@@ -559,9 +577,7 @@ class CouponCodeRedemptionSerializer(serializers.Serializer):
         chatbot = self.validated_data["chatbot"]
         coupon = CouponCode.objects.get(code=code)
 
-        discount = (float(coupon.discount_percent) / 100) * float(
-            subscription_plan.price
-        )
+        discount = (coupon.discount_percent / 100) * float(subscription_plan.price)
         discounted_amount = float(subscription_plan.price) - discount
 
         return {

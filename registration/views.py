@@ -121,7 +121,6 @@ class GoogleLoginView(APIView):
                     last_name=last_name,
                     password=None,
                     phone_number="",
-                    is_enterprise=False,
                 )
                 user.set_unusable_password()
                 user.save()
@@ -159,6 +158,7 @@ class GoogleLoginView(APIView):
                     "id": user.organization.id,
                     "name": user.organization.name,
                     "is_owner": user.is_owner,
+                    "is_enterprise": user.organization.is_enterprise,
                 }
 
             # Check for invitation code in request or session
@@ -206,6 +206,7 @@ class GoogleLoginView(APIView):
                                 "id": user.organization.id,
                                 "name": user.organization.name,
                                 "is_owner": user.is_owner,  # Will be False for invited users
+                                "is_enterprise": user.organization.is_enterprise,
                             }
 
                             # Reset is_new_user flag since they don't need to create an org
@@ -571,7 +572,9 @@ class CreateOrganizationView(APIView):
             )
 
         # Create the organization
-        organization = Organization.objects.create(name=organization_name)
+        organization = Organization.objects.create(
+            name=organization_name, is_enterprise=False
+        )
 
         # Associate user with organization as owner
         user.organization = organization

@@ -24,7 +24,7 @@ import requests
 
 
 class InitiateEsewaPaymentView(APIView):
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         # Validate request data
@@ -91,7 +91,7 @@ class InitiateEsewaPaymentView(APIView):
 
 
 class InitiateKhaltiPaymentView(APIView):
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         # Validate request data
@@ -159,7 +159,7 @@ class InitiateKhaltiPaymentView(APIView):
 
 
 class PaymentSuccessView(APIView):
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         # Extract common parameters
@@ -181,7 +181,12 @@ class PaymentSuccessView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Check for eSewa payment (existing functionality)
+        # Get the organization associated with the chatbot
+        organization = (
+            chatbot.organization if hasattr(chatbot, "organization") else None
+        )
+
+        # Check for eSewa payment
         encoded_data = request.data.get("data")
         if encoded_data:
             if not encoded_data:
@@ -223,6 +228,7 @@ class PaymentSuccessView(APIView):
                     payment_transaction_code=transaction_code,
                     subscription_plan_id=subscription_plan_id,
                     coupon_code=coupon_code if coupon_code else None,
+                    organization=organization,  # Pass organization for enterprise discount
                 )
                 print("Transaction created successfully:", transaction)
 
@@ -302,6 +308,7 @@ class PaymentSuccessView(APIView):
                     payment_transaction_code=transaction_code,
                     subscription_plan_id=subscription_plan_id,
                     coupon_code=coupon_code if coupon_code else None,
+                    organization=organization,  # Pass organization for enterprise discount
                 )
                 print("Khalti transaction created successfully:", transaction)
 
