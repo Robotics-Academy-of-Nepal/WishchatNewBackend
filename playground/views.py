@@ -59,9 +59,11 @@ def handle_query(request):
         # API key authentication path
         if hasattr(request, "chatbot_from_api_key"):
             chatbot = request.chatbot_from_api_key
-            system_prompt = getattr(chatbot, "system_prompt", None)
-            system_prompt += "make the website link clickable. also give preview of the thumbnail of the youtube link. make the preview also clickable."
-            print("System Prompt being used is: ", system_prompt)
+            system_prompt = (getattr(chatbot, "system_prompt", "") or "") + (
+                " If the input contains any website URLs, make them clickable links in the output."
+                " If the input contains any YouTube links, also generate clickable thumbnail previews for those links."
+                " However, if the input does not include any URLs or YouTube links, do not mention anything about links, websites, or previews."
+            )
 
             # Optional: Warn if chatbot_id is provided and mismatches
             provided_chatbot_id = request.data.get("chatbot_id")

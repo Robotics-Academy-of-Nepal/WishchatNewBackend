@@ -68,7 +68,8 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 GOOGLE_OAUTH2_CLIENT_ID = (
-    "675550706414-4n7nop63elgh5a5bbiovb47p7v5ml0ia.apps.googleusercontent.com"
+    # "675550706414-4n7nop63elgh5a5bbiovb47p7v5ml0ia.apps.googleusercontent.com"
+    "152364471348-fngo0d6ejqtg13ldvq8ja9omf710ktuc.apps.googleusercontent.com"
 )
 # GOOGLE_OAUTH2_CLIENT_ID= "407408718192.apps.googleusercontent.com"
 

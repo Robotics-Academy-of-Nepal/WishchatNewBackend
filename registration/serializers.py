@@ -572,19 +572,43 @@ class CouponCodeRedemptionSerializer(serializers.Serializer):
         return data
 
     def redeem(self):
-        code = self.validated_data["code"]
         subscription_plan = self.validated_data["subscription_plan"]
         chatbot = self.validated_data["chatbot"]
+        code = self.validated_data["code"]
         coupon = CouponCode.objects.get(code=code)
+        # Get organization from context or chatbot
+        organization = self.context.get("organization") or (
+            chatbot.organization if hasattr(chatbot, "organization") else None
+        )
 
-        discount = (coupon.discount_percent / 100) * float(subscription_plan.price)
-        discounted_amount = float(subscription_plan.price) - discount
+        # Start with original plan price
+        original_amount = float(subscription_plan.price)
+        final_amount = original_amount
+
+        # Apply enterprise discount if applicable
+        discount_applied = 0.0
+        if organization and organization.is_enterprise:
+            discount_applied = float(organization.discount_percentage)
+            final_amount = original_amount * (1 - discount_applied / 100)
+            final_amount = round(final_amount, 2)
+
+        # Apply coupon discount
+        coupon_discount = float(coupon.discount_percent)
+        discounted_amount = final_amount * (1 - coupon_discount / 100)
+        discounted_amount = round(discounted_amount, 2)
+        total_discount_applied = (
+            discount_applied
+            + coupon_discount
+            - (discount_applied * coupon_discount / 100)
+        )
 
         return {
-            "original_amount": float(subscription_plan.price),
+            "original_amount": final_amount,
             "discounted_amount": discounted_amount,
-            "discount_applied": coupon.discount_percent,
-            "coupon_code": code,
+            "discount_applied": round(total_discount_applied, 2),
+            "enterprise_discount": discount_applied,
+            "coupon_discount": coupon_discount,
+            "coupon_code": coupon.code,
             "subscription_plan_id": subscription_plan.id,
         }
 

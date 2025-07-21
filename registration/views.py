@@ -605,37 +605,38 @@ class ChatbotViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         organization = self.request.user.organization
+        if not organization.is_enterprise:
+            # Create an INTERVAL from grace_period_days for PostgreSQL
+            interval_expression = ExpressionWrapper(
+                Func(
+                    F("grace_period_days"),
+                    function="days",
+                    template="%(expressions)s * INTERVAL '1 day'",
+                ),
+                output_field=DurationField(),
+            )
 
-        # Create an INTERVAL from grace_period_days for PostgreSQL
-        interval_expression = ExpressionWrapper(
-            Func(
-                F("grace_period_days"),
-                function="days",
-                template="%(expressions)s * INTERVAL '1 day'",
-            ),
-            output_field=DurationField(),
-        )
-
-        # Count the number of invalid subscriptions for the organization's chatbots
-        invalid_subscription_count = (
-            ChatbotQuota.objects.filter(chatbot__organization=organization)
-            .filter(
-                ~Q(is_lifetime_free=True)
-                & ~Q(subscription_plan__is_lifetime=True)
-                & (
-                    Q(is_paid=False)
-                    | Q(subscription_end_date__isnull=True)
-                    | Q(subscription_end_date__lt=Now() - interval_expression)
+            # Count the number of invalid subscriptions for the organization's chatbots
+            invalid_subscription_count = (
+                ChatbotQuota.objects.filter(chatbot__organization=organization)
+                .filter(
+                    ~Q(is_lifetime_free=True)
+                    & ~Q(subscription_plan__is_lifetime=True)
+                    & (
+                        Q(is_paid=False)
+                        | Q(subscription_end_date__isnull=True)
+                        | Q(subscription_end_date__lt=Now() - interval_expression)
+                    )
                 )
+                .count()
             )
-            .count()
-        )
-        # Enforce the limit if there are more than 2 chatbots with invalid subscriptions
-        if invalid_subscription_count >= 2:
-            return Response(
-                {"message": "Cannot create more than 2 trial chatbots."},
-                status=status.HTTP_409_CONFLICT,
-            )
+            # Enforce the limit if there are more than 2 chatbots with invalid subscriptions
+            if invalid_subscription_count >= 2:
+                return Response(
+                    {"message": "Cannot create more than 2 trial chatbots."},
+                    status=status.HTTP_409_CONFLICT,
+                )
+        # Check if a chatbot with the same name already exists in the organization
         chatbot_name = request.data.get("name")
         if Chatbot.objects.filter(
             name=chatbot_name, organization=organization
@@ -1318,7 +1319,16 @@ class CouponCodeRedeemView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-        serializer = CouponCodeRedemptionSerializer(data=request.data)
+        # Get organization from authenticated user
+        organization = (
+            request.user.organization
+            if request.user.is_authenticated and hasattr(request.user, "organization")
+            else None
+        )
+
+        serializer = CouponCodeRedemptionSerializer(
+            data=request.data, context={"organization": organization}
+        )
         if serializer.is_valid():
             result = serializer.redeem()
             return Response(result, status=status.HTTP_200_OK)
