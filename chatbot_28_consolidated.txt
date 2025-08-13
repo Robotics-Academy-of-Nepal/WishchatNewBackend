@@ -1,60 +1,1193 @@
 
 
---- File: robotics_essay ---
+--- File: Dobato ---
 
 --- Page 1 ---
-The Future of Robotics: Transforming the World
-Robotics is one of the most revolutionary fields in modern technology, integrating engineering,
-artificial intelligence, and automation to create machines capable of performing complex tasks. From
-industrial manufacturing to healthcare and even space exploration, robots are transforming the way
-humans interact with the world. This essay explores the significance of robotics, its applications, and
-its potential future impact.
-The Evolution of Robotics
-Robotics has evolved significantly since its inception. The term "robot" was first coined by Czech
-writer Karel Capek in his 1920 play R.U.R. (Rossum's Universal Robots). Early robots were simple
-mechanical devices designed to automate repetitive tasks, but modern robotics has advanced to
-include artificial intelligence, machine learning, and sophisticated sensors that allow robots to make
-independent decisions.
-In the 20th century, industrial robots revolutionized manufacturing, increasing efficiency and
-precision. The Unimate, introduced in the 1960s, was one of the first industrial robots, used in
-automobile manufacturing. Today, robots are used in various sectors, including medicine,
-agriculture, and even the military.
-Applications of Robotics
-The applications of robotics are vast and continuously expanding. Some of the most significant
-areas include:
-1. Industrial Automation - Factories worldwide use robotic arms to assemble products, weld
+Lead mark Infosys
+ 
+Dobato.net Requirements Document 
+ 
+ 
+ 
+ 
+Table Of content 
+ 
+Dobato.net Requirements Document........................................................................................ 1 
+1. Project Overview..................................................................................................................5 
+2. System Architecture & Subdomains.................................................................................... 7 
+Key Architectural Features:................................................................................................7 
+3. User Roles & Permissions................................................................................................... 9 
+3.1 Super Admin................................................................................................................ 9 
+3.2 Municipality Admin.....................................................................................................10 
+3.3 Municipality Department Managers / Content Editors................................................10 
+3.4 Public Users...............................................................................................................11 
+4. Content Features Per Municipality...............................................................................11 
+4.1 Tourism Places.....................................................................................................11 
+● Categorization & Filtering:.............................................................................................11 
+○ Organized by categories: Historical, Cultural, Natural, Religious, etc...........................11 
+○ Sub-category tagging for more refined filtering (e.g., Temples under Cultural)............ 12 
+● Rich Multimedia Storytelling:........................................................................................ 12 
+○ Detailed content with historical background, legends, anecdotes................................ 12 
+○ High-quality images and embedded videos (YouTube, Vimeo, or native upload)........ 12 
+○ Integrated Text-to-Speech (TTS) functionality in Nepali and English with optional text 
+highlighting.......................................................................................................................12 
+● Mapping Integration:.....................................................................................................12 
+○ Embedded interactive maps with zoom and route planning......................................... 12 
+○ Static maps with geolocation pins.................................................................................12 
+● QR Code Integration:....................................................................................................12 
+○ Auto-generated QR codes for each tourism place, printable and downloadable..........12 
+○ “Poster Mode” for offline use with:................................................................................12 
+■ Map snapshot............................................................................................................... 12 
+■ QR code........................................................................................................................12 
+■ Title and summary........................................................................................................ 12 
 
 --- Page 2 ---
-materials, and perform quality control, significantly reducing human labor and improving precision.
-2. Healthcare and Medicine - Robotics plays a critical role in modern medicine. Surgical robots like
-the da Vinci Surgical System allow for minimally invasive procedures with higher precision.
-Additionally, robotic prosthetics and exoskeletons enhance mobility for disabled individuals.
-3. Space Exploration - NASA and other space agencies utilize robotic rovers, such as
-Perseverance, to explore planets and gather crucial data, enabling space research without risking
-human lives.
-4. Service and Assistance - Robots like AI-powered personal assistants, cleaning robots, and
-customer service bots enhance daily life and business operations by performing routine tasks
-efficiently.
-5. Military and Defense - Autonomous drones and robotic surveillance systems are employed for
-security, reconnaissance, and combat operations, reducing risks for human soldiers.
-The Impact of Robotics on Society
-The rise of robotics brings both opportunities and challenges. On the positive side, robots enhance
-efficiency, safety, and precision in various fields. They can handle dangerous tasks, such as bomb
-disposal and deep-sea exploration, which would be hazardous for humans. Additionally, automation
-in industries increases productivity and economic growth.
-However, there are concerns regarding job displacement as robots replace human workers in
-certain sectors. The rise of automation has sparked debates about the future of employment,
-prompting discussions on reskilling and education for the workforce. Additionally, ethical concerns
-arise regarding AI-driven robots making decisions that could impact human lives.
-The Future of Robotics
+Lead mark Infosys
+ 
+● Social Sharing & Offline Access:.................................................................................. 12 
+○ Shareable tourism posters for community walls, notice boards, or tourist hubs...........12 
+○ Optimized for printing in A4 and A3 format...................................................................12 
+4.2 Local Business & Services Directory................................................................... 12 
+● Types of Listings:..........................................................................................................12 
+○ Includes hotels, restaurants, shops, guides, craftspeople, transport operators, and 
+other verified local services..............................................................................................13 
+● Content Elements:........................................................................................................ 13 
+○ Business name, description, category, contact info, price range (if applicable)........... 13 
+○ Photos, service hours, location (map embedded), and service highlights....................13 
+● QR & Map Support:...................................................................................................... 13 
+○ QR code for each business listing................................................................................ 13 
+○ Pin placement on both static and interactive maps...................................................... 13 
+● Access Control & Authenticity:......................................................................................13 
+○ Listings can only be added by Municipality Admins or assigned sub-users................. 13 
+○ No self-registration or public listing submission to ensure quality control.....................13 
+● Print-Friendly Options:..................................................................................................13 
+○ Downloadable and printable flyers/posters for physical promotion...............................13 
+4.3 Events Management............................................................................................13 
+● Event Details:................................................................................................................13 
+○ Fields include: Title, Date, Time, Venue, Description, Organizer Info...........................14 
+○ Optional registration or RSVP links.............................................................................. 14 
+● Calendar View:............................................................................................................. 14 
+○ Interactive calendar by month with filters for date, type, and location.......................... 14 
+○ Archive of past events with status (Completed, Canceled, etc.)...................................14 
+● QR & Mapping:............................................................................................................. 14 
+○ Event-specific QR codes and map location pins.......................................................... 14 
+○ Suggest nearby landmarks or services for tourists.......................................................14 
+● Sharing & Outreach:..................................................................................................... 14 
+○ Auto-generated event flyers with:................................................................................. 14 
+■ Title, QR code, map snippet......................................................................................... 14 
+■ Share/download/print options....................................................................................... 14 
+● Department-Level Control:............................................................................................14 
+○ Tourism departments and Event Managers can add/edit/manage events in their scope.
+14 
+4.4 Municipality Public Profile System (Mayor & Board)............................................14 
+This system increases transparency and helps citizens and tourists connect with 
+municipal leadership........................................................................................................ 15 
+Mayor Profile Page...............................................................................................15 
+● Core Details:.................................................................................................................15 
+○ Full Name, Designation (Mayor), High-resolution Photo, and Office Address..............15 
 
 --- Page 3 ---
-The future of robotics is promising, with advancements in artificial intelligence, nanotechnology, and
-biotechnology further expanding its capabilities. Researchers are developing humanoid robots that
-can interact with humans more naturally, as well as autonomous vehicles that could revolutionize
-transportation. Additionally, robotics in healthcare is expected to improve patient care and
-personalized treatments.
-In conclusion, robotics is shaping the future by transforming industries, enhancing daily life, and
-expanding human capabilities. While challenges exist, the potential benefits far outweigh the
-drawbacks. As technology advances, it is essential to balance innovation with ethical considerations
-to ensure a harmonious integration of robotics into society.
+Lead mark Infosys
+ 
+○ Bio with Vision Statement or Message to the Public.................................................... 15 
+● Contact Information:..................................................................................................... 15 
+○ Optional fields: Email, Phone Number, Social Media Links..........................................15 
+○ QR code auto-generated for profile page..................................................................... 15 
+● Optional Interactive Features:.......................................................................................15 
+○ Contact Form: Name, Email, Message, with CAPTCHA or OTP for spam control.......15 
+○ WhatsApp Direct Link (configurable by admin).............................................................15 
+● Security & Permissions:................................................................................................15 
+○ Only Municipality Admin can edit or toggle display of contact fields and forms............15 
+Board Members Section.......................................................................................15 
+● Member Details:............................................................................................................15 
+○ Name, Designation (e.g., Deputy Mayor, Ward Chair), Department.............................15 
+○ Photo, Short Bio, Contact Info, Tenure Period..............................................................15 
+● Mini Profiles:................................................................................................................. 15 
+○ Each board member gets a dedicated mini-profile page with a QR code.....................16 
+● Content Management:.................................................................................................. 16 
+○ Municipality Admin can add/edit/remove members, photos, contact settings.............. 16 
+Admin Panel Features (Municipality Side)........................................................... 16 
+● Add/update:.................................................................................................................. 16 
+○ Mayor profile.................................................................................................................16 
+○ Board members’ details and photos............................................................................. 16 
+○ Enable/disable features like contact form or WhatsApp............................................... 16 
+● View:.............................................................................................................................16 
+○ Submitted forms/messages with response tracking..................................................... 16 
+○ Statistics on user views and interactions......................................................................16 
+4.5 Inquiry, Feedback & Complaint Form System......................................................16 
+A streamlined, secure form for citizens or tourists to contact their municipality directly.. 16 
+Frontend Form (Public View)............................................................................... 16 
+● Open Access: Available without login; enhanced fields if logged in............................. 16 
+● Form Fields:..................................................................................................................16 
+○ Name (Auto-filled if logged in), Phone (optional), Email (optional)...............................16 
+○ Type: Complaint, Suggestion, Feedback, Inquiry......................................................... 16 
+○ Subject + Rich Text Message....................................................................................... 16 
+○ Location Selector: Dropdown or map pin......................................................................16 
+○ Attachment Upload (images, PDFs, etc.)..................................................................... 17 
+○ Captcha / Anti-bot check...............................................................................................17 
+● Smart Form Design:......................................................................................................17 
+○ Mobile-first UI................................................................................................................17 
+○ Local language support (Nepali, English, others).........................................................17 
+○ Auto-save progress in case of disconnect....................................................................17 
+Admin Panel Access (Municipality Only)..............................................................17 
+
+--- Page 4 ---
+Lead mark Infosys
+ 
+● Only authorized Municipality Admins and Sub-Users can:...........................................17 
+○ View all incoming forms................................................................................................17 
+○ Filter by type, date, and status (Pending, In Review, Resolved).................................. 17 
+○ Add internal notes.........................................................................................................17 
+○ Mark resolution status and export reports (CSV, PDF).................................................17 
+○ Reply to users (email or phone-based if provided).......................................................17 
+Notification & Tracking System............................................................................ 17 
+● Email Alerts to Municipality Support Team on new submissions..................................17 
+● Auto-reply to User (if email provided):.......................................................................... 17 
+○ Acknowledgement with tracking number...................................................................... 17 
+○ Expected resolution timeline.........................................................................................17 
+Security & Privacy Features.................................................................................17 
+● Municipality login required to access sensitive form data.............................................17 
+● Encrypted form data at rest.......................................................................................... 17 
+● OTP or CAPTCHA to prevent spam and abuse........................................................... 17 
+● Abuse/spam detection with rate limits and flagging......................................................17 
+5. Public User Features (Citizens, Visitors, Tourists).............................................................18 
+5.1 User Registration & Login..........................................................................................18 
+5.2 Commenting & Review System................................................................................. 18 
+5.4  Saved Items & Notifications......................................................................................18 
+5.5 Smart Geolocation Detection.....................................................................................19 
+5.6  Interactive Map Integration....................................................................................... 19 
+5.7 Public User Dashboard (Optional/Future)..................................................................19 
+5.8  Privacy & User Data..................................................................................................19 
+6. Maps and QR Code System..............................................................................................19 
+6.1 Static & Interactive Map Features..............................................................................19 
+Static Maps (Auto-generated).................................................................................... 20 
+Interactive Maps.........................................................................................................20 
+6.2  Location-Based Categorization & Clustering............................................................ 20 
+6.3  Unique QR Code Generation....................................................................................20 
+Per-Entity QR Codes................................................................................................. 20 
+Print-Ready Integration.............................................................................................. 21 
+6.4  QR Code Analytics & Dashboard..............................................................................21 
+6.5  Smart Enhancements............................................................................................... 21 
+6.6  Security & QR Abuse Prevention..............................................................................21 
+7. Accessibility and Content Enrichment............................................................................... 21 
+7.1 Text-to-Speech (TTS) System....................................................................................22 
+Bilingual TTS Support................................................................................................ 22 
+Features.....................................................................................................................22 
+7.2 Print-Friendly Pages for Offline Use.......................................................................... 22 
+Offline Distribution for Municipal Outreach.................................................................22 
+
+--- Page 5 ---
+Lead mark Infosys
+ 
+Examples of Print-Optimized Pages.......................................................................... 23 
+7.3 QR Codes and Visual Posters................................................................................... 23 
+Designed for Digital + Physical Visibility.................................................................... 23 
+QR + Audio Fusion.....................................................................................................23 
+7.4  Inclusive UX for Accessibility.................................................................................... 23 
+7.5  Future-ready Enrichment (Optional/Future Phase)...................................................23 
+8. Content Submission & Moderation.................................................................................... 24 
+9. Security & Compliance...................................................................................................... 24 
+10. Municipality User & Permission Management................................................................. 24 
+10.1 Municipality Admin Overview...................................................................................24 
+10.2 Department-Based Sub-Users.................................................................................24 
+10.3 Permissions and Access Control............................................................................. 25 
+10.4 Service Addition Workflow....................................................................................... 25 
+10.5 Activity Logging and Auditing...................................................................................25 
+10.6 Optional Advanced Features (Future Enhancements).............................................26 
+11. Enhanced User Experience Features.............................................................................. 26 
+11.1 Multi-language Support............................................................................................26 
+11.2 Progressive Web App (PWA)...................................................................................26 
+11.3 Advanced Search & Filters.......................................................................................26 
+11.4 Interactive Maps.......................................................................................................27 
+11.5 Personalized User Dashboard................................................................................. 27 
+12. Municipality & Admin Enhancements.............................................................................. 28 
+12.1 Workflow Automation...............................................................................................28 
+12.2 Content Versioning & History...................................................................................28 
+12.3 Bulk Upload & Import...............................................................................................28 
+12.4 Integration with Local Government Systems........................................................... 28 
+13. Public User Interaction & Engagement............................................................................28 
+13.1 Social Sharing..........................................................................................................28 
+13.2 Gamification.............................................................................................................28 
+13.3 Multimedia Uploads................................................................................................. 29 
+13.4 Event Reminders & Calendar Sync......................................................................... 29 
+14. Advanced Analytics & Reporting..................................................................................... 29 
+15. Platform Scalability & Integration.....................................................................................29 
+16. Security & Compliance Enhancements........................................................................... 29 
+17. Content Enrichment & SEO.............................................................................................29 
+18. Support & Training...........................................................................................................30 
+19. Admin Dashboards.......................................................................................................... 30 
+19.1 Super Admin Dashboard..........................................................................................30 
+19.2 Municipality Admin Dashboard................................................................................ 30 
+20. Suggested Technology Stack.......................................................................................... 30 
+
+--- Page 6 ---
+Lead mark Infosys
+ 
+1. Project Overview 
+Dobato.net is an innovative, multi-subdomain digital platform designed to empower and promote 
+local tourism, culture, and businesses throughout Nepal. By partnering exclusively with 
+municipal governments, Dobato.net provides each municipality with its own dedicated and fully 
+branded subdomain (e.g., kathmandu.dobato.net, pokhara.dobato.net). This localized approach 
+ensures relevant, authoritative, and rich content tailored to each municipality’s unique heritage, 
+attractions, services, and events. 
+The platform serves as a comprehensive digital directory and interactive guide for tourists, 
+residents, and businesses, offering detailed information about tourism destinations, local service 
+providers, upcoming events, and municipal leadership profiles including mayors and board 
+members. This centralized hub not only increases the visibility of local businesses and cultural 
+sites but also encourages community engagement and sustainable tourism development. 
+Key features include: 
+●​ Multi-Tenant Subdomain Architecture: Each municipality has its own subdomain, 
+enabling customized branding, content management, and administrative control. This 
+allows municipalities to independently manage their digital presence while benefiting 
+from the overall Dobato.net ecosystem. 
+●​ Curated Tourism Content: Rich storytelling with historical, cultural, natural, and 
+religious tourism places, supported by multimedia assets such as photos, videos, and 
+audio narratives. Content is enhanced with interactive maps and embedded static map 
+views, enabling users to explore destinations visually. 
+●​ QR Code Integration: Unique, downloadable, and printable QR codes are generated for 
+every tourism place, event, and business listing, facilitating easy physical and digital 
+sharing. These QR codes link directly to the respective detailed pages on the 
+municipality’s subdomain, supporting offline promotion and visitor engagement. 
+●​ Text-to-Speech (TTS) Support: Story-driven content and descriptions feature bilingual 
+text-to-speech capabilities in Nepali and English, allowing users with visual impairments 
+or literacy challenges to access information auditorily. The system optionally highlights 
+text in sync with narration for enhanced accessibility. 
+●​ Interactive & Static Maps: The platform integrates both static maps (via 
+OpenStreetMap or Google Maps Static API) for quick reference and fully interactive 
+maps with zoom, pan, and route planning features. Interactive maps support route 
+suggestions, tourist circuits, and real-time event markers to enrich the visitor experience. 
+●​ Robust User Engagement: Public users can register via social logins (Google, 
+Facebook, Apple ID) or mobile OTP to comment, review, and submit suggestions or new 
+listings for approval by municipality admins. Personalized dashboards provide tailored 
+recommendations based on user location, preferences, and behavior. 
+●​ Municipality Administration Portal: Municipality admins and designated department 
+managers control and curate their subdomain’s content, manage events, services, local 
+
+--- Page 7 ---
+Lead mark Infosys
+ 
+businesses, and monitor analytics including QR scan statistics and user feedback. 
+Role-based access controls ensure secure, department-specific management. 
+●​ Comprehensive Public Profile Pages: Each municipality’s page highlights official 
+leadership, including mayor and board members, complete with photos, bios, roles, and 
+contact information, fostering transparency and local government visibility. 
+●​ Community Feedback and Support System: Users can submit complaints, 
+suggestions, and feedback via dedicated forms visible only to municipal authorities, 
+ensuring effective communication and responsiveness. 
+●​ Progressive Web App (PWA) Capabilities: Designed to support offline access and 
+low-connectivity environments common in Nepal’s rural and mountainous areas, the 
+platform offers cached content access and “Add to Home Screen” features for mobile 
+users. 
+●​ Multi-language Support: The platform supports Nepali, English, and other local 
+languages, with auto-detection and manual language switching to accommodate diverse 
+user groups. 
+●​ Advanced Search and Filtering: Users can easily search and filter listings by category, 
+rating, distance, popularity, operating hours, event dates, price range, and other relevant 
+tags, improving discoverability and user satisfaction. 
+●​ Security and Privacy: The platform enforces strict role-based permissions, secure 
+authentication methods including OTP and OAuth social logins, data privacy compliant 
+with international standards, and robust audit logging. 
+●​ Future-Ready Integration: Designed with scalable APIs for integration with municipal 
+databases, tourism boards, payment gateways for event ticketing or service payments, 
+and native mobile app support on Android and iOS platforms. 
+Dobato.net aims to be the definitive online destination that bridges local governance, 
+businesses, tourists, and residents, fostering sustainable development and enhancing Nepal’s 
+cultural and economic vitality through technology-driven engagement and visibility. 
+ 
+ 
+ 
+ 
+ 
+2. System Architecture & Subdomains  
+Dobato.net employs a robust multi-tenant architecture designed to securely and efficiently 
+serve multiple municipalities across Nepal, each with its own isolated digital environment. This 
+architectural approach ensures data segregation, customized user experiences, and scalable 
+management while leveraging a centralized platform infrastructure. 
+
+--- Page 8 ---
+Lead mark Infosys
+ 
+Key Architectural Features: 
+●​ Multi-Tenant, Isolated Subdomains:​
+ Each municipality operates within its own dedicated subdomain (e.g., 
+kathmandu.dobato.net, lalitpur.dobato.net), ensuring complete separation of data, 
+content, and user management. This isolation enhances security, governance, and 
+customization specific to the local context of each municipality. 
+●​ Centralized Super Admin Portal:​
+ A master administrative layer is provided for platform-wide governance, operated by the 
+Dobato.net core team or designated central authority. The Super Admin’s responsibilities 
+include:​
+ 
+○​ Onboarding new municipalities and provisioning their subdomains. 
+○​ Managing global platform settings, compliance, and security policies. 
+○​ Monitoring overall system health, usage analytics, and performance metrics. 
+○​ Moderating platform-wide content or resolving escalated issues. 
+○​ Managing partnerships, contracts, and MoU documentation with municipalities. 
+●​ Municipality-Level Administration:​
+ Each municipality has its own Admin user(s) who fully control their subdomain’s content, 
+user roles, and permissions within defined boundaries. Municipality Admins can:​
+ 
+○​ Create, update, and manage tourism places, local businesses, events, and 
+stories. 
+○​ Manage user roles by delegating permissions to sub-users or department 
+managers. 
+○​ Approve or reject content submissions from public users. 
+○​ Access detailed analytics and reporting specific to their municipality. 
+○​ Customize the municipality’s branding and UI elements on their subdomain.​
+ 
+●​ Role-Based Sub-User Management:​
+ Municipality Admins can create department-specific sub-users (e.g., Tourism Manager, 
+Events Coordinator, Service Desk) with scoped permissions, allowing distributed content 
+management and operational efficiency without compromising security or data integrity. 
+These sub-users:​
+ 
+○​ Access and manage only the content and modules assigned to their department. 
+○​ Have limited or no access to user management and sensitive settings. 
+○​ Operate within audit logs for transparency and accountability.​
+ 
+●​ Scalable & Modular Backend Design:​
+ The backend supports horizontal scaling to handle increasing numbers of municipalities 
+and users without performance degradation. Modular APIs allow independent 
+development and integration of new features such as payment gateways, third-party 
+
+--- Page 9 ---
+Lead mark Infosys
+ 
+data feeds, and external tourism APIs.​
+ 
+●​ Wildcard DNS & SSL Support:​
+ The platform leverages wildcard DNS to dynamically create and route requests to 
+municipality subdomains. Each subdomain is secured with SSL/TLS certificates ensuring 
+encrypted communication and user data protection.​
+ 
+●​ Data Security & Privacy:​
+ Tenant data is logically and physically isolated to comply with privacy regulations and 
+safeguard sensitive municipal and user data. Access control policies enforce strict 
+separation between municipalities.​
+ 
+●​ Logging, Monitoring & Auditing:​
+ Comprehensive logging of all administrative and user actions is maintained both at the 
+platform and municipality levels. This supports compliance audits, troubleshooting, and 
+forensic investigations if required. 
+●​  
+3. User Roles & Permissions 
+Dobato.net’s user management framework is designed to ensure secure, role-based access and 
+efficient content governance, allowing different levels of control and responsibility across the 
+platform. This hierarchy guarantees that users can only access features and data appropriate to 
+their role, preserving data integrity and operational clarity. 
+3.1 Super Admin 
+●​ Holds full control and oversight of the entire Dobato.net platform. 
+●​ Responsibilities include: 
+○​ Creating, editing, activating, or deactivating municipalities and their associated 
+admin accounts. 
+○​ Assigning and managing platform-wide roles and permissions. 
+○​ Overseeing content moderation across all municipalities to ensure compliance 
+with platform policies and standards. 
+○​ Accessing comprehensive analytics dashboards with data aggregated globally 
+and filtered by municipality. 
+○​ Managing legal and administrative aspects such as contracts, partnerships, and 
+Memoranda of Understanding (MoU) uploads. 
+○​ Monitoring system health, security logs, and user activity to detect and prevent 
+abuse or breaches. 
+○​ Coordinating platform-wide announcements, feature rollouts, and emergency 
+communications. 
+○​ Managing billing, subscription plans (if applicable), and platform resource 
+allocation. 
+
+--- Page 10 ---
+Lead mark Infosys
+ 
+3.2 Municipality Admin 
+●​ Possesses full administrative control within their own municipality subdomain but 
+no access beyond it. 
+●​ Key capabilities include:​
+ 
+○​ Managing all content types related to their municipality such as tourism places, 
+local businesses, events, stories, and maps. 
+○​ Creating, editing, suspending, or deleting users within their municipality domain. 
+○​ Assigning and delegating department-specific roles and permissions (Tourism 
+Manager, Event Coordinator, Service Manager, Content Editor). 
+○​ Reviewing and approving or rejecting public user submissions (listings, reviews, 
+event proposals) with the option to provide feedback. 
+○​ Viewing detailed analytics reports on user engagement, QR code scans, 
+submission trends, and other KPIs relevant to their municipality. 
+○​ Customizing the municipality’s subdomain UI elements, branding, and localized 
+settings. 
+○​ Enabling or disabling features such as public user submissions, social sharing, 
+and notifications. 
+○​ Accessing audit logs of municipality users for security and accountability. 
+○​ Responding to citizen complaints, suggestions, and feedback submitted via 
+dedicated forms.​
+ 
+3.3 Municipality Department Managers / Content Editors 
+●​ Operate under strictly scoped permissions tied to specific departments such as 
+Tourism, Events, Business, or Services. 
+●​ Department Managers:​
+ 
+○​ Have full rights to create, edit, and delete content within their department’s 
+domain. 
+○​ Manage daily operations of their department’s listings, events, and service 
+entries. 
+○​ Moderate user-generated content (comments, reviews, media uploads) relevant 
+to their department. 
+○​ Cannot manage users or assign roles but can flag critical issues to Municipality 
+Admins.​
+ 
+●​ Content Editors:​
+ 
+○​ Have limited editing privileges restricted to updating existing content without 
+delete rights. 
+○​ Cannot approve or publish new content without oversight. 
+
+--- Page 11 ---
+Lead mark Infosys
+ 
+○​ Do not have access to user management or sensitive administrative features. 
+●​ All department-level actions are tracked in audit logs for transparency and governance.​
+ 
+3.4 Public Users 
+●​ General visitors and registered users with tiered engagement levels: 
+○​ Anonymous visitors: Can browse all public content without logging in, including 
+tourism places, events, businesses, maps, and municipal info. 
+○​ Registered users:​
+ 
+■​ Can sign up and log in via secure social login providers (Google, 
+Facebook, Apple ID) or via mobile OTP verification for easy access. 
+■​ Gain the ability to post comments and reviews on tourism places, 
+businesses, and events to foster community feedback. 
+■​ Submit new listings, business profiles, or event suggestions for review 
+and approval by municipal admins, contributing to platform growth and 
+accuracy. 
+■​ Save favorites/bookmarks and manage a personalized list of preferred 
+places and events (feature planned for near-future rollout). 
+■​ Receive personalized content recommendations and interactive map 
+suggestions based on their geolocation or manual municipality selection, 
+improving relevance and user experience. 
+■​ Manage notification preferences for event alerts, submission status 
+updates, and municipal announcements.​
+ 
+●​ User data is securely stored with privacy and consent management aligned with 
+applicable regulations.​
+ 
+ 
+ 
+4. Content Features Per Municipality 
+4.1 Tourism Places 
+●​ Categorization & Filtering:​
+ 
+○​ Organized by categories: Historical, Cultural, Natural, Religious, etc. 
+
+--- Page 12 ---
+Lead mark Infosys
+ 
+○​ Sub-category tagging for more refined filtering (e.g., Temples under 
+Cultural).​
+ 
+●​ Rich Multimedia Storytelling:​
+ 
+○​ Detailed content with historical background, legends, anecdotes. 
+○​ High-quality images and embedded videos (YouTube, Vimeo, or 
+native upload). 
+○​ Integrated Text-to-Speech (TTS) functionality in Nepali and English 
+with optional text highlighting.​
+ 
+●​ Mapping Integration:​
+ 
+○​ Embedded interactive maps with zoom and route planning. 
+○​ Static maps with geolocation pins. 
+●​ QR Code Integration:​
+ 
+○​ Auto-generated QR codes for each tourism place, printable and 
+downloadable. 
+○​ “Poster Mode” for offline use with: 
+■​ Map snapshot 
+■​ QR code 
+■​ Title and summary 
+●​ Social Sharing & Offline Access:​
+ 
+○​ Shareable tourism posters for community walls, notice boards, or 
+tourist hubs. 
+○​ Optimized for printing in A4 and A3 format.​
+ 
+ 
+4.2 Local Business & Services Directory 
+●​ Types of Listings:​
+ 
+
+--- Page 13 ---
+Lead mark Infosys
+ 
+○​ Includes hotels, restaurants, shops, guides, craftspeople, transport 
+operators, and other verified local services.​
+ 
+●​ Content Elements:​
+ 
+○​ Business name, description, category, contact info, price range (if 
+applicable). 
+○​ Photos, service hours, location (map embedded), and service 
+highlights.​
+ 
+●​ QR & Map Support:​
+ 
+○​ QR code for each business listing. 
+○​ Pin placement on both static and interactive maps. 
+●​ Access Control & Authenticity:​
+ 
+○​ Listings can only be added by Municipality Admins or assigned 
+sub-users. 
+○​ No self-registration or public listing submission to ensure quality 
+control.​
+ 
+●​ Print-Friendly Options:​
+ 
+○​ Downloadable and printable flyers/posters for physical 
+promotion.​
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+4.3 Events Management 
+●​ Event Details:​
+ 
+
+--- Page 14 ---
+Lead mark Infosys
+ 
+○​ Fields include: Title, Date, Time, Venue, Description, Organizer Info. 
+○​ Optional registration or RSVP links.​
+ 
+●​ Calendar View:​
+ 
+○​ Interactive calendar by month with filters for date, type, and location. 
+○​ Archive of past events with status (Completed, Canceled, etc.).​
+ 
+●​ QR & Mapping:​
+ 
+○​ Event-specific QR codes and map location pins. 
+○​ Suggest nearby landmarks or services for tourists.​
+ 
+●​ Sharing & Outreach:​
+ 
+○​ Auto-generated event flyers with: 
+■​ Title, QR code, map snippet 
+■​ Share/download/print options​
+ 
+●​ Department-Level Control:​
+ 
+○​ Tourism departments and Event Managers can add/edit/manage 
+events in their scope. 
+ 
+ 
+ 
+ 
+ 
+ 
+4.4 Municipality Public Profile System (Mayor & Board) 
+
+--- Page 15 ---
+Lead mark Infosys
+ 
+This system increases transparency and helps citizens and tourists connect with 
+municipal leadership. 
+Mayor Profile Page 
+●​ Core Details:​
+ 
+○​ Full Name, Designation (Mayor), High-resolution Photo, and Office 
+Address. 
+○​ Bio with Vision Statement or Message to the Public. 
+●​ Contact Information: 
+○​ Optional fields: Email, Phone Number, Social Media Links. 
+○​ QR code auto-generated for profile page. 
+●​ Optional Interactive Features: 
+○​ Contact Form: Name, Email, Message, with CAPTCHA or OTP for 
+spam control. 
+○​ WhatsApp Direct Link (configurable by admin).​
+ 
+●​ Security & Permissions:​
+ 
+○​ Only Municipality Admin can edit or toggle display of contact fields 
+and forms.​
+ 
+ 
+Board Members Section 
+●​ Member Details:​
+ 
+○​ Name, Designation (e.g., Deputy Mayor, Ward Chair), Department. 
+○​ Photo, Short Bio, Contact Info, Tenure Period.​
+ 
+ 
+ 
+●​ Mini Profiles:​
+ 
+
+--- Page 16 ---
+Lead mark Infosys
+ 
+○​ Each board member gets a dedicated mini-profile page with a QR 
+code.​
+ 
+●​ Content Management:​
+ 
+○​ Municipality Admin can add/edit/remove members, photos, contact 
+settings.​
+ 
+Admin Panel Features (Municipality Side) 
+●​ Add/update:​
+ 
+○​ Mayor profile 
+○​ Board members’ details and photos 
+○​ Enable/disable features like contact form or WhatsApp​
+ 
+●​ View:​
+ 
+○​ Submitted forms/messages with response tracking 
+○​ Statistics on user views and interactions​
+ 
+4.5 Inquiry, Feedback & Complaint Form System 
+A streamlined, secure form for citizens or tourists to contact their municipality 
+directly. 
+Frontend Form (Public View) 
+●​ Open Access: Available without login; enhanced fields if logged in.​
+ 
+●​ Form Fields: 
+○​ Name (Auto-filled if logged in), Phone (optional), Email (optional) 
+○​ Type: Complaint, Suggestion, Feedback, Inquiry​
+ 
+○​ Subject + Rich Text Message​
+ 
+○​ Location Selector: Dropdown or map pin 
+
+--- Page 17 ---
+Lead mark Infosys
+ 
+○​ Attachment Upload (images, PDFs, etc.) 
+○​ Captcha / Anti-bot check​
+ 
+●​ Smart Form Design:​
+ 
+○​ Mobile-first UI 
+○​ Local language support (Nepali, English, others) 
+○​ Auto-save progress in case of disconnect​
+ 
+Admin Panel Access (Municipality Only) 
+●​ Only authorized Municipality Admins and Sub-Users can:​
+ 
+○​ View all incoming forms 
+○​ Filter by type, date, and status (Pending, In Review, Resolved) 
+○​ Add internal notes 
+○​ Mark resolution status and export reports (CSV, PDF) 
+○​ Reply to users (email or phone-based if provided) 
+Notification & Tracking System 
+●​ Email Alerts to Municipality Support Team on new submissions. 
+●​ Auto-reply to User (if email provided): 
+○​ Acknowledgement with tracking number 
+○​ Expected resolution timeline 
+Security & Privacy Features 
+●​ Municipality login required to access sensitive form data. 
+●​ Encrypted form data at rest. 
+●​ OTP or CAPTCHA to prevent spam and abuse. 
+●​ Abuse/spam detection with rate limits and flagging.​
+ 
+ 
+ 
+
+--- Page 18 ---
+Lead mark Infosys
+ 
+5. Public User Features (Citizens, Visitors, Tourists) 
+The platform will empower public users (citizens and tourists) with intuitive tools to explore, 
+engage with, and contribute to local tourism and municipal information. Features are designed 
+to work across subdomains like kathmandu.dobato.net, pokhara.dobato.net, etc. 
+5.1 User Registration & Login 
+●​ Login Methods:​
+ 
+○​ Social login: Google, Facebook, Apple ID 
+○​ Mobile login via OTP (Twilio/Firebase or custom SMS gateway) 
+●​ Registration Flow: 
+○​ Minimal details required (name, phone/email) 
+○​ One-click login via OAuth or quick OTP 
+●​ Security Measures:​
+ 
+○​ Encrypted credentials 
+○​ Rate-limiting & CAPTCHA to prevent abuse 
+○​ GDPR-ready user consent and data handling 
+5.2 Commenting & Review System 
+●​ Users can leave comments and ratings on: 
+○​ Tourism places 
+○​ Local businesses 
+○​ Events 
+●​ Anti-spam moderation layer (manual or AI-driven) 
+●​ Logged-in users can edit/delete their reviews 
+●​ Municipal dashboard displays analytics: average rating, most reviewed items​
+ 
+●​ Moderation Required:​
+ 
+○​ Municipality officials review and approve/disapprove 
+○​ Admin can edit or publish user-submitted content​
+ 
+5.4  Saved Items & Notifications  
+●​ Logged-in users can: 
+○​ Save/favorite tourism sites, businesses, or events 
+○​ View saved items from profile dashboard 
+●​ Future option to enable: 
+○​ Push notifications for upcoming events or updates 
+
+--- Page 19 ---
+Lead mark Infosys
+ 
+○​ Email/SMS alerts about preferred municipality listings 
+5.5 Smart Geolocation Detection 
+●​ System detects user location via browser GPS (with permission) 
+●​ Auto-redirect or suggest nearest municipality subdomain (e.g., bhaktapur.dobato.net) 
+●​ Manual selection also available for travelers planning in advance 
+5.6  Interactive Map Integration 
+●​ Display all local listings with category filters: 
+○​ Tourism, Events, Services, Businesses, etc. 
+●​ Each item shows: 
+○​ Static & dynamic maps 
+○​ Directions from user’s location (Google Maps or OpenStreetMap integration) 
+○​ QR code for physical scan at the location 
+●​ Map supports: 
+○​ Cluster view, route drawing, distance display 
+○​ Accessible via both municipality home and detail pages 
+5.7 Public User Dashboard (Optional/Future) 
+●​ Upon login, users land on a personalized dashboard: 
+○​ Recently viewed places or saved items 
+○​ Municipality-specific recommendations 
+○​ Option to edit profile, view submitted suggestions, or track listing status 
+○​ Optional referral program (future monetization angle)​
+ 
+ 
+5.8  Privacy & User Data 
+●​ User data is stored securely with consent 
+●​ No public exposure of contact details unless voluntarily included 
+●​ Deletion or data export request option in compliance with local/international standards 
+●​  
+6. Maps and QR Code System 
+The map and QR integration module connects the physical and digital presence of places, 
+services, and events within each municipality. It enhances discoverability, navigation, 
+storytelling, and offline-to-online engagement — all within the municipality subdomain (e.g., 
+lalitpur.dobato.net). 
+
+--- Page 20 ---
+Lead mark Infosys
+ 
+6.1 Static & Interactive Map Features 
+Static Maps (Auto-generated) 
+●​ Use Google Static Maps API or OpenStreetMap Static Tiles. 
+●​ Automatically rendered for each: 
+○​ Tourist attraction 
+○​ Local business 
+○​ Public service office 
+○​ Upcoming event 
+●​ Embeddable on detail pages and printable media. 
+●​ Options: 
+○​ Zoom level customization 
+○​ Marker styling (based on category) 
+Interactive Maps 
+●​ Full-feature map for users and admins with: 
+○​ Zoom, pan, full-screen view 
+○​ Route finder: From user location to listing 
+○​ Multiple category filters: (e.g., "Hotels", "Parks", "Festivals") 
+○​ Layer support: Satellite, terrain, tourism-focused map tiles​
+ 
+●​ Uses: 
+○​ OpenStreetMap (Leaflet.js) or Google Maps JS API 
+○​ Optional switch between static and interactive display​
+ 
+ 
+6.2  Location-Based Categorization & Clustering 
+●​ Visual clustering of markers in crowded zones (e.g., marketplaces). 
+●​ Municipality-wise map view: all listings on one screen with filters. 
+●​ Admin dashboard: pin placement tool for custom coordinates. 
+●​ Public view auto-highlights: 
+○​ Events happening today/this week 
+○​ Top-rated places in area 
+○​ Recently added businesses 
+6.3  Unique QR Code Generation 
+Per-Entity QR Codes 
+●​ Auto-generated unique QR code for every: 
+
+--- Page 21 ---
+Lead mark Infosys
+ 
+○​ Tourism place (linked to its story/history page) 
+○​ Event (linked to schedule, location, RSVP) 
+○​ Business (linked to their public profile) 
+○​ Municipal facility/service center 
+●​ Format: PNG or high-resolution PDF (for printing) 
+●​ Design: Option to include logo + category icon inside QR code 
+ Print-Ready Integration 
+●​ Designed for: 
+○​ Signboards 
+○​ Posters 
+○​ Visitor brochures 
+●​ Option to bulk-download QR codes from municipality dashboard (ZIP export) 
+●​ Offline story card: Each place has a "Scan QR to Read Story" format 
+6.4  QR Code Analytics & Dashboard 
+●​ Municipality Admins can view analytics for each QR: 
+○​ Total scans 
+○​ Location of scan (approximate city/device IP or coordinates if allowed) 
+○​ Scan timestamps 
+○​ Device type (mobile/desktop) 
+●​ Graphical reports: 
+○​ Heatmaps (most scanned places) 
+○​ Time-based scan trends 
+●​ Use-case: Analyze tourist hotspots, community interaction with locations​
+ 
+ 
+6.5  Smart Enhancements  
+●​ NFC Tag Integration as an extension of QR (for smart poles or visitor booths) 
+●​ AR marker-ready QR system for story overlays (future expansion) 
+●​ Multi-language scan landing page based on user browser or manual toggle 
+●​ Voice narration after scan (text-to-speech for historic places)​
+ 
+6.6  Security & QR Abuse Prevention 
+●​ Every QR is digitally signed with a unique ID 
+●​ URLs behind QR codes use tokenized redirects or slugs to prevent manipulation 
+●​ Expired or disabled listings will show "This location is no longer available" on scan 
+
+--- Page 22 ---
+Lead mark Infosys
+ 
+7. Accessibility and Content Enrichment 
+This module ensures that municipal information, tourism content, and service data are 
+accessible to all users — including the elderly, visually impaired, rural citizens without internet 
+access, and multilingual travelers. The aim is to bridge digital gaps through voice, print, and 
+physical media while promoting tourism and civic inclusion. 
+7.1 Text-to-Speech (TTS) System 
+Bilingual TTS Support 
+●​ Supports Nepali and English text-to-speech. 
+●​ Available for: 
+○​ Place descriptions 
+○​ Business/service information 
+○​ Historical storytelling 
+○​ Event details 
+●​ Technology: 
+○​ Google TTS API or Open-source alternative (e.g., Coqui.ai) 
+○​ Realistic male/female voice options 
+ Features 
+●​ Highlighting while reading aloud (if browser supports Web Speech API). 
+●​ Toggle switch: “ Listen to this page” 
+●​ Support for speed, pause/play, and sentence navigation.​
+ 
+ 
+7.2 Print-Friendly Pages for Offline Use 
+ Offline Distribution for Municipal Outreach 
+●​ Optimized PDF print layout for: 
+○​ Community centers 
+○​ Tourist information desks 
+○​ Schools and local libraries 
+○​ Ward offices and health posts 
+●​ Includes: 
+○​ Map snapshot + QR code 
+○​ Brief description + contact info 
+○​ Multilingual content block (Nepali & English)​
+ 
+
+--- Page 23 ---
+Lead mark Infosys
+ 
+●​ Printable formats: 
+○​ A4 and A5 page formats 
+○​ Poster-style for bus stops 
+○​ Booklet mode for fairs and exhibitions​
+ 
+Examples of Print-Optimized Pages 
+●​ “Top 10 Places to Visit in My Municipality” 
+●​ “Ward-wise Essential Contacts” 
+●​ “Festival Calendar of This Year” 
+●​ “Mayor’s Message for Visitors” 
+ 
+7.3 QR Codes and Visual Posters 
+ Designed for Digital + Physical Visibility 
+●​ High-quality, visually enriched posters combining:​
+ 
+○​ QR code 
+○​ Place or event image 
+○​ Short description 
+○​ Link to scan + listen / scan + view 
+●​ Placement-ready for: 
+○​ Walls, poles, tourist booths, buses 
+○​ WhatsApp sharing, Facebook post, Email PDF 
+ 
+ 
+QR + Audio Fusion 
+●​ After QR scan: 
+○​ Page opens in browser 
+○​ Audio auto-plays in preferred language (if enabled) 
+○​ Option to toggle to “Read Mode” or “Print PDF” 
+7.4  Inclusive UX for Accessibility 
+●​ High contrast mode for visually impaired users. 
+●​ Keyboard navigation for screen-reader compatibility. 
+●​ Language toggle button for Nepali ↔ English content. 
+●​ Image ALT text and ARIA roles for better screen reader interpretation. 
+
+--- Page 24 ---
+Lead mark Infosys
+ 
+7.5  Future-ready Enrichment (Optional/Future Phase) 
+●​ Voice-controlled navigation (e.g., “Read about Lalitpur Durbar Square”) 
+●​ Offline voice packs downloadable for remote/rural listening 
+●​ Kiosk Mode: Touch-friendly, audio-narrated local info center interface 
+●​ Crowdsourced Storytelling Audio: 
+○​ Locals can record voice stories about places (pending admin approval) 
+○​ QR scan plays local narrative in own dialect (where available) 
+ 
+8. Content Submission & Moderation 
+●​ Public users can submit places, services, or event requests via forms. 
+●​ Submissions require municipality admin approval or rejection with feedback. 
+●​ Municipality admins moderate user comments and reviews. 
+9. Security & Compliance 
+●​ Role-based access control strictly enforced. 
+●​ Secure login protocols with SSL/TLS and CSRF protection. 
+●​ OTP logins with time-limited tokens. 
+●​ Compliance with social login providers’ policies. 
+●​ User data handling adheres to applicable privacy laws (e.g., GDPR). 
+ 
+10. Municipality User & Permission Management  
+10.1 Municipality Admin Overview 
+●​ Single main admin per municipality (typically municipal office user). 
+●​ Full control over municipality profile including mayor and board member details. 
+●​ Ability to create and manage sub-users assigned to specific departments. 
+●​ Assign granular permissions to sub-users by department and action type. 
+●​ Approve or reject content submitted by sub-users before publishing. 
+●​ Access to analytics, feedback, user complaints, and activity logs. 
+●​ Manage official QR codes, posters, and location listings. 
+10.2 Department-Based Sub-Users 
+
+--- Page 25 ---
+Lead mark Infosys
+ 
+●​ Created by Municipality Admin for departments such as:​
+ 
+○​ Tourism 
+○​ Events 
+○​ Business 
+○​ Public Services 
+●​ Permissions limited to their assigned department’s content only. 
+●​ Can add, edit, and delete content within their department. 
+●​ Cannot approve or publish content; submissions require admin approval. 
+●​ Cannot access other departments’ data or users. 
+●​ Cannot manage users or view analytics. 
+●​ All activities by sub-users are logged with timestamps. 
+10.3 Permissions and Access Control 
+●​ Municipality Admin: 
+○​ Add, edit, delete, and approve all content. 
+○​ Manage users and assign roles. 
+○​ View logs and analytics. 
+●​ Sub-Users: 
+○​ Add, edit, and delete content only in their department. 
+○​ Cannot approve or publish content. 
+○​ Cannot create/manage users or access other departments’ data. 
+○​ Actions tracked for audit and accountability. 
+ 
+ 
+ 
+10.4 Service Addition Workflow 
+●​ Only Municipality Admin and authorized sub-users can create or manage services. 
+●​ Sub-user submits service/business/event content via forms. 
+●​ Content enters “Pending Approval” status. 
+●​ Municipality Admin reviews and approves/rejects submissions. 
+●​ Approved content is published with QR code and printable poster generation. 
+●​ Municipality Admin can edit, unpublish, or delete content anytime. 
+10.5 Activity Logging and Auditing 
+●​ Tracks all user actions: creation, modification, deletion. 
+●​ Records timestamps, changes, and user details. 
+●​ Logs accessible only to Municipality Admin for transparency. 
+
+--- Page 26 ---
+Lead mark Infosys
+ 
+●​ Supports audit trails and accountability. 
+10.6 Optional Advanced Features (Future Enhancements) 
+●​ Role templates for faster user setup. 
+●​ Multi-ward level access for larger municipalities. 
+●​ Two-step approval workflows (department head + admin). 
+●​ Internal comment threads for collaboration before publishing. 
+ 
+11. Enhanced User Experience Features  
+11.1 Multi-language Support 
+●​ Full UI and content localization in Nepali, English, and other regional/local languages. 
+●​ Automatic language detection based on user browser settings or geolocation. 
+●​ Manual language selector allowing users to switch languages anytime. 
+●​ Support for right-to-left (RTL) languages if needed in the future. 
+●​ Translation management dashboard for municipality admins to update localized content 
+easily. 
+●​ Consistent language experience across all modules including maps, notifications, and 
+help sections. 
+ 
+ 
+ 
+11.2 Progressive Web App (PWA) 
+●​ Offline caching of key pages like places, events, business listings, and maps for low or 
+no internet connectivity. 
+●​ Background data sync when connection is restored, ensuring fresh content without 
+manual refresh. 
+●​ “Add to Home Screen” prompt for mobile devices for quick access without app store 
+installs. 
+●​ Push notifications for event reminders, new content updates, and municipal 
+announcements. 
+●​ Smooth performance with fast load times optimized for mobile and low-end devices. 
+●​ Support for device features like geolocation, camera (for photo uploads), and 
+notifications.​
+ 
+
+--- Page 27 ---
+Lead mark Infosys
+ 
+11.3 Advanced Search & Filters 
+●​ Robust full-text search with autocomplete suggestions and typo tolerance. 
+●​ Filter options including: 
+○​ Category (e.g., Historical, Natural, Cultural). 
+○​ User ratings and reviews. 
+○​ Distance from user’s current location or selected municipality center. 
+○​ Popularity and trending listings. 
+○​ Opening hours or event timings. 
+○​ Price range filters for paid services or events. 
+○​ Special tags such as family-friendly, accessible, heritage sites, seasonal events, 
+etc. 
+●​ Search results ranked dynamically based on relevance, proximity, and user preferences. 
+●​ Saved search queries and filters for logged-in users for quick reuse. 
+●​ Map-based search results with visual pins and clustering for dense areas. 
+11.4 Interactive Maps 
+●​ Fully interactive maps with smooth zoom, pan, and tap/click controls. 
+●​ Route planning and navigation support showing distance, estimated travel time, and 
+directions between multiple points. 
+●​ Highlighted recommended tourist circuits, themed routes (e.g., heritage trail, nature trek), 
+and suggested day itineraries. 
+●​ Map layers toggle (satellite, terrain, street view) for richer context. 
+●​ Real-time event markers showing active or upcoming events. 
+●​ Ability to filter visible map markers by category, rating, or open status. 
+●​ User location detection and “near me” functionality with routing suggestions. 
+●​ Integration of public transport routes or walking paths where available. 
+●​ Offline map tiles caching (PWA feature) to support low connectivity.​
+ 
+11.5 Personalized User Dashboard 
+●​ Smart content recommendations based on: 
+○​ Past browsing behavior and interactions. 
+○​ Favorite places, events, and businesses. 
+○​ Current municipality or geolocation. 
+○​ User preferences selected during onboarding or in settings. 
+●​ Dashboard widgets displaying:​
+ 
+○​ Recently viewed items with quick access. 
+○​ Saved favorites/bookmarks. 
+○​ Upcoming event reminders and ability to add to personal calendar (Google 
+Calendar, iCal). 
+
+--- Page 28 ---
+Lead mark Infosys
+ 
+○​ Notifications for content updates, municipality announcements, or responses to 
+user submissions. 
+○​ Quick links for submitting new places, businesses, or feedback. 
+●​ Option to follow specific categories, places, or events for personalized news feed. 
+●​ Community leaderboard or badge display for active contributors (if gamification is 
+enabled). 
+●​ Multi-device sync so preferences and activity carry over across devices and sessions. 
+ 
+12. Municipality & Admin Enhancements 
+12.1 Workflow Automation 
+●​ Automated email/SMS alerts for new submissions and event deadlines.​
+ 
+●​ Content review reminders.​
+ 
+12.2 Content Versioning & History 
+●​ Version control with edit history and rollback for all content.​
+ 
+12.3 Bulk Upload & Import 
+●​ Support CSV/Excel bulk import with validation for places, events, businesses.​
+ 
+12.4 Integration with Local Government Systems 
+●​ APIs for syncing data with municipality databases and tourism offices.​
+ 
+13. Public User Interaction & Engagement 
+13.1 Social Sharing 
+●​ Share content easily on social media platforms. 
+13.2 Gamification 
+●​ Reward users with badges, points for contributions (reviews, photos). 
+
+--- Page 29 ---
+Lead mark Infosys
+ 
+●​ Leaderboards showcasing top contributors.​
+ 
+ 
+13.3 Multimedia Uploads 
+●​ User uploads for photos and videos linked to comments (moderated). 
+13.4 Event Reminders & Calendar Sync 
+●​ Add events to personal calendars (Google Calendar, iCal). 
+●​ Notifications for upcoming events.​
+ 
+14. Advanced Analytics & Reporting 
+●​ Visitor metrics (unique users, views, session durations). 
+●​ QR code scan analytics by geography and time. 
+●​ Heatmaps for map interaction. 
+●​ Exportable reports (CSV, PDF) for municipal officials.​
+ 
+15. Platform Scalability & Integration 
+●​ Public and municipality-specific REST APIs for data access and external integration. 
+●​ Future payment gateway integration for events and services. 
+●​ Native Android/iOS apps syncing with the web platform.​
+ 
+ 
+16. Security & Compliance Enhancements 
+●​ Optional Two-Factor Authentication (2FA) for admins and sensitive roles. 
+●​ User data privacy controls with consent management and data portability.​
+ 
+ 
+17. Content Enrichment & SEO 
+
+--- Page 30 ---
+Lead mark Infosys
+ 
+●​ Rich snippets and schema markup for SEO. 
+●​ AI-powered content suggestions and enhancements. 
+●​ Media optimization for performance.​
+ 
+ 
+18. Support & Training 
+●​ In-app help center with tutorials and FAQs. 
+●​ Training webinars and video guides for municipality users. 
+●​ User feedback and bug reporting system.​
+ 
+19. Admin Dashboards 
+19.1 Super Admin Dashboard 
+●​ Manage all municipalities, admins, and global platform content. 
+●​ Oversee analytics and reports platform-wide. 
+●​ Municipality onboarding with contract and MoU management. 
+19.2 Municipality Admin Dashboard 
+●​ Content management (places, events, businesses). 
+●​ User and permission management within municipality. 
+●​ Submission approval workflows. 
+●​ Analytics and moderation tools.​
+ 
+20. Suggested Technology Stack 
+●​ Frontend: Next.js or Nuxt.js (SSR and SEO optimized)​
+ 
+●​ Backend: Django or Laravel (robust and scalable)​
+ 
+●​ Database: PostgreSQL or MySQL​
+ 
+●​ Maps: Leaflet.js with OpenStreetMap or Google Maps Static API​
+ 
+●​ Text-to-Speech: Google Cloud TTS API or ResponsiveVoice.js fallback​
+ 
+
+--- Page 31 ---
+Lead mark Infosys
+ 
+●​ QR Code Generation: Python or Node.js libraries (e.g., qrcode)​
+ 
+●​ Authentication: Firebase Auth, OAuth 2.0 providers, plus OTP (Twilio or similar)​
+ 
+●​ Hosting: Vercel, Netlify, or cloud hosting with wildcard DNS for subdomains​
+ 
+ 
+ 

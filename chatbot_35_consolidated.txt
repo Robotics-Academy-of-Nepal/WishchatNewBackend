@@ -1,40 +1,8 @@
 
 
---- File: Asch_Tunisia ---
+--- File: test ---
 
-Play: Asch
-Country: Tunisia
-Group: Compagnie Tafukt 
-Playwright: Nadra Achour and Amenallah El Ghezal
-Director Name: Amenallah El Ghezal 
-Duration: 60 minutes 
-Venue and Date of Performances:
-21st March 2025 at Mandala Theatre, Kathmandu
-23rd March 2025 at Gandharva Theatre, Pokhara
-Synopsis                       : 
-In the country of “Matetssamachtawch”, plagued by a series of absurd events, Madame Cesscu Ciao, editor-in-chief of the newspaper “Beyond Imagination”, assigns her team to cover the recent events. Their investigations explore the sense of injustice that links different characters, offering a psychosocial perspective on events based on scientific experiments. As the action unfolds, six actors take on alternating roles, combining dramatic performance and theatrical dance. The play is produced by Association Carmen pour la culture et les arts.
-About the Director: 
-Amenallah El Ghezal is an actor, playwright, and director. Trained in theatrical techniques under the guidance of renowned directors, he performed in the play "Démo," a performance that earned him the Best Actor award at the International Free Theatre Festival in Jordan. His passion for theatre and artistic vision led him to his first experience in directing and co-dramaturgy with the theatrical creation "ASCH." Simultaneously, he participated in the writing workshop for the play "2034 - A Modest Proposal," where he also performed as a video actor and served as assistant director. His immersion into the world of cinema was realized when he was selected to act in the short film "Stigmate."
-Director's Note: 
-Asch is a play that invites the audience to view societal issues through a psychosocial lens. It is a dramatic piece combining performance and theatrical dance, telling fictional stories against a backdrop of universal reality, based on well-known experiments in social psychology.
- About the Group       : 
-Tafukt is a Tunisian theatre collective founded on the belief in the power of collective intelligence and creativity. Driven by a shared passion for theatre, its members have come together to explore humanist storytelling and innovative artistic expression. Through a collaborative creative process, the group has forged a strong artistic identity rooted in inclusivity, cultural heritage, and social engagement. The name Tafukt, meaning 'passion' in Amazigh, reflects the company’s dedication to theatre as a space for dialogue, reflection, and transformation.
-Cast and Crew: 
-On Stage:
-Nadra Achour 
-Ridha Barhoumi 
-Ahmed Grindi
-Elyssa Ghorbal
-Aziz Triki 
-Monia Miladi 
-Off Stage:
-Scenographer: Sabri Atrous
-Choreographer: Ahmed Grindi
-Sound Technician: Rahma Bouzazi
-Light Technician: Mahdi Boudhina
-
-Contact Details: 
-Association Carmen pour l'art et la culture : 
-4 Rue de Sousse, Beb Assal, 1006 Tunis, Tunisie.
-compagnietafukt@gmail.com
-Phone: +216 23 676 370/+216 98 223 959/+216 29 611 514
+this is the youtbe link for my channel.That teaches concepts related to devops.
+https://www.youtube.com/@DevOpsJourney
+
+CI/CD pipeline: https://www.youtube.com/watch?v=mZoOnWjv_QM&t=971s

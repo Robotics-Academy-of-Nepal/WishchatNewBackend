@@ -1,21 +1,148 @@
-The analysis or classification paragraph develops a topic by distinguishing its component parts and discussing each of these parts separately.
 
 
+--- File: SaaS ecommerce platform ---
 
-Policies of privatisation should be considered as responses to several distinct pressures. First, privatisation is a response by the state to internal forces such as increasing fiscal problems (O’Connor, 1973). It provides a means of lessening the state’s fiscal responsibilities by encouraging the development of private alternatives which, theoretically at least, do not draw upon the state’s financial reserves. Second, the promotion of private sector activity is a response to pressures originating ‘outside’ the state apparatus. These include demands from people who see a large state bureaucracy as inefficient and wasteful, demands from business interests who claim that they can overcome these inefficiencies, and pressures from client groups who seek to reduce their dependency on the welfare state by having more control over the services on which they depend. Clearly, this variety of calls for privatisation means that it is not a process with a uniform outcome; there exists a correspondingly wide variety of forms of privatisation.
+--- Page 1 ---
+SaaS ecommerce platform 
+1. Overview 
+The proposed system is a SaaS model ecommerce platform where multiple organizations can 
+each implement a supply chain management and an ecommerce website. The solution will 
+provide two major systems to each client: a management portal to monitor and manage the 
+supply chain for an organization that allows tracking of goods starting from the vendor, 
+throughout the supply chain until it reaches a customer; and an ecommerce website that 
+customers can use to browse through the organization’s catalogue and purchase/order goods. 
+This document lists out the requirements gathered from the conversations between the primary 
+client (Mr. Ramesh Bhandari, Mr. Suresh Bhandari) and the developer team (Goodwish 
+Engineering). Furthermore, the document also contains preliminary system design developed 
+as a result of said conversations. 
+ 
+ 
 
---- File: testeess ---
+--- Page 2 ---
+2. Requirements 
+The following section lists the requirements for the ecommerce platform. This section 
+contains multiple sub-sections, each listing requirements within a specific area of the platform. 
+1.1. Supply Chain 
+i. 
+Allow for creation and management of vendor/manufacturers, regional distributors, 
+dealers and retailers. 
+ii. 
+Basic information of each entity: name, address, contact info, logo. 
+iii. 
+Allow for hierarchy involving these actors. 
+iv. 
+Allow for tracking of movement of products among these entities. 
+v. 
+An entity higher in the hierarchy can register an entity of a lower hierarchy 
+(Regional distributor can register dealers and retailers) alongside an administrator 
+user account for the newly created entity. 
+vi. 
+An entity can register a finite amount of user account for itself. 
+vii. 
+Allow for bidirectional flow of products within the hierarchy. 
+viii. 
+An entity lower in the hierarchy can send a Product Order to an entity higher in the 
+hierarchy. 
+ix. 
+An entity higher in the hierarchy can check inventory of entities below it. 
+x. 
+A higher entity can demand for a product’s stock from its child entities. 
+xi. 
+Delegate pickup stations for customers to pick up their orders. 
+xii. 
+Entities can define a stock level for each product. After the stock for said product 
+falls below this level, the users of the entity are notified of low stock level. 
+xiii. 
+Record generation for each entity and their children (specifics to be decided). 
+xiv. 
+Analytics (specifics to be decided). 
+xv. 
+Differentiate sellable stock (entity itself can sell the product) and pickup stock 
+(reserved for pickup by customers with online orders) for pickup stations. 
+1.2. Product 
+i. 
+Register a product. 
+ii. 
+Register product specific category (ex. colour, size, material for a shoe). 
+iii. 
+Register options for each product specific category (ex. different sizes of shoes). 
+iv. 
+Define unit for each product (ex. pieces for clothes, l/ml for liquid products). 
+1.3. Inventory 
+i. 
+Track a product’s stock level. 
+ii. 
+Decide whether a product should be displayed in the website as a sellable product, 
+alongside sellable amount. 
+iii. 
+Change stock level of products according to incoming and outgoing. 
+iv. 
+Maintain a record of incoming and outgoing products. 
+v. 
+Record generation. 
+vi. 
+SKU generation. 
+vii. 
+Keep track of damaged products. 
 
-Often, the body paragraph demonstrates and develops your topic sentence through an ordered, logical progression of ideas. There are a number of useful techniques for expanding on topic sentences and developing your ideas in a paragraph. Illustration in a paragraph supports a general statement by means of examples, details, or relevant quotations (with your comments).
+--- Page 3 ---
+viii. 
+Keep track of products already committed to a customer’s online order (if said entity 
+is a pickup station). 
+1.4. Ecommerce (Online shop) 
+i. 
+Customers can register an account with an organization. 
+ii. 
+Search/Filter feature. 
+iii. 
+Shopping cart feature. 
+iv. 
+Option to select either delivery or pickup after purchase. 
+v. 
+Payment portal integration (specifics to be decided). 
+vi. 
+Generate proof of purchase for pickup. 
+vii. 
+List available pickup stations alongside available stock if the customer selects the 
+pickup option. 
+viii. 
+Keep history of transactions. 
+ix. 
+Customer-vendor communication (specifics to be decided). 
+x. 
+Recommendation system (Similar products). 
+ 
+ 
 
+--- Page 4 ---
+2. System Design 
+2.1. ER Diagram 
+ 
+Figure 1 ER Diagram for the system 
+ 
+ 
 
+--- Page 5 ---
+2.2. Database Schema 
+ 
+Figure 2 Database Schema for the proposed system 
+Notes: 
+i. The system allows for dynamic product classification through the ProductSpecification 
+table. This table stored product specific properties (ex. size, color, material for clothes) 
+and each product can define their own set of properties. The SpecificationOption table 
+stores the values for each property (ex. 34, 36, 38 for clothes size). 
+ii. The user table stores authentication details for each user while their roles are separated 
+through foreign keys to a separate Roles table as well as a reverse key to either 
+Customer or Employee table. Each role has a specific set of permissions assigned to it 
+that restricts what the actions the user can perform within the system. A user can be 
+assigned multiple roles. 
 
-In Harry’s world fate works not only through powers and objects such as prophecies, the Sorting Hat, wands, and the Goblet of Fire, but also through people. Repeatedly, other characters decide Harry’s future for him, depriving him of freedom and choice. For example, before his eleventh birthday, the Dursleys control Harry’s life, keeping from him knowledge of his past and understanding of his identity (Sorcerer’s 49). In Harry Potter and the Chamber of Secrets, Dobby repeatedly assumes control over events by intercepting Ron’s and Hermione’s letters during the summer; by sealing the barrier to Platform 93⁄4, causing Harry to miss the Hogwarts Express; and by sending a Bludger after Harry in a Quidditch match, breaking his wrist. Yet again, in Harry Potter and the Prisoner of Azkaban, many adults intercede while attempting to protect Harry from perceived danger, as Snape observes: “Everyone from the Minister of Magic downward has been trying to keep famous Harry Potter safe from Sirius Black” (284). All these characters, as enactors of fate, unknowingly drive Harry toward his destiny by attempting to control or to direct his life, while themselves controlled and directed by fate.
-
---- File: testest ---
-
-Probably the most effective way to achieve paragraph unity is to express the central idea of the paragraph in a topic sentence.
-
-
-
-Topic sentences are similar to mini thesis statements. Like a thesis statement, a topic sentence has a specific main point. Whereas the thesis is the main point of the essay, the topic sentence is the main point of the paragraph. Like the thesis statement, a topic sentence has a unifying function. But a thesis statement or topic sentence alone doesn’t guarantee unity. An essay is unified if all the paragraphs relate to the thesis, whereas a paragraph is unified if all the sentences relate to the topic sentence. Note: Not all paragraphs need topic sentences. In particular, opening and closing paragraphs, which serve different functions from body paragraphs, generally don’t have topic sentences.
+--- Page 6 ---
+iii. Product inventory is tracked through the Inventory and the Batch tables. The Inventory 
+table keeps track of all instances of a product while the Batch table keeps track of a 
+specific subset of products (usually distinguished by when they arrive to the inventory). 
+iv. All entities involved are considered instances of a single SupplyChainEntity class. 
+However, they are classified as vendors, retailers, distributors through a field within the 
+table. The homogenization of these entities allows for modelling the supply chain as a 
+tree structure which makes it easier for any entity to keep track of entities below it 
+(children and descendants). 

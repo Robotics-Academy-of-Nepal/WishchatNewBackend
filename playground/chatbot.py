@@ -2,7 +2,11 @@ import os
 from dotenv import load_dotenv
 import tiktoken
 from storage.models import ChatbotDocumentGroup
-from registration.models import ChatbotTokenUsage, Chatbot, ChatbotConversation, ChatbotAPILog
+from registration.models import (
+    ChatbotTokenUsage,
+    ChatbotConversation,
+    ChatbotAPILog,
+)
 from langchain_openai import AzureOpenAIEmbeddings, AzureChatOpenAI
 from langchain_chroma import Chroma
 from langchain_core.prompts import ChatPromptTemplate
@@ -14,13 +18,13 @@ load_dotenv()
 
 # ChromaDB Configuration
 CHROMA_DB_PATH = "./chroma_db"
-embedding_endpoint = os.getenv('EMBEDDING_ENDPOINT')
-embedding_api = os.getenv('EMBEDDING_API_KEY')
+embedding_endpoint = os.getenv("EMBEDDING_ENDPOINT")
+embedding_api = os.getenv("EMBEDDING_API_KEY")
 embeddings = AzureOpenAIEmbeddings(
     azure_deployment="text-embedding-3-large",
     openai_api_version="2023-05-15",
     azure_endpoint=embedding_endpoint,
-    api_key=embedding_api
+    api_key=embedding_api,
 )
 
 # Azure OpenAI Chat Client
@@ -33,17 +37,56 @@ llm = AzureChatOpenAI(
     temperature=0.7,  # Default, overridden by request
     top_p=0.95,
     frequency_penalty=0,
-    presence_penalty=0
+    presence_penalty=0,
 )
 
 # Short-term context (in-memory, resets on restart)
 session_history = []
+
+
+# Default RAG-only system rules template
+DEFAULT_SYSTEM_RULES_TEMPLATE = (
+    """
+### Role
+- You are a retrieval-augmented assistant for the organization's chatbot. Base your answers strictly on the provided document context from this chatbot's indexed documents: {file_list}.
+- If the answer is not present in the documents, say briefly that you don't know based on the available documents and invite the user to clarify or provide/upload relevant info as politely as possible.
+- If the answer contains youtube links then include clickable thumbnail previews.
+
+### Language
+- Respond in English if the query is in English.
+- If the query is in Nepali or Romanized Nepali, respond in pure Nepali (never Romanized).
+
+### Style
+- Keep responses concise (80–120 words unless the user asks for more).
+- Be polite; respond to greetings briefly.
+
+### Safety and Scope
+- Do not use outside/general knowledge beyond the provided document context.
+- Do not fabricate or guess.
+- If a question is off-topic relative to the documents, state you don't have that info and offer to help with topics covered by the documents.
+- Scope: If the query is unrelated to the document content, analyze the retrieved context and creatively redirect. Say something like: "I’m sorry, I don’t have info on your query, but I have knowledge about [document topic, e.g., robotics]. How can I assist with that?" (English) or "माफ गर्नुहोस्, मसँग तपाईंको प्रश्नको जानकारी छैन, तर म [document topic, e.g., रोबोटिक्स] बारे जानकार छु। त्यसमा कसरी मद्दत गर्न सक्छु?" (Nepali).
+
+### Important
+- Always verify the information before presenting it to the user.
+- If you are unsure about something, it's better to ask for clarification than to guess.
+
+### Links and Media (give outmost importance for this)
+- If the input contains website URLs, make them clickable links in the output (very important)
+- If the input contains YouTube links, also include clickable thumbnail previews. (Very important)
+- If there are no URLs/YouTube links, do not mention links or previews.
+
+### Greetings
+- Respond to greetings like "hello" or "नमस्ते" with a friendly reply, e.g., "Hello! How can I assist you today?" or "नमस्ते! म तपाईंलाई आज कसरी सहयोग गर्न सक्छु?"
+"""
+).strip()
+
 
 # Token Counting Functions
 def count_tokens(text: str, model: str = "gpt-4") -> int:
     """Count tokens for a given text using the specified model's tokenizer."""
     encoder = tiktoken.encoding_for_model(model)
     return len(encoder.encode(text))
+
 
 def count_message_tokens(messages: list, model: str = "gpt-4") -> int:
     """Count tokens in a list of messages."""
@@ -56,6 +99,7 @@ def count_message_tokens(messages: list, model: str = "gpt-4") -> int:
     total_tokens += 3  # Conversation overhead
     return total_tokens
 
+
 # Helper Functions
 def get_chatbot_index_name(chatbot):
     """Get the consolidated index name for a chatbot."""
@@ -67,6 +111,7 @@ def get_chatbot_index_name(chatbot):
     except ChatbotDocumentGroup.DoesNotExist:
         return None
 
+
 def get_file_list(chatbot):
     """Get list of filenames for the chatbot's documents."""
     try:
@@ -75,11 +120,19 @@ def get_file_list(chatbot):
     except ChatbotDocumentGroup.DoesNotExist:
         return "no files"
 
+
 def format_history(history):
     """Format conversation history for the prompt."""
-    return "\n".join([f"{msg['role']}: {msg['content']}" for msg in history[-5:]]) if history else "No prior conversation."
+    return (
+        "\n".join([f"{msg['role']}: {msg['content']}" for msg in history[-5:]])
+        if history
+        else "No prior conversation."
+    )
 
-def query_assistant(user_input, chatbot, prompt='', temperature=0.7, user_id=None, platform=None):
+
+def query_assistant(
+    user_input, chatbot, prompt="", temperature=0.7, user_id=None, platform=None
+):
     """
     Query assistant using RAG with ChromaDB, incorporating short-term and long-term context.
     """
@@ -88,16 +141,13 @@ def query_assistant(user_input, chatbot, prompt='', temperature=0.7, user_id=Non
     # print("query_embeddings:", query_embedding)
 
     log_entry = ChatbotAPILog.objects.create(
-        chatbot = chatbot,
-        platform = platform,
-        user_id = user_id,
-        query = user_input
+        chatbot=chatbot, platform=platform, user_id=user_id, query=user_input
     )
     log_entry.set_embedding(query_embedding)
     log_entry.save()
 
     # Check quota
-    if hasattr(chatbot, 'quota') and not chatbot.quota.can_send_message():
+    if hasattr(chatbot, "quota") and not chatbot.quota.can_send_message():
         if chatbot.quota.is_trial:
             return "Your free trial has expired or you've reached your message limit. Please upgrade to continue using the chatbot."
         else:
@@ -112,18 +162,19 @@ def query_assistant(user_input, chatbot, prompt='', temperature=0.7, user_id=Non
     vector_store = Chroma(
         collection_name=f"chatbot_{chatbot.id}",
         embedding_function=embeddings,
-        persist_directory=CHROMA_DB_PATH
+        persist_directory=CHROMA_DB_PATH,
     )
     retriever = vector_store.as_retriever(
-        search_type="similarity",
-        search_kwargs={"k": 7}
+        search_type="similarity", search_kwargs={"k": 7}
     )
 
     # Load long-term history if user_id and platform are provided
     long_term_history = []
     if user_id and platform:
         try:
-            conversation = ChatbotConversation.objects.get(chatbot=chatbot, user_id=user_id, platform=platform)
+            conversation = ChatbotConversation.objects.get(
+                chatbot=chatbot, user_id=user_id, platform=platform
+            )
             long_term_history = json.loads(conversation.history)  # SQLite TextField
             # Trim long-term history to 5 exchanges for token efficiency
             if len(long_term_history) > 5:
@@ -132,36 +183,21 @@ def query_assistant(user_input, chatbot, prompt='', temperature=0.7, user_id=Non
                 conversation.save()
         except ChatbotConversation.DoesNotExist:
             conversation = ChatbotConversation.objects.create(
-                chatbot=chatbot,
-                user_id=user_id,
-                platform=platform,
-                history='[]'
+                chatbot=chatbot, user_id=user_id, platform=platform, history="[]"
             )
 
     # Combine short-term and long-term history
     combined_history = long_term_history + session_history
 
-    # Custom system prompt
+    # Build system prompt by always including guardrails, then optional custom prompt
     file_list = get_file_list(chatbot)
-    if not prompt or prompt == "":
-        system_prompt_content = f"""
-        ### Role
-        - You are an AI chatbot designed to assist users based on their uploaded documents: {file_list}. You can also handle greetings and small talk politely.
-
-        ### Capabilities
-        1. Language: Respond in English if the query is in English. If the query is in Nepali or Romanized Nepali, respond in pure Nepali (never Romanized Nepali).
-        2. Scope: If the query is unrelated to the document content, analyze the retrieved context and creatively redirect. Say something like: "I’m sorry, I don’t have info on your query, but I have knowledge about [document topic, e.g., robotics]. How can I assist with that?" (English) or "माफ गर्नुहोस्, मसँग तपाईंको प्रश्नको जानकारी छैन, तर म [document topic, e.g., रोबोटिक्स] बारे जानकार छु। त्यसमा कसरी मद्दत गर्न सक्छु?" (Nepali).
-        3. Word Limit: Keep responses between 80-100 words.
-        4. Greetings: Respond to greetings like "hello" or "नमस्ते" with a friendly reply, e.g., "Hello! How can I assist you today?" or "नमस्ते! म तपाईंलाई आज कसरी सहयोग गर्न सक्छु?"
-
-        ### Constraints
-        - Base answers on document content unless it’s a greeting or small talk. Use the context to infer the document topic for off-topic responses.
-
-        ### Conversation History
-        {format_history(combined_history)}
-        """
+    base_rules = DEFAULT_SYSTEM_RULES_TEMPLATE.format(file_list=file_list)
+    if prompt and str(prompt).strip():
+        system_prompt_content = (
+            base_rules + "\n\nAdditional instructions:\n" + str(prompt).strip()
+        )
     else:
-        system_prompt_content = prompt  # Use provided prompt if available
+        system_prompt_content = base_rules
 
     # Build RAG chain
     prompt_template = ChatPromptTemplate.from_template(
@@ -187,7 +223,11 @@ def query_assistant(user_input, chatbot, prompt='', temperature=0.7, user_id=Non
     try:
         # RAG chain
         chain = (
-            {"context": retriever, "question": RunnablePassthrough(), "system_prompt": lambda x: system_prompt_content}
+            {
+                "context": retriever,
+                "question": RunnablePassthrough(),
+                "system_prompt": lambda x: system_prompt_content,
+            }
             | prompt_template
             | llm.bind(temperature=temperature)
             | StrOutputParser()
@@ -229,11 +269,11 @@ def query_assistant(user_input, chatbot, prompt='', temperature=0.7, user_id=Non
         ChatbotTokenUsage.log_usage(
             chatbot=chatbot,
             input_tokens=total_input_tokens,
-            output_tokens=output_tokens
+            output_tokens=output_tokens,
         )
 
         # Update quota
-        if hasattr(chatbot, 'quota'):
+        if hasattr(chatbot, "quota"):
             chatbot.quota.messages_used += 1  # Increment by 1 per message, not 2
             chatbot.quota.save()
 

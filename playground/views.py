@@ -41,7 +41,7 @@ class APIKeyOrTokenAuthentication:
         # Fall back to token authentication
         try:
             return self.token_auth.authenticate(request)
-        except:
+        except Exception:
             return None
 
 
@@ -59,11 +59,8 @@ def handle_query(request):
         # API key authentication path
         if hasattr(request, "chatbot_from_api_key"):
             chatbot = request.chatbot_from_api_key
-            system_prompt = (getattr(chatbot, "system_prompt", "") or "") + (
-                " If the input contains any website URLs, make them clickable links in the output."
-                " If the input contains any YouTube links, also generate clickable thumbnail previews for those links."
-                " However, if the input does not include any URLs or YouTube links, do not mention anything about links, websites, or previews."
-            )
+            # Pass None if no custom prompt so default guardrails apply in query_assistant
+            system_prompt = getattr(chatbot, "system_prompt", None) or None
 
             # Optional: Warn if chatbot_id is provided and mismatches
             provided_chatbot_id = request.data.get("chatbot_id")
@@ -248,20 +245,7 @@ def chatbot_traffic_stats(request, chatbot_id):
             for entry in hourly_traffic
         ]
 
-        # Traffic data for graph (all hours in the period)
-        all_hours_traffic = (
-            logs.annotate(hour=TruncHour("timestamp"))
-            .values("hour")
-            .annotate(hits=Count("id"))
-            .order_by("hour")
-        )
-        traffic_data = [
-            {
-                "time": entry["hour"].astimezone(local_tz).strftime("%Y-%m-%d %H:00"),
-                "hits": entry["hits"],
-            }
-            for entry in all_hours_traffic
-        ]
+        # Traffic data was previously computed but unused; removed to avoid lint warnings
 
         # Filter out conversational queries
         conversational_keywords = {
