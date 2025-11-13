@@ -140,13 +140,13 @@ def upload_youtube_channel(request, chatbot_id):
     and uploads it using existing upload_file() logic.
     """
     channel_url = request.data.get("channel_url")
-    max_videos = int(request.data.get("max_videos", 20))  # Default 20 videos
+    max_videos = int(request.data.get("max_videos", 500))  # Default 500 videos
 
     if not channel_url:
         return JsonResponse({"error": "channel_url is required"}, status=400)
 
-    if max_videos > 50:
-        return JsonResponse({"error": "max_videos cannot exceed 50"}, status=400)
+    if max_videos > 500:
+        return JsonResponse({"error": "max_videos cannot exceed 500"}, status=400)
 
     api_key = getattr(settings, "YOUTUBE_API_KEY", None)
     if not api_key:
