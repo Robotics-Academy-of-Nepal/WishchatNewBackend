@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from django.shortcuts import render
+from datetime import timedelta
+from django.db.models import DateTimeField
 from django.db.models import DurationField
 from django.db.models.expressions import Func, ExpressionWrapper
 from google.oauth2 import id_token
@@ -608,12 +610,8 @@ class ChatbotViewSet(viewsets.ModelViewSet):
         if not organization.is_enterprise:
             # Create an INTERVAL from grace_period_days for PostgreSQL
             interval_expression = ExpressionWrapper(
-                Func(
-                    F("grace_period_days"),
-                    function="days",
-                    template="%(expressions)s * INTERVAL '1 day'",
-                ),
-                output_field=DurationField(),
+                Now() - timedelta(days=1) * F("grace_period_days"),
+                output_field=DateTimeField(),
             )
 
             # Count the number of invalid subscriptions for the organization's chatbots

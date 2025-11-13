@@ -194,7 +194,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "https://537vg0mp-5174.inc1.devtunnels.ms",
     "https://537vg0mp-5173.inc1.devtunnels.ms",
-    "https://pr9rwc8x-5173.inc1.devtunnels.ms",
+    "https://wishchat.goodwish.com.np",
 ]
 
 CORS_ALLOW_METHODS = (
@@ -231,7 +231,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "tejashkatuwal99@gmail.com"
 EMAIL_HOST_PASSWORD = "aepiayqwdylqdkag"
 
-FRONTEND_URL = "https://pr9rwc8x-5173.inc1.devtunnels.ms"
+FRONTEND_URL = "https://wishchat.goodwish.com.np"
 
 TIME_ZONE = "Asia/Kathmandu"
 USE_TZ = True
