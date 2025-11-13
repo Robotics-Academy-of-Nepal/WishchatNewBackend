@@ -59,6 +59,12 @@ def handle_query(request):
             "platform", "api"
         )  # e.g., "web", "mobile", "whatsapp", "api"
 
+        print("\n=== API Request Debug ===")
+        print(f"Query: {user_query}")
+        print(f"user_id from request: {user_id}")
+        print(f"platform from request: {platform}")
+        print("========================\n")
+
         if not user_query:
             return JsonResponse({"error": "No query provided."}, status=400)
 

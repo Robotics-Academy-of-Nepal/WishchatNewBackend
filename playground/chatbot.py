@@ -262,12 +262,19 @@ def query_assistant(
 
     # Load long-term history if user_id and platform are provided
     long_term_history = []
+    print("\n=== Context Preservation Debug ===")
+    print(f"user_id: {user_id}")
+    print(f"platform: {platform}")
+
     if user_id and platform:
         try:
             conversation = ChatbotConversation.objects.get(
                 chatbot=chatbot, user_id=user_id, platform=platform
             )
             long_term_history = json.loads(conversation.history)  # SQLite TextField
+            print(
+                f"✓ Found existing conversation with {len(long_term_history)} messages"
+            )
             # Trim long-term history to 5 exchanges for token efficiency
             if len(long_term_history) > 5:
                 long_term_history = long_term_history[-5:]
@@ -277,9 +284,16 @@ def query_assistant(
             conversation = ChatbotConversation.objects.create(
                 chatbot=chatbot, user_id=user_id, platform=platform, history="[]"
             )
+            print(
+                f"✓ Created new conversation for user_id={user_id}, platform={platform}"
+            )
+    else:
+        print("✗ Context preservation DISABLED (user_id or platform missing)")
 
     # Combine short-term and long-term history
     combined_history = long_term_history + session_history
+    print(f"Combined history: {len(combined_history)} messages")
+    print("================================\n")
 
     # Build system prompt by always including guardrails, then optional custom prompt
     file_list = get_file_list(chatbot)
