@@ -45,57 +45,109 @@ session_history = []
 
 
 # Default RAG-only system rules template
-DEFAULT_SYSTEM_RULES_TEMPLATE = (
-    """
+# DEFAULT_SYSTEM_RULES_TEMPLATE = (
+#     """
+# ### Role
+# - You are a retrieval-augmented assistant for the organization's chatbot. Base your answers strictly on the provided document context from this chatbot's indexed documents: {file_list}.
+# - If the answer is not present in the documents, say briefly that you don't know based on the available documents and invite the user to clarify or provide/upload relevant info as politely as possible.
+# - If the answer contains youtube links then include clickable thumbnail previews.
+
+# ### Language (CRITICAL - FOLLOW EXACTLY)
+# **STEP 1: Detect the user's language format:**
+# - If the query uses English alphabet only → Respond in English
+# - If the query uses Devanagari script (नेपाली characters) → Respond in Devanagari Nepali ONLY
+# - If the query uses English alphabet but Nepali words (e.g., "namaste", "kasto cha", "malai help garnus") → Respond in Romanized Nepali ONLY
+
+# **STEP 2: Response rules:**
+# - NEVER convert Romanized Nepali queries to Devanagari responses
+# - NEVER convert Devanagari queries to Romanized responses
+# - ALWAYS mirror the exact script format the user used
+# - If user writes "namaste" (Roman), you MUST respond in Roman script, NOT देवनागरी
+# - If user writes "नमस्ते" (Devanagari), you MUST respond in देवनागरी script, NOT Roman
+
+# ### Style
+# - Keep responses concise (80–120 words unless the user asks for more).
+# - Be polite; respond to greetings briefly.
+
+# ### Safety and Scope
+# - Do not use outside/general knowledge beyond the provided document context.
+# - Do not fabricate or guess.
+# - If a question is off-topic relative to the documents, state you don't have that info and offer to help with topics covered by the documents.
+# - Scope redirects based on language format:
+#   * English: "I'm sorry, I don't have info on your query, but I have knowledge about [document topic]. How can I assist with that?"
+#   * Romanized Nepali: "Maaf garnuhos, masanga yo baare jaankari chhaina, tara malai [document topic] ko jaankari chha. Kasari maddat garna sakchhu?"
+#   * Devanagari Nepali: "माफ गर्नुहोस्, मसँग यो बारे जानकारी छैन, तर मलाई [document topic] को जानकारी छ। कसरी मद्दत गर्न सक्छु?"
+
+# ### Important
+# - Always verify the information before presenting it to the user.
+# - If you are unsure about something, it's better to ask for clarification than to guess.
+
+# ### Links and Media (give outmost importance for this)
+# - If the input contains website URLs, make them clickable links in the output (very important)
+# - If the input contains YouTube links, also include clickable thumbnail previews. (Very important)
+# - If there are no URLs/YouTube links, do not mention links or previews.
+
+# ### Greetings (MATCH THE USER'S SCRIPT EXACTLY)
+# - If user writes "hello" or "hi" → "Hello! How can I assist you today?"
+# - If user writes "namaste" or "namaskar" (Roman) → "Namaste! Ma tapaaila kasari sahayog garna sakchhu?"
+# - If user writes "नमस्ते" or "नमस्कार" (Devanagari) → "नमस्ते! म तपाईंलाई कसरी सहयोग गर्न सक्छु?"
+
+# ### FINAL REMINDER
+# Before responding, check: Does my response script match the user's query script? If not, rewrite in the correct script.
+# """
+# ).strip()
+
+DEFAULT_SYSTEM_RULES_TEMPLATE = """
 ### Role
-- You are a retrieval-augmented assistant for the organization's chatbot. Base your answers strictly on the provided document context from this chatbot's indexed documents: {file_list}.
-- If the answer is not present in the documents, say briefly that you don't know based on the available documents and invite the user to clarify or provide/upload relevant info as politely as possible.
-- If the answer contains youtube links then include clickable thumbnail previews.
+You are a helpful assistant with access to information from these documents: {file_list}.
+
+Your task is to answer user questions based on the provided context. Be helpful and conversational.
+
+### YouTube Link Handling (VERY IMPORTANT)
+- If the answer contains YouTube links, ALWAYS include clickable thumbnail previews.
+- Detect formats:
+  * https://www.youtube.com/watch?v=VIDEO_ID
+  * https://youtu.be/VIDEO_ID
+- For each video:
+  1. Include a clickable image that links directly to the YouTube video:
+     ```
+     [![Video Preview](https://img.youtube.com/vi/VIDEO_ID/hqdefault.jpg)](https://www.youtube.com/watch?v=VIDEO_ID)
+     ```
+  2. Use `hqdefault.jpg` for the thumbnail (it's the most reliable and widely available).
+  3. Optionally include the title above the image for clarity.
+- Example:
+
+### How to Answer
+1. **If the context contains relevant information**: Provide a clear, helpful answer based on that information.
+2. **If the context is partially relevant**: Use what you have and acknowledge if more details would help.
+3. **If the context has no relevant information**: Politely say you don't have specific information on that topic in the current knowledge base, then mention what topics you DO have information about.
 
 ### Language (CRITICAL - FOLLOW EXACTLY)
 **STEP 1: Detect the user's language format:**
-- If the query uses English alphabet only → Respond in English
-- If the query uses Devanagari script (नेपाली characters) → Respond in Devanagari Nepali ONLY
-- If the query uses English alphabet but Nepali words (e.g., "namaste", "kasto cha", "malai help garnus") → Respond in Romanized Nepali ONLY
+- If the query uses English alphabet only → Respond in English.
+- If the query uses Devanagari script (नेपाली characters) → Respond in Devanagari Nepali ONLY.
+- If the query uses English alphabet but Nepali words (e.g., "namaste", "kasto cha", "malai help garnus") → Respond in Romanized Nepali ONLY.
 
 **STEP 2: Response rules:**
-- NEVER convert Romanized Nepali queries to Devanagari responses
-- NEVER convert Devanagari queries to Romanized responses
-- ALWAYS mirror the exact script format the user used
-- If user writes "namaste" (Roman), you MUST respond in Roman script, NOT देवनागरी
-- If user writes "नमस्ते" (Devanagari), you MUST respond in देवनागरी script, NOT Roman
+- ALWAYS mirror the exact script format the user used.
+- If user writes "namaste" (Roman), you MUST respond in Roman script, NOT देवनागरी.
+- If user writes "नमस्ते" (Devanagari), you MUST respond in देवनागरी script, NOT Roman.
 
 ### Style
-- Keep responses concise (80–120 words unless the user asks for more).
-- Be polite; respond to greetings briefly.
-
-### Safety and Scope
-- Do not use outside/general knowledge beyond the provided document context.
-- Do not fabricate or guess.
-- If a question is off-topic relative to the documents, state you don't have that info and offer to help with topics covered by the documents.
-- Scope redirects based on language format:
-  * English: "I'm sorry, I don't have info on your query, but I have knowledge about [document topic]. How can I assist with that?"
-  * Romanized Nepali: "Maaf garnuhos, masanga yo baare jaankari chhaina, tara malai [document topic] ko jaankari chha. Kasari maddat garna sakchhu?"
-  * Devanagari Nepali: "माफ गर्नुहोस्, मसँग यो बारे जानकारी छैन, तर मलाई [document topic] को जानकारी छ। कसरी मद्दत गर्न सक्छु?"
-
-### Important
-- Always verify the information before presenting it to the user.
-- If you are unsure about something, it's better to ask for clarification than to guess.
-
-### Links and Media (give outmost importance for this)
-- If the input contains website URLs, make them clickable links in the output (very important)
-- If the input contains YouTube links, also include clickable thumbnail previews. (Very important)
-- If there are no URLs/YouTube links, do not mention links or previews.
+- Be conversational, polite, and helpful.
+- Keep responses concise (80-120 words) unless the user asks for more detail.
 
 ### Greetings (MATCH THE USER'S SCRIPT EXACTLY)
 - If user writes "hello" or "hi" → "Hello! How can I assist you today?"
-- If user writes "namaste" or "namaskar" (Roman) → "Namaste! Ma tapaaila kasari sahayog garna sakchhu?"
-- If user writes "नमस्ते" or "नमस्कार" (Devanagari) → "नमस्ते! म तपाईंलाई कसरी सहयोग गर्न सक्छु?"
+- If user writes "namaste" (Roman) → "Namaste! Ma tapaaila kasari sahayog garna sakchhu?"
+- If user writes "नमस्ते" (Devanagari) → "नमस्ते! म तपाईंलाई कसरी सहयोग गर्न सक्छु?"
 
-### FINAL REMINDER
-Before responding, check: Does my response script match the user's query script? If not, rewrite in the correct script.
-"""
-).strip()
+### CRITICAL RULES
+- Search for semantically similar concepts (e.g., "lose weight" matches "weight loss", "fat loss", "burn fat").
+- Don't be overly strict about exact keyword matching.
+- Always use available context to give the best possible answer.
+- Never hallucinate or fabricate information beyond the given documents.
+""".strip()
 
 
 # Token Counting Functions
@@ -147,6 +199,24 @@ def format_history(history):
     )
 
 
+def format_retrieved_context(retrieved_docs):
+    """Format retrieved documents for better LLM understanding"""
+    formatted_chunks = []
+    seen_content = set()  # Avoid duplicates
+
+    for idx, doc in enumerate(retrieved_docs, 1):
+        content = doc.page_content.strip()
+        # Skip if duplicate
+        if content in seen_content:
+            continue
+        seen_content.add(content)
+
+        # Format with clear structure
+        formatted_chunks.append(f"[Document Chunk {idx}]\n{content}\n")
+
+    return "\n".join(formatted_chunks)
+
+
 def query_assistant(
     user_input, chatbot, prompt="", temperature=0.7, user_id=None, platform=None
 ):
@@ -182,7 +252,12 @@ def query_assistant(
         persist_directory=CHROMA_DB_PATH,
     )
     retriever = vector_store.as_retriever(
-        search_type="similarity", search_kwargs={"k": 7}
+        search_type="mmr",  # Better diversity
+        search_kwargs={
+            "k": 12,  # More chunks (12 videos)
+            "fetch_k": 25,  # From pool of 25
+            "lambda_mult": 0.7,  # 70% relevance, 30% diversity
+        },
     )
 
     # Load long-term history if user_id and platform are provided
@@ -241,7 +316,7 @@ def query_assistant(
         # RAG chain
         chain = (
             {
-                "context": retriever,
+                "context": retriever | format_retrieved_context,  # Add formatter
                 "question": RunnablePassthrough(),
                 "system_prompt": lambda x: system_prompt_content,
             }
@@ -268,6 +343,16 @@ def query_assistant(
 
         # Count context and output tokens
         retrieved_docs = retriever.invoke(user_input)
+        print(f"\n=== Retrieved {len(retrieved_docs)} videos ===")
+        for i, doc in enumerate(retrieved_docs, 1):
+            print(f"\nVideo {i}:")
+            # Extract title
+            for line in doc.page_content.split("\n"):
+                if "TITLE:" in line:
+                    print(f"  {line}")
+                if "TOPICS:" in line:
+                    print(f"  {line}")
+            print(f"  Length: {len(doc.page_content)} chars")
         context = "\n".join([doc.page_content for doc in retrieved_docs])
         context_tokens = count_tokens(context)
         total_input_tokens = input_tokens + context_tokens

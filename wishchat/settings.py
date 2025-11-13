@@ -33,6 +33,7 @@ ALLOWED_HOSTS = [
     "localhost",
     "kfwsdw58-9000.inc1.devtunnels.ms",
     "wishchat.goodwish.com.np",
+    "poem",
 ]
 
 
@@ -72,7 +73,7 @@ GOOGLE_OAUTH2_CLIENT_ID = (
     "152364471348-fngo0d6ejqtg13ldvq8ja9omf710ktuc.apps.googleusercontent.com"
 )
 # GOOGLE_OAUTH2_CLIENT_ID= "407408718192.apps.googleusercontent.com"
-
+YOUTUBE_API_KEY = "AIzaSyBgr4d5ztFkNhQb6yWkWUmjcVhExtVMVk0"
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",

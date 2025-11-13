@@ -22,6 +22,28 @@ def extract_youtube_urls(text):
     return urls
 
 
+def clean_markdown_for_messaging(text):
+    """
+    Remove markdown formatting that doesn't work well in messaging platforms.
+    Keeps text clean while preserving URLs for preview.
+    """
+    # Remove markdown image syntax: [![alt](image_url)](link_url) or ![alt](image_url)
+    text = re.sub(r"!\[([^\]]*)\]\([^\)]+\)", "", text)
+
+    # Remove empty markdown link wrappers: [text]()
+    text = re.sub(r"\[([^\]]+)\]\(\)", r"\1", text)
+
+    # Remove thumbnail URLs (img.youtube.com)
+    text = re.sub(r"https?://img\.youtube\.com/[^\s]+", "", text)
+
+    # Clean up extra whitespace and newlines
+    text = re.sub(r"\n\s*\n\s*\n+", "\n\n", text)  # Max 2 newlines
+    text = re.sub(r" +", " ", text)  # Multiple spaces to single
+    text = text.strip()
+
+    return text
+
+
 def sendwhatsapp_messages(phoneNumber, message, whatsapp_id):
     try:
         chatbot = Chatbot.objects.filter(whatsapp_id=whatsapp_id).last()
@@ -34,6 +56,9 @@ def sendwhatsapp_messages(phoneNumber, message, whatsapp_id):
         user_input=message, chatbot=chatbot, user_id=phoneNumber, platform="whatsapp"
     )
 
+    # Clean markdown formatting
+    bot_response = clean_markdown_for_messaging(bot_response)
+
     headers = {"Authorization": f"Bearer {chatbot.whatsapp_token}"}
 
     try:
@@ -41,13 +66,14 @@ def sendwhatsapp_messages(phoneNumber, message, whatsapp_id):
         youtube_urls = extract_youtube_urls(bot_response)
 
         if youtube_urls:
-            # Send text without URLs first (optional)
+            # Remove URLs from main text
             text_without_urls = bot_response
             for url in youtube_urls:
                 text_without_urls = text_without_urls.replace(url, "").strip()
 
-            # Remove extra whitespace
+            # Clean up extra whitespace
             text_without_urls = re.sub(r"\s+", " ", text_without_urls).strip()
+            text_without_urls = re.sub(r"\n\s*\n\s*\n+", "\n\n", text_without_urls)
 
             # Send the text message if there's content
             if text_without_urls:
@@ -116,6 +142,9 @@ def messenger_messages(sender_id, message_text, messenger_page_id):
         platform="messenger",
     )
 
+    # Clean markdown formatting
+    bot_response = clean_markdown_for_messaging(bot_response)
+
     headers = {"Authorization": f"Bearer {chatbot.messenger_token}"}
 
     try:
@@ -129,6 +158,7 @@ def messenger_messages(sender_id, message_text, messenger_page_id):
                 text_without_urls = text_without_urls.replace(url, "").strip()
 
             text_without_urls = re.sub(r"\s+", " ", text_without_urls).strip()
+            text_without_urls = re.sub(r"\n\s*\n\s*\n+", "\n\n", text_without_urls)
 
             # Send text message if there's content
             if text_without_urls:
@@ -138,11 +168,9 @@ def messenger_messages(sender_id, message_text, messenger_page_id):
                 }
                 requests.post(chatbot.messenger_url, headers=headers, json=text_payload)
 
-            # Send YouTube URLs as generic template for rich preview
+            # Send YouTube URLs as separate messages (Messenger auto-generates preview)
             responses = []
             for url in youtube_urls:
-                # For Messenger, you can use attachment with URL or just send URL as text
-                # Option 1: Send as text (Messenger auto-generates preview)
                 url_payload = {"recipient": {"id": sender_id}, "message": {"text": url}}
                 response = requests.post(
                     chatbot.messenger_url, headers=headers, json=url_payload
@@ -184,6 +212,9 @@ def instagram_messages(sender_id, message_text, instagram_page_id):
         platform="instagram",
     )
 
+    # Clean markdown formatting
+    bot_response = clean_markdown_for_messaging(bot_response)
+
     headers = {"Authorization": f"Bearer {chatbot.instagram_token}"}
 
     try:
@@ -197,6 +228,7 @@ def instagram_messages(sender_id, message_text, instagram_page_id):
                 text_without_urls = text_without_urls.replace(url, "").strip()
 
             text_without_urls = re.sub(r"\s+", " ", text_without_urls).strip()
+            text_without_urls = re.sub(r"\n\s*\n\s*\n+", "\n\n", text_without_urls)
 
             # Send text message if there's content
             if text_without_urls:

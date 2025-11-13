@@ -1,208 +1,170 @@
 
 
---- File: DipeshShresthaCV-a_IunIMW ---
+--- File: UCH8p0QZocAqC8w64236FNtg_transcripts ---
 
---- Page 1 ---
-Dipesh Shrestha 
-Address  
-: Nayabazar, Kathmandu 
-Email             : dipeshshrestha4220@gmail.com 
-Website         : dipeshshrestha10.com.np 
-LinkedIn 
-: Dipesh Shrestha      
-GitHub 
-: DipS1017    
-Professional Skills 
-Frontend                             : HTML, CSS, JS, SASS, Tailwind, React JS, Next JS, 
-Backend 
- 
-: Node JS, PHP, Flask 
-Database 
- 
-: SQL, NoSQL, MySQL 
-Version Control 
- 
-: Git 
-Education 
-● Bachelor in Computer Application (BCA) 
-Prime College, Nayabazar, Kathmandu 
-6th semester running 
-Work Experience 
-● Freelance  
- 
-Junior Frontend Developer 
-Jan 2024 - Feb 2024 
- 
-Internship PHP Developer 
-Nov 2022 - Jan 2023 
- 
-Project Contribution: 
-1. Biometric System (Internship PHP Developer) 
-Developed a biometric system using PHP and MySQL to register exam attendees. The 
-system includes a user-friendly web interface for data input and efficient management of 
-biometric records, ensuring accurate and secure attendance tracking for exams. 
-2. Professional Portfolio (Junior Frontend Developer) 
-Developed a personal portfolio website using TypeScript, showcasing my projects, skills, 
-and experience. The site features a clean, responsive design and interactive elements, 
-providing a comprehensive view of my professional journey and technical capabilities. 
-Link: https://www.parakramdarnal.com.np/ 
- 
- 
+================================================================================
+YOUTUBE CHANNEL TRANSCRIPT KNOWLEDGE BASE
+Total Videos: 8
+Channel: MECHANIC GAMING
+================================================================================
 
---- Page 2 ---
-3. Front-End Challenge 
-Successfully developed a design-accurate website based on Figma prototypes within a 
-short timeframe as part of an internship challenge. Demonstrated strong attention to 
-detail, rapid development skills, and the ability to deliver high-quality results under tight 
-deadlines.                                                                                                                       
-Link: https://front-end-challenge-sepia.vercel.app/ 
-4. Doctor Appointment System  
-Eon tools is a free online tools provider built with HTML, CSS, JS and PHP. I was 
-involved in creating different designs for different pages such as categories, all tools 
-and different categories of tools such as sports tools, education tools and food tools. 
-Link: http://hospital-doc.my-style.in/ 
-5. E-Commerce 
-Developed a comprehensive e-commerce platform using the MERN stack. The platform 
-features secure user authentication, real-time updates, a dynamic product catalogue, 
-pagination, JWT, and an admin panel for efficient product management.            
- Link: https://e-commerce-mern-puce.vercel.app/ 
- 
-Certificates/Training: 
-1. MERN Stack | 3 Month Bootcamp  
- 
- 
- 
- 
- 
- 
- 
- Completed a Full-stack training facilitated by MLRC (Mathema Learning Resource 
-Center) 
-Reference: 
-2. Sushil Balami (Full-stack Developer at Quickfox Consulting) 
-Link: https://sushilbalami.com.np/ 
+[VIDEO 1]
+Title: SUPER LIKE LEGEND!! Cara Mengirim Diamond Ke Ke Teman Mobile Legends 2025 | Super Like Legend MLBB
+URL: https://www.youtube.com/watch?v=lbhvpmLmVDk
 
+Description:
+SUPER LIKE LEGEND 5!! Cara Mengirim Diamond Ke Ke Teman Mobile Legends 2025 | Super Like Legend MLBB
 
---- File: Bikesh Maharjan ---
+Hallo guys, divideo kali ini kita akan bahas event Super like legend yang hadir di update yang aka
 
---- Page 1 ---
-Bikesh Maharjan 
-Frontend Developer 
-+977 9865555733|bks.mhr8@gmail.com| linkedin.com/in/bikesh-maharjan-970a921a5/| github.com/jATMOS 
-Experience 
-  Backend Intern 
- 
- 
- 
- 
- 
- 
-                                 Jan, 2024 – Apr,2024                      
-  Fatafatsewa 
- 
- 
- 
- 
- 
- 
- 
- 
-   
-      Sitapaila, Kathmandu 
-• 
-Created endpoints for user role assignment, order status toggle, dashboard. 
-• Creation of numerous application. 
-• Enhance of search results of already existing search feature. 
-• 
-Email templating and integration for user actions ordering, cancelling and feedback. 
- STEAM fellow 
- 
- 
- 
- 
- 
- 
- 
-  
- Feb, 2024 – Aug, 2024 
- Karkhana Samuha  
- 
- 
- 
- 
- 
- 
- 
- 
-           Sanepa, Lalitpur 
-• Taught in Government schools for ‘Book Free Friday’ about STEAM related topics students 
-with emphasis on experimental exploration issued by Kathmandu Metropolitan City. 
-Education 
-   Prime College 
- 
- 
- 
- 
- 
- 
-     
-                Khushibun, Kathmandu 
-   Bachelor in Science in Computer Science and Information Technology    
- 
-           June-2021-Present 
-    Xavier Academy  
- 
- 
- 
- 
- 
- 
- 
-  Lazimpat, Kathmandu 
-   +2 Science 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
-     2019 - 2021 
-Projects 
-   KaamKonnect | Node.js, Express, Tailwind, MongoDB, Ejs | Github Link              Aug, 2024 - Sep, 2024 
-• Developed a full-stack platform like Fiverr for manual labor (e.g., plumbing, carpentry) and 
-freelance jobs (e.g., DJing, teaching). 
-• Users can register as either customers or providers. 
-• Customers post tasks, search for providers, and pay through the platform. 
-• Providers browse and apply for tasks that match their skills. 
-   Rubiks Cube solver | Python, Django, React.js, Three.js, OpenCV| Github Link  Sep-2024 – Dec-2024 
-• Implementing a layer-by-layer Rubik's Cube solving algorithm for solving rubik’s cube. 
-• Created UI and interactive 3D cube that shows each solving step like video. Moves can be 
-reversed and forwarded.  
-• Used OpenCV for detection of colors and dynamically showing the mapped colors in real 
-time. 
-Technical Skills 
-   Languages: JavaScript, Python, SQL (Postgres), MongoDB, HTML/CSS 
-   Frameworks/Libraries: Node.js, Express.js, Django, React.js, Three.js, Tailwind CSS  
-   Developer Tools: Git, Postman 
-Volunteering/Involvement 
-   General Member   
- 
- 
- 
- 
- 
- 
- 
- 
-Prime IT Club 
-• Volunteered for major events (job fair, ICT meetup- v7.0) and numerous minor events. 
+Transcript:
+Video Title: SUPER LIKE LEGEND!! Cara Mengirim Diamond Ke Ke Teman Mobile Legends 2025 | Super Like Legend MLBB
 
+Description: SUPER LIKE LEGEND 5!! Cara Mengirim Diamond Ke Ke Teman Mobile Legends 2025 | Super Like Legend MLBB
 
---- File: Q&A-40 ---
+Hallo guys, divideo kali ini kita akan bahas event Super like legend yang hadir di update yang aka
 
-Q1: adfads
-A1: adsfadsfasd
+Note: Full transcript not available for this video.
+
+--------------------------------------------------------------------------------
+
+[VIDEO 2]
+Title: MURAH BANGET!! Cara Mendapatkan Skin Layla Legend Murah Modal 56Tiket Promo Diamond Mobile Legends!
+URL: https://www.youtube.com/watch?v=tC7LVVm1eZI
+
+Description:
+EVENT 11.11 NEXUS SEA LEGEND LAYLA THE BEACON MOBILE LEGENDS 2025
+
+Hallo guys, divideo kali ini kita akan bahas event nexus sea legend the beacon Layla legend yang hadir tanggal 05/11 -  05/12/2025, D
+
+Transcript:
+Video Title: MURAH BANGET!! Cara Mendapatkan Skin Layla Legend Murah Modal 56Tiket Promo Diamond Mobile Legends!
+
+Description: EVENT 11.11 NEXUS SEA LEGEND LAYLA THE BEACON MOBILE LEGENDS 2025
+
+Hallo guys, divideo kali ini kita akan bahas event nexus sea legend the beacon Layla legend yang hadir tanggal 05/11 -  05/12/2025, D
+
+Note: Full transcript not available for this video.
+
+--------------------------------------------------------------------------------
+
+[VIDEO 3]
+Title: MLBBSPONGEBOB!! EVENT FESTIVAL TEMAN MLBB X SPONGEBOB SKIN ITEM SPONGEBOB GRATIS MOBILE LEGENDS 2025
+URL: https://www.youtube.com/watch?v=4eJ-mx7XX94
+
+Description:
+EVENT COLLABORASI TERBARU SKIN SPONGEBOB SQUARPANTS X MOBILE LEGENDS TERBARU
+
+Hallo Guys, jadi di video kali ini saya akan bahas event festival teman dan event collaborasi SpongeBob Squarpants mlbb, y
+
+Transcript:
+Video Title: MLBBSPONGEBOB!! EVENT FESTIVAL TEMAN MLBB X SPONGEBOB SKIN ITEM SPONGEBOB GRATIS MOBILE LEGENDS 2025
+
+Description: EVENT COLLABORASI TERBARU SKIN SPONGEBOB SQUARPANTS X MOBILE LEGENDS TERBARU
+
+Hallo Guys, jadi di video kali ini saya akan bahas event festival teman dan event collaborasi SpongeBob Squarpants mlbb, y
+
+Note: Full transcript not available for this video.
+
+--------------------------------------------------------------------------------
+
+[VIDEO 4]
+Title: MLBB SPONGEBOB!! EVENT HAK ISTIMEWA PERTANGAN SKIN LEGEND LUNOX GRATIS MOBILE LEGENDS TERBARU 2025
+URL: https://www.youtube.com/watch?v=--kgsMyGY54
+
+Description:
+EVENT COLLABORASI TERBARU SKIN SPONGEBOB SQUARPANTS X MOBILE LEGENDS TERBARU
+
+Hallo Guys, jadi di video kali ini saya akan bahas event hak istimewa pertandingan dan event collaborasi SpongeBob Squarpa
+
+Transcript:
+Video Title: MLBB SPONGEBOB!! EVENT HAK ISTIMEWA PERTANGAN SKIN LEGEND LUNOX GRATIS MOBILE LEGENDS TERBARU 2025
+
+Description: EVENT COLLABORASI TERBARU SKIN SPONGEBOB SQUARPANTS X MOBILE LEGENDS TERBARU
+
+Hallo Guys, jadi di video kali ini saya akan bahas event hak istimewa pertandingan dan event collaborasi SpongeBob Squarpa
+
+Note: Full transcript not available for this video.
+
+--------------------------------------------------------------------------------
+
+[VIDEO 5]
+Title: EVENT 9TH MLBB !! Cara Mendapatkan Skin LOLITA gratis Paintednya | Voucer Instan Quest Tambahan MLBB
+URL: https://www.youtube.com/watch?v=yYvTE8wDVFk
+
+Description:
+EVENT 9TH MLBB !! Cara Mendapatkan Skin LOLITA gratis Paintednya | Voucer Instan Quest Tambahan MLBB
+
+Hallo Guys, jadi di video kali ini saya akan bahas eventmlbb 9th skin lolita gratis dan paintednya
+
+Transcript:
+Video Title: EVENT 9TH MLBB !! Cara Mendapatkan Skin LOLITA gratis Paintednya | Voucer Instan Quest Tambahan MLBB
+
+Description: EVENT 9TH MLBB !! Cara Mendapatkan Skin LOLITA gratis Paintednya | Voucer Instan Quest Tambahan MLBB
+
+Hallo Guys, jadi di video kali ini saya akan bahas eventmlbb 9th skin lolita gratis dan paintednya
+
+Note: Full transcript not available for this video.
+
+--------------------------------------------------------------------------------
+
+[VIDEO 6]
+Title: GRANDFINAL CREATE!! EVENT 6TH VOTING SKIN ZILONG CREATE DESAIGN CONTEST CREATE MOBILE LEGENDS 2025
+URL: https://www.youtube.com/watch?v=hpMHQ4k2Y8U
+
+Description:
+GRANDFINAL CREATE!! EVENT 6TH VOTING SKIN ZILONG CREATE DESAIGN CONTEST CREATE MOBILE LEGENDS 2025
+
+Hallo guys, divideo kali ini kita akan bahas event voting skin desaingn contest zilong yang hadir 24
+
+Transcript:
+Video Title: GRANDFINAL CREATE!! EVENT 6TH VOTING SKIN ZILONG CREATE DESAIGN CONTEST CREATE MOBILE LEGENDS 2025
+
+Description: GRANDFINAL CREATE!! EVENT 6TH VOTING SKIN ZILONG CREATE DESAIGN CONTEST CREATE MOBILE LEGENDS 2025
+
+Hallo guys, divideo kali ini kita akan bahas event voting skin desaingn contest zilong yang hadir 24
+
+Note: Full transcript not available for this video.
+
+--------------------------------------------------------------------------------
+
+[VIDEO 7]
+Title: LEGEND LAYLA!! Cara Mendapatkan Skin Legend Layla Modal 56Tiket Promo Diamond 11.11 Mobile Legends
+URL: https://www.youtube.com/watch?v=EExOmOHHhb0
+
+Description:
+LEGEND LAYLA!! Cara Mendapatkan Skin Legend Layla Modal 56Tiket Promo Diamond 11.11 Mobile Legends 2025
+
+Hallo guys, divideo kali ini kita akan bahas event nexus sea legend layla the beacon yang hadir
+
+Transcript:
+Video Title: LEGEND LAYLA!! Cara Mendapatkan Skin Legend Layla Modal 56Tiket Promo Diamond 11.11 Mobile Legends
+
+Description: LEGEND LAYLA!! Cara Mendapatkan Skin Legend Layla Modal 56Tiket Promo Diamond 11.11 Mobile Legends 2025
+
+Hallo guys, divideo kali ini kita akan bahas event nexus sea legend layla the beacon yang hadir
+
+Note: Full transcript not available for this video.
+
+--------------------------------------------------------------------------------
+
+[VIDEO 8]
+Title: 11.11 THAMUZ!! Cara Mendapatkan Skin 11.11 Thamuz Modal 56 Tiket Promo Diamond 11.11 Mobile Legends
+URL: https://www.youtube.com/watch?v=ISf5Y8DoAd8
+
+Description:
+11.11 THAMUZ!! Cara Mendapatkan Skin 11.11 Thamuz Modal 56 Tiket Promo Diamond 11.11 Mobile Legends 2025
+
+Hallo guys, divideo kali ini kita akan bahas event nexus sea 11.11 thamuz dan skin legend layl
+
+Transcript:
+Video Title: 11.11 THAMUZ!! Cara Mendapatkan Skin 11.11 Thamuz Modal 56 Tiket Promo Diamond 11.11 Mobile Legends
+
+Description: 11.11 THAMUZ!! Cara Mendapatkan Skin 11.11 Thamuz Modal 56 Tiket Promo Diamond 11.11 Mobile Legends 2025
+
+Hallo guys, divideo kali ini kita akan bahas event nexus sea 11.11 thamuz dan skin legend layl
+
+Note: Full transcript not available for this video.
+
+--------------------------------------------------------------------------------
+
