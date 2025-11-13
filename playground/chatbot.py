@@ -315,11 +315,27 @@ def query_assistant(
     else:
         system_prompt_content = base_rules
 
+    # Format conversation history for the prompt
+    history_text = ""
+    if combined_history:
+        history_text = "\n\nConversation History:\n"
+        for msg in combined_history:
+            role = msg["role"].capitalize()
+            content = msg["content"]
+            history_text += f"{role}: {content}\n"
+        history_text += "\n"
+        
+        print("📜 Including conversation history in prompt:")
+        for i, msg in enumerate(combined_history, 1):
+            print(f"  {i}. {msg['role']}: {msg['content'][:60]}...")
+    else:
+        print("📜 No conversation history to include")
+
     # Build RAG chain
     prompt_template = ChatPromptTemplate.from_template(
         """
         {system_prompt}
-        
+        {history}
         Context from documents:
         {context}
         
@@ -343,6 +359,7 @@ def query_assistant(
                 "context": retriever | format_retrieved_context,  # Add formatter
                 "question": RunnablePassthrough(),
                 "system_prompt": lambda x: system_prompt_content,
+                "history": lambda x: history_text,  # Add conversation history
             }
             | prompt_template
             | llm.bind(temperature=temperature)
