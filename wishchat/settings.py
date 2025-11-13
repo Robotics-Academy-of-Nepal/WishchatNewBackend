@@ -127,23 +127,23 @@ WSGI_APPLICATION = "wishchat.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "wishchat",
-        "USER": "postgres",
-        "PASSWORD": "4290",
-        "HOST": "localhost",  # Use '127.0.0.1' or the IP address of the server
-        "PORT": "5432",  # Default PostgreSQL port
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "wishchat",
+#         "USER": "postgres",
+#         "PASSWORD": "4290",
+#         "HOST": "localhost",  # Use '127.0.0.1' or the IP address of the server
+#         "PORT": "5432",  # Default PostgreSQL port
+#     }
+# }
 
 
 # Password validation
