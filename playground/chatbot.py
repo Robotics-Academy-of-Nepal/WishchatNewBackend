@@ -223,16 +223,16 @@ def query_assistant(
     """
     Query assistant using RAG with ChromaDB, incorporating short-term and long-term context.
     """
-    
+
     # FIRST THING: Debug parameters received
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print("QUERY_ASSISTANT CALLED")
-    print("="*80)
+    print("=" * 80)
     print(f"user_input: {user_input}")
     print(f"chatbot: {chatbot.id}")
     print(f"user_id: {user_id} (type: {type(user_id)})")
     print(f"platform: {platform} (type: {type(platform)})")
-    print("="*80 + "\n")
+    print("=" * 80 + "\n")
 
     query_embedding = embeddings.embed_query(user_input)
     # print("query_embeddings:", query_embedding)
@@ -355,11 +355,11 @@ def query_assistant(
         # Update histories
         session_history.append({"role": "user", "content": user_input})
         session_history.append({"role": "assistant", "content": assistant_response})
-        
-        print("\n" + "="*80)
+
+        print("\n" + "=" * 80)
         print("SAVING CONVERSATION HISTORY")
-        print("="*80)
-        
+        print("=" * 80)
+
         if user_id and platform:
             updated_history = long_term_history
             updated_history.append({"role": "user", "content": user_input})
@@ -374,8 +374,8 @@ def query_assistant(
             print(f"   Conversation ID: {conversation.id}")
         else:
             print("❌ NOT saved - user_id or platform missing")
-        
-        print("="*80 + "\n")
+
+        print("=" * 80 + "\n")
 
         # Count context and output tokens
         retrieved_docs = retriever.invoke(user_input)
