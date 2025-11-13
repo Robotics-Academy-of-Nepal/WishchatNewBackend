@@ -22,6 +22,98 @@ def extract_youtube_urls(text):
     return urls
 
 
+def extract_video_info(text):
+    """
+    Extract video titles and URLs from formatted text.
+    Handles formats like: ### Video Title [](url) or ### Video Title followed by URL
+    """
+    videos = []
+
+    # Pattern 1: ### Title [optional_text](url)
+    pattern1 = r"###\s*([^\n\[]+?)\s*\[([^\]]*)\]\(([^)]+)\)"
+    matches = re.finditer(pattern1, text)
+
+    for match in matches:
+        title = match.group(1).strip()
+        url = match.group(3).strip()
+        if url and ("youtube.com" in url or "youtu.be" in url):
+            videos.append({"title": title, "url": url, "full_match": match.group(0)})
+
+    # Pattern 2: ### Title followed by a URL on next line or same line
+    pattern2 = (
+        r"###\s*([^\n]+)\s*\n?\s*(https?://(?:www\.)?(?:youtube\.com|youtu\.be)/[^\s]+)"
+    )
+    matches = re.finditer(pattern2, text)
+
+    for match in matches:
+        title = match.group(1).strip()
+        url = match.group(2).strip()
+        # Only add if not already captured
+        if not any(v["url"] == url for v in videos):
+            videos.append({"title": title, "url": url, "full_match": match.group(0)})
+
+    # Pattern 3: Plain YouTube URLs without titles
+    youtube_pattern = r"https?://(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/|youtube\.com/shorts/)[\w-]+"
+    for match in re.finditer(youtube_pattern, text):
+        url = match.group(0)
+        # Only add if not already captured with a title
+        if not any(v["url"] == url for v in videos):
+            videos.append({"title": None, "url": url, "full_match": url})
+
+    return videos
+
+
+def remove_video_sections(text, videos):
+    """Remove video sections from text based on extracted video info"""
+    for video in videos:
+        text = text.replace(video["full_match"], "")
+
+    # Remove common video section headers
+    text = re.sub(
+        r"(?:For more.*?helpful:|These resources.*?:|Watch these videos:)\s*",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    # Remove lines that only contain "###" or are empty after video removal
+    lines = text.split("\n")
+    cleaned_lines = [line for line in lines if line.strip() and line.strip() != "###"]
+    text = "\n".join(cleaned_lines)
+
+    return text
+
+
+def format_for_whatsapp(text):
+    """
+    Format text for natural WhatsApp display with proper spacing and formatting.
+    Converts markdown to WhatsApp-friendly format.
+    """
+    # Convert markdown bold (**text**) to WhatsApp bold (*text*)
+    text = re.sub(r"\*\*([^*]+)\*\*", r"*\1*", text)
+
+    # Ensure proper spacing after numbered lists
+    text = re.sub(r"(\d+\.)\s*(\*)", r"\1 \2", text)
+
+    # Add line break after each numbered item for better readability
+    text = re.sub(r"(\d+\.\s*\*[^*]+\*[^\n]+)", r"\1\n", text)
+
+    # Clean up multiple spaces
+    text = re.sub(r" +", " ", text)
+
+    # Clean up excessive newlines (max 2 consecutive)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+
+    # Ensure spacing around section headers (###)
+    text = re.sub(r"(###[^\n]+)\n", r"\1\n\n", text)
+
+    # Remove trailing spaces from lines
+    lines = [line.rstrip() for line in text.split("\n")]
+    text = "\n".join(lines)
+
+    return text.strip()
+
+
 def clean_markdown_for_messaging(text):
     """
     Remove markdown formatting that doesn't work well in messaging platforms.
@@ -44,6 +136,21 @@ def clean_markdown_for_messaging(text):
     return text
 
 
+def clean_text_content(text):
+    """Final cleanup of text formatting"""
+    # Remove extra whitespace
+    text = re.sub(r" +", " ", text)
+
+    # Clean up multiple newlines
+    text = re.sub(r"\n\s*\n\s*\n+", "\n\n", text)
+
+    # Remove leading/trailing whitespace from lines
+    lines = [line.strip() for line in text.split("\n") if line.strip()]
+    text = "\n".join(lines)
+
+    return text.strip()
+
+
 def sendwhatsapp_messages(phoneNumber, message, whatsapp_id):
     try:
         chatbot = Chatbot.objects.filter(whatsapp_id=whatsapp_id).last()
@@ -56,47 +163,61 @@ def sendwhatsapp_messages(phoneNumber, message, whatsapp_id):
         user_input=message, chatbot=chatbot, user_id=phoneNumber, platform="whatsapp"
     )
 
-    # Clean markdown formatting
+    # Clean markdown formatting first
     bot_response = clean_markdown_for_messaging(bot_response)
+
+    # Format for WhatsApp natural display
+    bot_response = format_for_whatsapp(bot_response)
 
     headers = {"Authorization": f"Bearer {chatbot.whatsapp_token}"}
 
     try:
-        # Check if response contains YouTube URLs
-        youtube_urls = extract_youtube_urls(bot_response)
+        # Extract video information (titles + URLs)
+        video_info = extract_video_info(bot_response)
 
-        if youtube_urls:
-            # Remove URLs from main text
-            text_without_urls = bot_response
-            for url in youtube_urls:
-                text_without_urls = text_without_urls.replace(url, "").strip()
+        if video_info:
+            # Remove video sections from main text
+            text_content = remove_video_sections(bot_response, video_info)
 
-            # Clean up extra whitespace
-            text_without_urls = re.sub(r"\s+", " ", text_without_urls).strip()
-            text_without_urls = re.sub(r"\n\s*\n\s*\n+", "\n\n", text_without_urls)
+            # Final cleanup
+            text_content = clean_text_content(text_content)
 
-            # Send the text message if there's content
-            if text_without_urls:
+            # Send the main text message if there's content
+            if text_content:
                 text_payload = {
                     "messaging_product": "whatsapp",
                     "recipient_type": "individual",
                     "to": phoneNumber,
                     "type": "text",
-                    "text": {"body": text_without_urls},
+                    "text": {"body": text_content},
                 }
                 requests.post(chatbot.whatsapp_url, headers=headers, json=text_payload)
 
-            # Send each YouTube URL as a separate message for preview
+            # Send each video with its title and thumbnail
             responses = []
-            for url in youtube_urls:
+            for video in video_info:
+                # If we have a title, send it first with an emoji
+                if video.get("title"):
+                    title_payload = {
+                        "messaging_product": "whatsapp",
+                        "recipient_type": "individual",
+                        "to": phoneNumber,
+                        "type": "text",
+                        "text": {"body": f"🎥 *{video['title']}*"},
+                    }
+                    requests.post(
+                        chatbot.whatsapp_url, headers=headers, json=title_payload
+                    )
+
+                # Send URL with preview enabled (shows thumbnail)
                 url_payload = {
                     "messaging_product": "whatsapp",
                     "recipient_type": "individual",
                     "to": phoneNumber,
                     "type": "text",
                     "text": {
-                        "body": url,
-                        "preview_url": True,  # This enables link preview
+                        "body": video["url"],
+                        "preview_url": True,
                     },
                 }
                 response = requests.post(
@@ -107,7 +228,7 @@ def sendwhatsapp_messages(phoneNumber, message, whatsapp_id):
             return {"status": "success", "responses": responses}
 
         else:
-            # No YouTube URLs, send normal text message
+            # No videos, send formatted text message
             payload = {
                 "messaging_product": "whatsapp",
                 "recipient_type": "individual",
@@ -145,33 +266,48 @@ def messenger_messages(sender_id, message_text, messenger_page_id):
     # Clean markdown formatting
     bot_response = clean_markdown_for_messaging(bot_response)
 
+    # Format for natural display
+    bot_response = format_for_whatsapp(
+        bot_response
+    )  # Same formatting works for Messenger
+
     headers = {"Authorization": f"Bearer {chatbot.messenger_token}"}
 
     try:
-        # Check if response contains YouTube URLs
-        youtube_urls = extract_youtube_urls(bot_response)
+        # Extract video information
+        video_info = extract_video_info(bot_response)
 
-        if youtube_urls:
-            # Send text without URLs first (if there's text content)
-            text_without_urls = bot_response
-            for url in youtube_urls:
-                text_without_urls = text_without_urls.replace(url, "").strip()
-
-            text_without_urls = re.sub(r"\s+", " ", text_without_urls).strip()
-            text_without_urls = re.sub(r"\n\s*\n\s*\n+", "\n\n", text_without_urls)
+        if video_info:
+            # Remove video sections from main text
+            text_content = remove_video_sections(bot_response, video_info)
+            text_content = clean_text_content(text_content)
 
             # Send text message if there's content
-            if text_without_urls:
+            if text_content:
                 text_payload = {
                     "recipient": {"id": sender_id},
-                    "message": {"text": text_without_urls},
+                    "message": {"text": text_content},
                 }
                 requests.post(chatbot.messenger_url, headers=headers, json=text_payload)
 
-            # Send YouTube URLs as separate messages (Messenger auto-generates preview)
+            # Send videos with titles
             responses = []
-            for url in youtube_urls:
-                url_payload = {"recipient": {"id": sender_id}, "message": {"text": url}}
+            for video in video_info:
+                # Send title if available
+                if video.get("title"):
+                    title_payload = {
+                        "recipient": {"id": sender_id},
+                        "message": {"text": f"🎥 *{video['title']}*"},
+                    }
+                    requests.post(
+                        chatbot.messenger_url, headers=headers, json=title_payload
+                    )
+
+                # Send URL (Messenger auto-generates preview)
+                url_payload = {
+                    "recipient": {"id": sender_id},
+                    "message": {"text": video["url"]},
+                }
                 response = requests.post(
                     chatbot.messenger_url, headers=headers, json=url_payload
                 )
@@ -180,7 +316,7 @@ def messenger_messages(sender_id, message_text, messenger_page_id):
             return {"status": "success", "responses": responses}
 
         else:
-            # No YouTube URLs, send normal message
+            # No videos, send normal message
             payload = {
                 "recipient": {"id": sender_id},
                 "message": {"text": bot_response},
@@ -215,33 +351,46 @@ def instagram_messages(sender_id, message_text, instagram_page_id):
     # Clean markdown formatting
     bot_response = clean_markdown_for_messaging(bot_response)
 
+    # Format for natural display
+    bot_response = format_for_whatsapp(bot_response)
+
     headers = {"Authorization": f"Bearer {chatbot.instagram_token}"}
 
     try:
-        # Check if response contains YouTube URLs
-        youtube_urls = extract_youtube_urls(bot_response)
+        # Extract video information
+        video_info = extract_video_info(bot_response)
 
-        if youtube_urls:
-            # Send text without URLs first (if there's text content)
-            text_without_urls = bot_response
-            for url in youtube_urls:
-                text_without_urls = text_without_urls.replace(url, "").strip()
-
-            text_without_urls = re.sub(r"\s+", " ", text_without_urls).strip()
-            text_without_urls = re.sub(r"\n\s*\n\s*\n+", "\n\n", text_without_urls)
+        if video_info:
+            # Remove video sections from main text
+            text_content = remove_video_sections(bot_response, video_info)
+            text_content = clean_text_content(text_content)
 
             # Send text message if there's content
-            if text_without_urls:
+            if text_content:
                 text_payload = {
                     "recipient": {"id": sender_id},
-                    "message": {"text": text_without_urls},
+                    "message": {"text": text_content},
                 }
                 requests.post(chatbot.instagram_url, headers=headers, json=text_payload)
 
-            # Send YouTube URLs separately
+            # Send videos with titles
             responses = []
-            for url in youtube_urls:
-                url_payload = {"recipient": {"id": sender_id}, "message": {"text": url}}
+            for video in video_info:
+                # Send title if available
+                if video.get("title"):
+                    title_payload = {
+                        "recipient": {"id": sender_id},
+                        "message": {"text": f"🎥 *{video['title']}*"},
+                    }
+                    requests.post(
+                        chatbot.instagram_url, headers=headers, json=title_payload
+                    )
+
+                # Send URL
+                url_payload = {
+                    "recipient": {"id": sender_id},
+                    "message": {"text": video["url"]},
+                }
                 response = requests.post(
                     chatbot.instagram_url, headers=headers, json=url_payload
                 )
@@ -252,7 +401,7 @@ def instagram_messages(sender_id, message_text, instagram_page_id):
             return {"status": "success", "responses": responses}
 
         else:
-            # No YouTube URLs, send normal message
+            # No videos, send normal message
             payload = {
                 "recipient": {"id": sender_id},
                 "message": {"text": bot_response},
