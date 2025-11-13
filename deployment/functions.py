@@ -158,6 +158,14 @@ def sendwhatsapp_messages(phoneNumber, message, whatsapp_id):
         print(f"Chatbot not found for whatsapp_id: {whatsapp_id}")
         return {"error": "Chatbot not found"}
 
+    # Debug: Show what we're sending to query_assistant
+    print("\n>>> WhatsApp Query Debug <<<")
+    print(f"Phone Number (user_id): {phoneNumber}")
+    print(f"Message: {message}")
+    print("Platform: whatsapp")
+    print(f"Chatbot ID: {chatbot.id}")
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>\n")
+
     # Get bot response
     bot_response = query_assistant(
         user_input=message, chatbot=chatbot, user_id=phoneNumber, platform="whatsapp"
