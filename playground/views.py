@@ -53,6 +53,12 @@ def handle_query(request):
         user_query = request.data.get("query")
         temperature = request.data.get("temperature", 0.7)  # Default temperature
 
+        # Get user_id and platform for context preservation
+        user_id = request.data.get("user_id")  # Client should send this
+        platform = request.data.get(
+            "platform", "api"
+        )  # e.g., "web", "mobile", "whatsapp", "api"
+
         if not user_query:
             return JsonResponse({"error": "No query provided."}, status=400)
 
@@ -74,6 +80,8 @@ def handle_query(request):
                 chatbot=chatbot,
                 prompt=system_prompt,
                 temperature=temperature,
+                user_id=user_id,
+                platform=platform,
             )
             return JsonResponse({"response": response}, status=200)
 
@@ -99,12 +107,14 @@ def handle_query(request):
                         status=403,
                     )
 
-                system_prompt = getattr(chatbot, "system_prompt", None)
+                system_prompt = getattr(chatbot, "system_prompt", None) or None
                 response = query_assistant(
                     user_input=user_query,
                     chatbot=chatbot,
                     prompt=system_prompt,
                     temperature=temperature,
+                    user_id=user_id,
+                    platform=platform,
                 )
                 return JsonResponse({"response": response}, status=200)
 
