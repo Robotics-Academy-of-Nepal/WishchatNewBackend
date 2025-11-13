@@ -224,6 +224,16 @@ def query_assistant(
     Query assistant using RAG with ChromaDB, incorporating short-term and long-term context.
     """
 
+    # FIRST THING: Debug parameters received
+    print("\n" + "=" * 80)
+    print("QUERY_ASSISTANT CALLED")
+    print("=" * 80)
+    print(f"user_input: {user_input}")
+    print(f"chatbot: {chatbot.id}")
+    print(f"user_id: {user_id} (type: {type(user_id)})")
+    print(f"platform: {platform} (type: {type(platform)})")
+    print("=" * 80 + "\n")
+
     query_embedding = embeddings.embed_query(user_input)
     # print("query_embeddings:", query_embedding)
 
@@ -280,7 +290,7 @@ def query_assistant(
             )
 
     # Combine short-term and long-term history
-    combined_history = long_term_history + session_history
+    combined_history = long_term_history
 
     # Build system prompt by always including guardrails, then optional custom prompt
     file_list = get_file_list(chatbot)
@@ -301,7 +311,11 @@ def query_assistant(
             content = msg["content"]
             history_text += f"{role}: {content}\n"
         history_text += "\n"
-
+    print("Conversation History:")
+    for msg in combined_history:
+        role = msg["role"].capitalize()
+        content = msg["content"]
+        print(f"  {role}: {content}")
     # Build RAG chain
     prompt_template = ChatPromptTemplate.from_template(
         """
