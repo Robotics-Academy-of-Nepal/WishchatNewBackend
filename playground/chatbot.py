@@ -264,7 +264,7 @@ def query_assistant(
     retriever = vector_store.as_retriever(
         search_type="mmr",  # Better diversity
         search_kwargs={
-            "k": 12,  # More chunks (12 videos)
+            "k": 7,  # More chunks (12 videos)
             "fetch_k": 25,  # From pool of 25
             "lambda_mult": 0.7,  # 70% relevance, 30% diversity
         },
