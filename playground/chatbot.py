@@ -273,7 +273,7 @@ def query_assistant(
     # Load long-term history if user_id and platform are provided
     long_term_history = []
 
-    if user_id and (platform not in ["web"]):
+    if user_id and platform:
         try:
             conversation = ChatbotConversation.objects.get(
                 chatbot=chatbot, user_id=user_id, platform=platform
@@ -288,8 +288,7 @@ def query_assistant(
             conversation = ChatbotConversation.objects.create(
                 chatbot=chatbot, user_id=user_id, platform=platform, history="[]"
             )
-    else:
-        conversation = None
+
     # Combine short-term and long-term history
     combined_history = long_term_history
 
@@ -318,18 +317,32 @@ def query_assistant(
         content = msg["content"]
         print(f"  {role}: {content}")
     # Build RAG chain
-    prompt_template = ChatPromptTemplate.from_template(
-        """
-        {system_prompt}
-        {history}
-        Context from documents:
-        {context}
-        
-        User query: {question}
-        
-        Answer:
-        """
-    )
+    if platform in ["web"]:
+        prompt_template = ChatPromptTemplate.from_template(
+            """
+            {system_prompt}
+            
+            Context from documents:
+            {context}
+            
+            User query: {question}
+            
+            Answer:
+            """
+        )
+    else:
+        prompt_template = ChatPromptTemplate.from_template(
+            """
+            {system_prompt}
+            {history}
+            Context from documents:
+            {context}
+            
+            User query: {question}
+            
+            Answer:
+            """
+        )
 
     # Messages for token counting
     messages = [{"role": "system", "content": system_prompt_content}]
