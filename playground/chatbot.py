@@ -273,7 +273,7 @@ def query_assistant(
     # Load long-term history if user_id and platform are provided
     long_term_history = []
 
-    if user_id and platform:
+    if user_id and (platform not in ["web"]):
         try:
             conversation = ChatbotConversation.objects.get(
                 chatbot=chatbot, user_id=user_id, platform=platform
