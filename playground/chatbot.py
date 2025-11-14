@@ -288,7 +288,8 @@ def query_assistant(
             conversation = ChatbotConversation.objects.create(
                 chatbot=chatbot, user_id=user_id, platform=platform, history="[]"
             )
-
+    else:
+        conversation = None
     # Combine short-term and long-term history
     combined_history = long_term_history
 
