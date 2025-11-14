@@ -317,32 +317,19 @@ def query_assistant(
         content = msg["content"]
         print(f"  {role}: {content}")
     # Build RAG chain
-    if platform in ["web"]:
-        prompt_template = ChatPromptTemplate.from_template(
-            """
-            {system_prompt}
-            
-            Context from documents:
-            {context}
-            
-            User query: {question}
-            
-            Answer:
-            """
-        )
-    else:
-        prompt_template = ChatPromptTemplate.from_template(
-            """
-            {system_prompt}
-            {history}
-            Context from documents:
-            {context}
-            
-            User query: {question}
-            
-            Answer:
-            """
-        )
+
+    prompt_template = ChatPromptTemplate.from_template(
+        """
+        {system_prompt}
+        {history}
+        Context from documents:
+        {context}
+        
+        User query: {question}
+        
+        Answer:
+        """
+    )
 
     # Messages for token counting
     messages = [{"role": "system", "content": system_prompt_content}]
